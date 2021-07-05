@@ -1,3 +1,9 @@
 {
-  "extends": ["airbnb", "airbnb/hooks"]
+  "extends": ["airbnb", "airbnb/hooks"],
+  "rules": {
+    "import/no-unresolved": "off"
+  },
+  "env": {
+    "browser": true
+  }
 }
