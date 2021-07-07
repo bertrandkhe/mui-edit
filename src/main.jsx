@@ -1,4 +1,5 @@
 import { hot } from 'react-hot-loader/root';
+import { CssBaseline } from '@material-ui/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Editor from '@/components/Editor';
@@ -13,12 +14,15 @@ const main = () => {
   document.body.style.minHeight = '100vh';
   const HotEditor = hot(Editor);
   ReactDOM.render(
-    <HotEditor
-      initialData={[]}
-      blockTypes={[
-        Section,
-      ]}
-    />,
+    <>
+      <CssBaseline />
+      <HotEditor
+        initialData={[]}
+        blockTypes={[
+          Section,
+        ]}
+      />
+    </>,
     root,
   )
 };
