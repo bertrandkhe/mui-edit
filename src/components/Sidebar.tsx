@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
 import Sortable from 'sortablejs';
@@ -7,6 +8,9 @@ import yellow from '@material-ui/core/colors/yellow';
 import { makeStyles, debounce, Button } from '@material-ui/core';
 import AddBlockButton from './AddBlockButton';
 import BlockForm from './BlockForm';
+import {SidebarPropsInterface} from "@/types/SidebarPropsInterface";
+import {BlockTypeInterface} from "@/types/BlockTypeInterface";
+import {BlockDataInterface, BlockSettingsInterface} from "@/types/BlockInterface";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Sidebar = (props) => {
+const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
   const {
     classes = {},
     data,
@@ -84,7 +88,7 @@ const Sidebar = (props) => {
       draggable: '.sortable-item',
       handle: '.sortable-handle',
       onUpdate: () => {
-        const newData = sortable.toArray().map((id) => data.find((block) => block.id === id));
+        const newData = sortable.toArray().map((id: string) => data.find((block) => block.id === id));
         setData(newData);
       },
     });
@@ -93,7 +97,7 @@ const Sidebar = (props) => {
     };
   }, [data, setData]);
 
-  const handleAddBlock = (blockType) => {
+  const handleAddBlock = (blockType: BlockTypeInterface<BlockDataInterface,BlockSettingsInterface>) => {
     setData([
       ...data,
       {
@@ -109,11 +113,11 @@ const Sidebar = (props) => {
     ]);
   };
 
-  const handleDeleteBlock = (id) => () => {
+  const handleDeleteBlock = (id: string) => () => {
     setData(data.filter((block) => block.id !== id));
   };
 
-  const handleClone = (id) => (withData = true) => {
+  const handleClone = (id: string) => (withData = true) => {
     const block = data.find((b) => b.id === id);
     const blockType = blockTypes.find((bt) => bt.id === block.type);
     setData([
@@ -131,37 +135,41 @@ const Sidebar = (props) => {
     ]);
   };
 
-  const handleEditBlockData = (id) => (blockData) => {
-    setData(data.map((block) => {
-      if (block.id !== id) {
-        return block;
-      }
-      return {
-        ...block,
-        data: blockData,
-        meta: {
-          ...block.meta,
-          changed: Date.now(),
-        },
-      };
-    }));
-  };
+  function handleEditBlockData<D>(id: string) {
+    return (blockData: D) => {
+      setData(data.map((block) => {
+        if (block.id !== id) {
+          return block;
+        }
+        return {
+          ...block,
+          data: blockData,
+          meta: {
+            ...block.meta,
+            changed: Date.now(),
+          },
+        };
+      }));
+    }
+  }
 
-  const handleEditBlockSettings = (id) => (blockSettings) => {
-    setData(data.map((block) => {
-      if (block.id !== id) {
-        return block;
-      }
-      return {
-        ...block,
-        settings: blockSettings,
-        meta: {
-          ...block.meta,
-          changed: Date.now(),
-        },
-      };
-    }));
-  };
+  function handleEditBlockSettings<S>(id: string) {
+    return (blockSettings: S) => {
+      setData(data.map((block) => {
+        if (block.id !== id) {
+          return block;
+        }
+        return {
+          ...block,
+          settings: blockSettings,
+          meta: {
+            ...block.meta,
+            changed: Date.now(),
+          },
+        };
+      }))
+    };
+  }
 
   return (
     <div className={clsx([localClasses.root, classes.root, { open: mounted && open }])}>

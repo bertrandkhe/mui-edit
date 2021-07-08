@@ -12,7 +12,7 @@ const main = () => {
   root.style.maxWidth = '100vw';
   root.style.overflow = 'hidden';
   root.style.position = 'relative';
-  document.body.style.margin = 0;
+  document.body.style.margin = '0px';
   document.body.style.minHeight = '100vh';
   ReactDOM.render(
     <App container={root} />,

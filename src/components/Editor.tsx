@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from "react";
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core';
 import Preview from './Preview';
 import Sidebar from './Sidebar';
+import { EditorPropsInterface } from "@/types/EditorPropsInterface";
+import { BlockDataInterface, BlockInterface, BlockSettingsInterface } from "@/types/BlockInterface";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -15,26 +18,25 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Editor = (props) => {
+const Editor: React.FunctionComponent<EditorPropsInterface> = (props) => {
   const {
     initialData = [],
     onChange,
     blockTypes = [],
     disableEditor = false,
     disablePreview = false,
-    container,
-    sidebarProps = {},
+    sidebarProps,
   } = props;
   const localClasses = useStyles();
   const [data, setData] = useState(initialData);
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
 
-  const handleChange = (updatedData) => {
+  function handleChange(updatedData: BlockInterface<BlockDataInterface, BlockSettingsInterface>[]) {
     setData(updatedData);
     if (onChange) {
       onChange(updatedData);
     }
-  };
+  }
 
   if (disableEditor && disablePreview) {
     return null;
@@ -44,10 +46,11 @@ const Editor = (props) => {
     data,
     setData: handleChange,
     blockTypes: sortedBlockTypes,
-    editorContainer: container,
+    title: 'Blocks',
+    open: true,
   };
 
-  const mergedSidebarProps = { ...defaultSidebarProps, ...sidebarProps };
+  const mergedSidebarProps = {...defaultSidebarProps, ...sidebarProps};
 
   if (disablePreview) {
     return (

@@ -2,9 +2,10 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const webpack = require('webpack');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const config = {
-  entry: ['./src/main.jsx'],
+  entry: ['./src/main.tsx'],
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
@@ -13,10 +14,11 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(js|ts)x?$/,
         include: [
           path.resolve(__dirname, 'src'),
         ],
+        exclude: /node_modules/,
         use: [
           'babel-loader',
         ],
@@ -27,11 +29,13 @@ const config = {
     new ESLintPlugin({
       extensions: ['js', 'jsx'],
     }),
+    new ForkTsCheckerWebpackPlugin(),
   ],
   resolve: {
-    extensions: ['.js', '.jsx', '.json', '.wasm'],
+    extensions: ['.js', '.jsx', '.json', '.wasm', '.ts', '.tsx'],
     alias: {
       '@/components': path.resolve(__dirname, 'src/components'),
+      '@/blocks': path.resolve(__dirname, 'src/blocks'),
     },
   },
 };
@@ -39,16 +43,22 @@ const config = {
 module.exports = (env, argv) => {
   config.mode = argv.mode;
   if (argv.mode === 'development') {
+    config.devtool = 'inline-source-map';
     config.entry = [
       'react-hot-loader/patch',
       ...config.entry,
     ];
+    config.resolve.alias['react-dom'] = '@hot-loader/react-dom';
     config.plugins.push(
       new HtmlWebpackPlugin({
         title: 'Development',
       }),
       new webpack.HotModuleReplacementPlugin(),
     );
+    config.cache = {
+      type: 'filesystem',
+      allowCollectingMemory: true,
+    };
     config.devServer = {
       contentBase: path.join(__dirname, 'dist'),
       compress: true,
