@@ -8,9 +8,9 @@ import yellow from '@material-ui/core/colors/yellow';
 import { makeStyles, debounce, Button } from '@material-ui/core';
 import AddBlockButton from './AddBlockButton';
 import BlockForm from './BlockForm';
-import {SidebarPropsInterface} from "@/types/SidebarPropsInterface";
-import {BlockTypeInterface} from "@/types/BlockTypeInterface";
-import {BlockDataInterface, BlockSettingsInterface} from "@/types/BlockInterface";
+import { SidebarPropsInterface } from '@/types/components/SidebarPropsInterface';
+import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
+import { BlockDataInterface, BlockSettingsInterface } from '@/types/components/BlockInterface';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,7 +97,7 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
     };
   }, [data, setData]);
 
-  const handleAddBlock = (blockType: BlockTypeInterface<BlockDataInterface,BlockSettingsInterface>) => {
+  const handleAddBlock = (blockType: BlockTypeInterface<BlockDataInterface, BlockSettingsInterface>) => {
     setData([
       ...data,
       {
@@ -150,7 +150,7 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
           },
         };
       }));
-    }
+    };
   }
 
   function handleEditBlockSettings<S>(id: string) {
@@ -167,12 +167,12 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
             changed: Date.now(),
           },
         };
-      }))
+      }));
     };
   }
 
   return (
-    <div className={clsx([localClasses.root, classes.root, { open: mounted && open }])}>
+    <div className={clsx([localClasses.root, classes.root, {open: mounted && open}])}>
       <div className={localClasses.header}>
         {onBack && (
           <Button
@@ -189,7 +189,7 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
       </div>
       <div ref={blocksWrapperRef}>
         {data.map((block) => {
-          const { type, id, meta } = block;
+          const {type, id, meta} = block;
           const blockType = blockTypes.find((bt) => bt.id === type);
           return (
             <BlockForm

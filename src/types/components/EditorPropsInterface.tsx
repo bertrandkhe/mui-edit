@@ -1,5 +1,5 @@
-import {BlockDataInterface, BlockInterface, BlockSettingsInterface} from "@/types/BlockInterface";
-import {BlockTypeInterface} from "@/types/BlockTypeInterface";
+import { BlockDataInterface, BlockInterface, BlockSettingsInterface } from '@/types/components/BlockInterface';
+import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
 
 interface EditorSidebarPropsInterface {
   container: HTMLElement,
@@ -13,5 +13,6 @@ export interface EditorPropsInterface {
   disableEditor?: boolean,
   disablePreview?: boolean,
   sidebarProps: EditorSidebarPropsInterface,
+
   onChange?(data: BlockInterface<BlockDataInterface, BlockSettingsInterface>[]): void,
 }

@@ -4,8 +4,8 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core';
 import Preview from './Preview';
 import Sidebar from './Sidebar';
-import { EditorPropsInterface } from "@/types/EditorPropsInterface";
-import { BlockDataInterface, BlockInterface, BlockSettingsInterface } from "@/types/BlockInterface";
+import { EditorPropsInterface } from "@/types/components/EditorPropsInterface";
+import { BlockDataInterface, BlockInterface, BlockSettingsInterface } from "@/types/components/BlockInterface";
 
 const useStyles = makeStyles(() => ({
   root: {
