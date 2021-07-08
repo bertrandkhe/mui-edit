@@ -1,5 +1,7 @@
 import React from 'react';
-import { Grid, InputLabel, NativeSelect, FormControl } from '@material-ui/core';
+import {
+  Grid, InputLabel, NativeSelect, FormControl,
+} from '@material-ui/core';
 
 const SpacingForm = (props) => {
   const {
@@ -29,7 +31,10 @@ const SpacingForm = (props) => {
 
   return (
     <details open={open}>
-      <summary>{spacingType[0].toUpperCase()}{spacingType.slice(1)}</summary>
+      <summary>
+        {spacingType[0].toUpperCase()}
+        {spacingType.slice(1)}
+      </summary>
       <Grid container spacing={2}>
         {directions.map((direction) => {
           const prop = `${spacingType}${direction[0].toUpperCase()}${direction.slice(1)}`;

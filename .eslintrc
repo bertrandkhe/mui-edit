@@ -1,7 +1,8 @@
 {
   "extends": ["airbnb", "airbnb/hooks"],
   "rules": {
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "arrow-body-style": "off"
   },
   "env": {
     "browser": true

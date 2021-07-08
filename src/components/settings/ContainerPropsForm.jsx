@@ -1,8 +1,17 @@
 import React from 'react';
-import { Checkbox, FormControl, FormControlLabel, Grid, InputLabel, NativeSelect } from '@material-ui/core';
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputLabel,
+  NativeSelect,
+} from '@material-ui/core';
 
 const ContainerPropsForm = (props) => {
-  const { id, settings, onChange, open } = props;
+  const {
+    id, settings, onChange, open,
+  } = props;
   const handleChange = ({ prop, readValue } = {}) => (e) => {
     onChange({
       ...settings,
@@ -19,8 +28,6 @@ const ContainerPropsForm = (props) => {
     { value: 'lg', label: 'Large' },
     { value: 'xl', label: 'Extra large' },
   ];
-
-  console.log(settings);
 
   return (
     <details open={open}>

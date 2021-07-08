@@ -1,8 +1,12 @@
 import React from 'react';
-import { Grid, debounce, Box, Button } from '@material-ui/core';
+import {
+  Grid, debounce, Box, Button,
+} from '@material-ui/core';
 
 const ColorForm = (props) => {
-  const { id, settings, onChange, open } = props;
+  const {
+    id, settings, onChange, open,
+  } = props;
   const handleChange = (prop) => (e) => {
     onChange({
       ...settings,

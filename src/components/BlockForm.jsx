@@ -7,8 +7,9 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import { Button, ListItemIcon, ListItemText, makeStyles, Menu, MenuItem, Typography, Box } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
+import {
+  Button, ListItemIcon, ListItemText, makeStyles, Menu, MenuItem, Typography, Box,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,9 +43,6 @@ const useStyles = makeStyles((theme) => ({
     width: 32,
     minWidth: 32,
   },
-  form: {
-    marginTop: theme.spacing(2),
-  },
   deleteActions: {
     display: 'flex',
   },
@@ -52,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 const BlockForm = (props) => {
   const {
+    editorContainer,
     block,
     blockType,
     onDataChange,
@@ -60,7 +59,9 @@ const BlockForm = (props) => {
     onClone,
     initialState = {},
   } = props;
-  const { data, settings, meta, id } = block;
+  const {
+    data, settings, meta, id,
+  } = block;
   const [state, setState] = useState({
     showEditForm: false,
     showSettingsForm: false,
@@ -136,18 +137,38 @@ const BlockForm = (props) => {
             {blockType.blockLabel(data)}
           </Typography>
           <div className={localClasses.actions}>
-            {state.showEditForm && <Button onClick={toggleShowEditForm} className={localClasses.iconBtn}><RemoveIcon
-              fontSize="small"
-            /></Button>}
-            {!state.showEditForm && <Button onClick={toggleShowEditForm} className={localClasses.iconBtn}><EditIcon
-              fontSize="small"
-            /></Button>}
-            {state.showSettingsForm &&
-            <Button onClick={toggleShowSettingsForm} className={localClasses.iconBtn}><RemoveIcon
-              fontSize="small"
-            /></Button>}
-            {!state.showSettingsForm &&
-            <Button onClick={toggleShowSettingsForm} className={localClasses.iconBtn}><SettingsIcon fontSize="small" /></Button>}
+            {state.showEditForm && (
+            <Button onClick={toggleShowEditForm} className={localClasses.iconBtn}>
+              <RemoveIcon
+                fontSize="small"
+              />
+            </Button>
+            )}
+            {!state.showEditForm && (
+            <Button onClick={toggleShowEditForm} className={localClasses.iconBtn}>
+              <EditIcon
+                fontSize="small"
+              />
+            </Button>
+            )}
+            {state.showSettingsForm
+            && (
+            <Button onClick={toggleShowSettingsForm} className={localClasses.iconBtn}>
+              <RemoveIcon
+                fontSize="small"
+              />
+            </Button>
+            )}
+            {!state.showSettingsForm
+            && (
+            <Button
+              onClick={toggleShowSettingsForm}
+              className={localClasses.iconBtn}
+              disabled={!blockType.hasSettings}
+            >
+              <SettingsIcon fontSize="small" />
+            </Button>
+            )}
             <Button
               className={localClasses.iconBtn}
               onClick={handleClickMoreBtn}
@@ -157,13 +178,13 @@ const BlockForm = (props) => {
             <Menu
               open={Boolean(state.moreAnchorEl)}
               anchorEl={state.moreAnchorEl}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
+              // anchorOrigin={{
+              //   vertical: 'bottom',
+              //   horizontal: 'right',
+              // }}
               transformOrigin={{
                 vertical: -48,
-                horizontal: 'right',
+                horizontal: 'left',
               }}
               onClose={handleCloseMoreMenu}
             >
@@ -175,17 +196,17 @@ const BlockForm = (props) => {
                   Clone
                 </ListItemText>
               </MenuItem>
-              {/*<MenuItem onClick={handleCloneBlock(false)}>*/}
-              {/*  <ListItemIcon className={localClasses.listItemIcon}>*/}
-              {/*    <FileCopyIcon fontSize="small" />*/}
-              {/*  </ListItemIcon>*/}
-              {/*  <ListItemText>*/}
-              {/*    Clone without data*/}
-              {/*  </ListItemText>*/}
-              {/*</MenuItem>*/}
+              {/* <MenuItem onClick={handleCloneBlock(false)}> */}
+              {/*  <ListItemIcon className={localClasses.listItemIcon}> */}
+              {/*    <FileCopyIcon fontSize="small" /> */}
+              {/*  </ListItemIcon> */}
+              {/*  <ListItemText> */}
+              {/*    Clone without data */}
+              {/*  </ListItemText> */}
+              {/* </MenuItem> */}
               <MenuItem onClick={handleDeleteBlock}>
                 <ListItemIcon className={localClasses.listItemIcon}>
-                  <DeleteIcon fontSize="smalndleCloseMoreMenu();l" />
+                  <DeleteIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>
                   Delete
@@ -204,6 +225,8 @@ const BlockForm = (props) => {
             meta,
             settings,
             onChange: onDataChange,
+            onClose: toggleShowEditForm,
+            editorContainer,
           })}
         </div>
       )}
@@ -220,22 +243,32 @@ const BlockForm = (props) => {
         </div>
       )}
       {state.showDeleteForm
-        && (
-          <div className={clsx([localClasses.form])}>
-            <Box mb={2}>
-              Are you sure you want to delete this block?
+      && (
+        <div className={clsx([])}>
+          <Box mb={2}>
+            Are you sure you want to delete this block?
+          </Box>
+          <div className={localClasses.deleteActions}>
+            <Box
+              component={Button}
+              variant="outlined"
+              onClick={handleDeleteCancel}
+              mr={2}
+            >
+              Cancel
             </Box>
-            <div className={localClasses.deleteActions}>
-              <Box component={Button} variant="outlined" onClick={handleDeleteCancel} mr={2}>
-                Cancel
-              </Box>
-              <Button variant="contained" color="secondary" onClick={onDelete} startIcon={<DeleteIcon />}>
-                Delete
-              </Button>
-            </div>
-
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={onDelete}
+              startIcon={<DeleteIcon />}
+            >
+              Delete
+            </Button>
           </div>
-        )}
+
+        </div>
+      )}
     </div>
   );
 };

@@ -1,21 +1,31 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
 import Sortable from 'sortablejs';
 import yellow from '@material-ui/core/colors/yellow';
 
-
-import { makeStyles, debounce } from '@material-ui/core';
+import { makeStyles, debounce, Button } from '@material-ui/core';
 import AddBlockButton from './AddBlockButton';
 import BlockForm from './BlockForm';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
-    overflowY: 'scroll',
-    width: 460,
+    width: 350,
     borderLeft: `1px solid ${theme.palette.grey[100]}`,
     boxShadow: '-1px 0 10px rgba(0,0,0,0.2)',
+    marginLeft: 'auto',
+    position: 'absolute',
+    top: 0,
+    right: -350,
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    transition: '0.4s',
+
+    '&.open': {
+      right: 0,
+    },
 
     '& .sortable-item .sortable-handle': {
       cursor: 'grab',
@@ -25,16 +35,48 @@ const useStyles = makeStyles((theme) => ({
       background: yellow[100],
     },
   },
+  header: {
+    borderBottom: `1px solid ${theme.palette.grey[100]}`,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  headerBtn: {
+    height: '100%',
+    borderRadius: 0,
+    boxShadow: 'none',
+  },
   title: {
     padding: theme.spacing(2),
-    borderBottom: `1px solid ${theme.palette.grey[100]}`,
   },
-}))
+  footer: {
+    marginTop: 'auto',
+    display: 'flex',
+  },
+}));
 
 const Sidebar = (props) => {
-  const { classes, data, blockTypes, setData } = props;
+  const {
+    classes = {},
+    data,
+    blockTypes,
+    setData,
+    container,
+    onBack,
+    title = 'Blocks',
+    open = true,
+  } = props;
   const blocksWrapperRef = useRef(null);
   const localClasses = useStyles();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setMounted(true);
+    });
+    return () => {
+      setMounted(false);
+    };
+  }, []);
 
   useEffect(() => {
     const sortable = new Sortable(blocksWrapperRef.current, {
@@ -48,8 +90,8 @@ const Sidebar = (props) => {
     });
     return () => {
       sortable.destroy();
-    }
-  }, [data]);
+    };
+  }, [data, setData]);
 
   const handleAddBlock = (blockType) => {
     setData([
@@ -65,15 +107,15 @@ const Sidebar = (props) => {
         },
       },
     ]);
-  }
+  };
 
   const handleDeleteBlock = (id) => () => {
     setData(data.filter((block) => block.id !== id));
   };
 
   const handleClone = (id) => (withData = true) => {
-    const block = data.find((block) => block.id === id);
-    const blockType = blockTypes.find((blockType) => blockType.id === block.type);
+    const block = data.find((b) => b.id === id);
+    const blockType = blockTypes.find((bt) => bt.id === block.type);
     setData([
       ...data,
       {
@@ -85,7 +127,7 @@ const Sidebar = (props) => {
           created: Date.now(),
           changed: Date.now(),
         },
-      }
+      },
     ]);
   };
 
@@ -122,14 +164,28 @@ const Sidebar = (props) => {
   };
 
   return (
-    <div className={clsx([localClasses.root, classes.root])}>
-      <div className={localClasses.title}>Blocks</div>
+    <div className={clsx([localClasses.root, classes.root, { open: mounted && open }])}>
+      <div className={localClasses.header}>
+        {onBack && (
+          <Button
+            onClick={onBack}
+            size="small"
+            className={localClasses.headerBtn}
+            variant="contained"
+            color="primary"
+          >
+            Back
+          </Button>
+        )}
+        <div className={localClasses.title}>{title}</div>
+      </div>
       <div ref={blocksWrapperRef}>
         {data.map((block) => {
           const { type, id, meta } = block;
-          const blockType = blockTypes.find((blockType) => blockType.id === type);
+          const blockType = blockTypes.find((bt) => bt.id === type);
           return (
             <BlockForm
+              editorContainer={container}
               key={id}
               blockType={blockType}
               block={block}
@@ -144,10 +200,12 @@ const Sidebar = (props) => {
           );
         })}
       </div>
-      <AddBlockButton
-        blockTypes={blockTypes}
-        onAddBlock={handleAddBlock}
-      />
+      <footer className={localClasses.footer}>
+        <AddBlockButton
+          blockTypes={blockTypes}
+          onAddBlock={handleAddBlock}
+        />
+      </footer>
     </div>
   );
 };

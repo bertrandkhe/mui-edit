@@ -122,7 +122,7 @@ const Section = {
       onChange({
         ...data,
         [prop]: e.target.value,
-      })
+      });
     };
     return (
       <form>
@@ -150,6 +150,6 @@ const Section = {
       </form>
     );
   },
-}
+};
 
 export default Section;

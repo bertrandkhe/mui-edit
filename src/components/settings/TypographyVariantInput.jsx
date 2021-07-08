@@ -1,5 +1,7 @@
 import React from 'react';
-import { FormControl, InputLabel, NativeSelect, Typography } from '@material-ui/core';
+import {
+  FormControl, InputLabel, NativeSelect, Typography,
+} from '@material-ui/core';
 
 const TypographyVariantInput = (props) => {
   const {

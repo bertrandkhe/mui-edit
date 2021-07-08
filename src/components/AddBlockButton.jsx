@@ -10,7 +10,7 @@ const AddBlockButton = (props) => {
 
   const handleCloseMenu = () => {
     setMenuState({ ...menuState, anchorEl: null });
-  }
+  };
 
   const handleAddBlock = (blockType) => () => {
     onAddBlock(blockType);
@@ -20,6 +20,9 @@ const AddBlockButton = (props) => {
   return (
     <>
       <Button
+        size="large"
+        color="primary"
+        variant="contained"
         startIcon={<AddIcon />}
         onClick={(e) => setMenuState({
           ...menuState,
@@ -33,9 +36,14 @@ const AddBlockButton = (props) => {
         anchorEl={menuState.anchorEl}
         onClose={handleCloseMenu}
       >
-        {blockTypes.map((blockType) => {
-          return (<MenuItem key={blockType.id} onClick={handleAddBlock(blockType)}>{blockType.label}</MenuItem>)
-        })}
+        {blockTypes.map((blockType) => (
+          <MenuItem
+            key={blockType.id}
+            onClick={handleAddBlock(blockType)}
+          >
+            {blockType.label}
+          </MenuItem>
+        ))}
       </Menu>
     </>
   );

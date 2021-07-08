@@ -24,7 +24,9 @@ const config = {
     ],
   },
   plugins: [
-    new ESLintPlugin(),
+    new ESLintPlugin({
+      extensions: ['js', 'jsx'],
+    }),
   ],
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.wasm'],
