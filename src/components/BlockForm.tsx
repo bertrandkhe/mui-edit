@@ -10,6 +10,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import {
   Button, ListItemIcon, ListItemText, makeStyles, Menu, MenuItem, Typography, Box,
 } from '@material-ui/core';
+import { BlockFormPropsInterface } from '@/types/components/BlockFormPropsInterface';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BlockForm = (props) => {
+const BlockForm: React.FunctionComponent<BlockFormPropsInterface> = (props) => {
   const {
     editorContainer,
     block,
@@ -60,7 +61,11 @@ const BlockForm = (props) => {
     initialState = {},
   } = props;
   const {
-    data, settings, meta, id,
+    data,
+    settings,
+    meta,
+    id,
+    type,
   } = block;
   const [state, setState] = useState({
     showEditForm: false,
@@ -89,7 +94,7 @@ const BlockForm = (props) => {
     });
   };
 
-  const handleClickMoreBtn = (e) => {
+  const handleClickMoreBtn = (e: React.MouseEvent<HTMLElement>) => {
     setState({
       ...state,
       showEditForm: false,
@@ -106,7 +111,7 @@ const BlockForm = (props) => {
     });
   };
 
-  const handleCloneBlock = (withData) => () => {
+  const handleCloneBlock = (withData?: boolean) => () => {
     handleCloseMoreMenu();
     onClone(withData);
   };
@@ -128,6 +133,9 @@ const BlockForm = (props) => {
     });
   };
 
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
   return (
     <div key={id} data-id={id} className={clsx(['sortable-item', localClasses.root])}>
       <div className={localClasses.header}>
@@ -218,9 +226,10 @@ const BlockForm = (props) => {
       </div>
       {state.showEditForm
       && (
-        <div className={clsx([localClasses.form])}>
+        <div>
           {React.createElement(blockType.editForm, {
             id,
+            type,
             data,
             meta,
             settings,
@@ -232,9 +241,10 @@ const BlockForm = (props) => {
       )}
       {blockType.hasSettings && state.showSettingsForm
       && (
-        <div className={clsx([localClasses.form])}>
+        <div>
           {React.createElement(blockType.settingsForm, {
             id,
+            type,
             data,
             meta,
             settings,
@@ -251,6 +261,7 @@ const BlockForm = (props) => {
           <div className={localClasses.deleteActions}>
             <Box
               component={Button}
+              // @ts-ignore
               variant="outlined"
               onClick={handleDeleteCancel}
               mr={2}

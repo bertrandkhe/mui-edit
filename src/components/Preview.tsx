@@ -1,14 +1,15 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core';
+import { PreviewPropsInterface } from '@/types/components/PreviewPropsInterface';
 
 const useStyles = makeStyles(() => ({
   root: {
-    width: (props) => props.width || '100%',
+    width: '100%',
   },
 }));
 
-const Preview = (props) => {
+const Preview: React.FunctionComponent<PreviewPropsInterface> = (props) => {
   const { blockTypes, data, className } = props;
   const localClasses = useStyles();
   return (
@@ -16,10 +17,8 @@ const Preview = (props) => {
       {data.map((block) => {
         const blockType = blockTypes.find((bt) => bt.id === block.type);
         return React.createElement(blockType.view, {
+          ...block,
           key: block.id,
-          data: block.data,
-          meta: block.meta,
-          settings: block.settings,
         });
       })}
     </div>

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Menu, MenuItem } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import { AddBlockButtonPropsInterface } from '@/types/components/AddBlockButtonPropsInterface';
+import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
+import { BlockDataInterface, BlockSettingsInterface } from '@/types/components/BlockInterface';
 
-const AddBlockButton = (props) => {
+const AddBlockButton: React.FunctionComponent<AddBlockButtonPropsInterface> = (props) => {
   const { onAddBlock, blockTypes } = props;
   const [menuState, setMenuState] = useState({
     anchorEl: null,
@@ -12,7 +15,7 @@ const AddBlockButton = (props) => {
     setMenuState({ ...menuState, anchorEl: null });
   };
 
-  const handleAddBlock = (blockType) => () => {
+  const handleAddBlock = (blockType: BlockTypeInterface<BlockDataInterface, BlockSettingsInterface>) => () => {
     onAddBlock(blockType);
     handleCloseMenu();
   };
