@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import {
   Grid, InputLabel, NativeSelect, FormControl,
 } from '@material-ui/core';
+import {
+  SpacingFormPropsInterface,
+  SpacingFormPropsSettingsInterface
+} from '@/types/components/settings/SpacingFormPropsInterface';
 
-const SpacingForm = (props) => {
+const SpacingForm: React.FunctionComponent<SpacingFormPropsInterface> = (props) => {
   const {
     id,
     onChange,
@@ -11,18 +15,20 @@ const SpacingForm = (props) => {
     min = 0,
     max = 20,
     step = 1,
-    spacings = [],
+    spacings: propsSpacings = [],
     spacingType,
     directions = ['top', 'right', 'bottom', 'left'],
     open,
   } = props;
 
-  const handleChange = (prop) => (e) => {
+  const handleChange = (prop?: string) => (e: ChangeEvent<HTMLSelectElement>) => {
     onChange({
       ...settings,
       [prop || e.currentTarget.name]: parseInt(e.currentTarget.value, 10),
     });
   };
+
+  const spacings = [...propsSpacings];
   if (spacings.length === 0) {
     for (let i = min; i < max; i += step) {
       spacings.push(i);
@@ -37,7 +43,7 @@ const SpacingForm = (props) => {
       </summary>
       <Grid container spacing={2}>
         {directions.map((direction) => {
-          const prop = `${spacingType}${direction[0].toUpperCase()}${direction.slice(1)}`;
+          const prop = `${spacingType}${direction[0].toUpperCase()}${direction.slice(1)}` as keyof SpacingFormPropsSettingsInterface;
           const htmlId = `${spacingType}-${direction}-select-${id}`;
           return (
             <Grid item xs={6} key={direction}>

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { FormControl, InputLabel, NativeSelect } from '@material-ui/core';
+import { TextAlignInputPropsInterface } from '@/types/components/settings/TextAlignInputPropsInterface';
 
-const TextAlignInput = (props) => {
+const TextAlignInput: React.FunctionComponent<TextAlignInputPropsInterface> = (props) => {
   const {
     id,
     label,
@@ -11,7 +12,7 @@ const TextAlignInput = (props) => {
     options = ['left', 'center', 'justify', 'right'],
   } = props;
   const htmlId = `${name}-select-${id}`;
-  const handleChange = (prop) => (e) => {
+  const handleChange = (prop?: string) => (e: ChangeEvent<HTMLSelectElement>) => {
     onChange({
       ...settings,
       [prop || e.currentTarget.name]: e.currentTarget.value,

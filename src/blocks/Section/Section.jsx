@@ -11,7 +11,7 @@ import SpacingForm from '@/components/settings/SpacingForm';
 import ColorForm from '@/components/settings/ColorForm';
 import TextAlignInput from '@/components/settings/TextAlignInput';
 import TypographyVariantInput from '@/components/settings/TypographyVariantInput';
-import ContainerPropsForm from '@/components/settings/ContainerPropsForm';
+import ContainerForm from '@/components/settings/ContainerPropsForm';
 
 const Section = {
   id: 'section',
@@ -77,7 +77,7 @@ const Section = {
             />
           </Grid>
           <Grid item xs={12}>
-            <ContainerPropsForm
+            <ContainerForm
               id={id}
               settings={settings}
               onChange={onChange}

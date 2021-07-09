@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import {
   Checkbox,
   FormControl,
@@ -7,17 +7,28 @@ import {
   InputLabel,
   NativeSelect,
 } from '@material-ui/core';
+import { ContainerFormPropsInterface } from '@/types/components/settings/ContainerFormPropsInterface';
 
-const ContainerPropsForm = (props) => {
+interface HandleChangeArgs<V,E> {
+  prop?: string
+  value?(e: E): V
+}
+
+
+const ContainerForm: React.FunctionComponent<ContainerFormPropsInterface> = (props) => {
   const {
     id, settings, onChange, open,
   } = props;
-  const handleChange = ({ prop, readValue } = {}) => (e) => {
-    onChange({
-      ...settings,
-      [prop || e.target.name]: readValue ? readValue(e) : e.target.value,
-    });
-  };
+
+  function handleChange<V,E extends ChangeEvent<HTMLSelectElement | HTMLInputElement>>(args?: HandleChangeArgs<V,E>) {
+    const { prop, value } = args || {};
+    return (e: E) => {
+      onChange({
+        ...settings,
+        [prop || e.target.name]: value ? value(e) : e.target.value,
+      });
+    };
+  }
 
   const htmlId = `container-max-width-select-${id}`;
 
@@ -41,7 +52,7 @@ const ContainerPropsForm = (props) => {
                 defaultValue: settings.containerMaxWidth || 'lg',
                 id: htmlId,
               }}
-              onChange={handleChange()}
+              onChange={handleChange<string, ChangeEvent<HTMLSelectElement>>()}
               name="containerMaxWidth"
             >
               {sizes.map((size) => (
@@ -55,8 +66,8 @@ const ContainerPropsForm = (props) => {
             control={(
               <Checkbox
                 checked={settings.containerDisableGutters || false}
-                onChange={handleChange({
-                  readValue: () => !settings.containerDisableGutters,
+                onChange={handleChange<boolean, ChangeEvent<HTMLInputElement>>({
+                  value: () => !settings.containerDisableGutters,
                 })}
                 name="containerDisableGutters"
               />
@@ -69,4 +80,4 @@ const ContainerPropsForm = (props) => {
   );
 };
 
-export default ContainerPropsForm;
+export default ContainerForm;

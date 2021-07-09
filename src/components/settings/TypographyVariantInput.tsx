@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import {
   FormControl, InputLabel, NativeSelect, Typography,
 } from '@material-ui/core';
+import { TypographyVariantInputProps } from '@/types/components/settings/TypographyVariantInputProps';
 
-const TypographyVariantInput = (props) => {
+const TypographyVariantInput: React.FunctionComponent<TypographyVariantInputProps> = (props) => {
   const {
     id,
     name,
@@ -24,7 +25,7 @@ const TypographyVariantInput = (props) => {
     ],
   } = props;
   const htmlId = `${name}-select-${id}`;
-  const handleChange = (prop) => (e) => {
+  const handleChange = (prop?: string) => (e: ChangeEvent<HTMLSelectElement>) => {
     onChange({
       ...settings,
       [prop || e.currentTarget.name]: e.currentTarget.value,
@@ -42,6 +43,7 @@ const TypographyVariantInput = (props) => {
         name="titleVariant"
       >
         {options.map((option) => (
+          // @ts-ignore
           <Typography component="option" value={option.value} variant={option.value} key={option.value}>
             {option.label}
           </Typography>

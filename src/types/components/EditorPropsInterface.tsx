@@ -2,17 +2,17 @@ import { BlockDataInterface, BlockInterface, BlockSettingsInterface } from '@/ty
 import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
 
 interface EditorSidebarPropsInterface {
-  container: HTMLElement,
-  title?: string
-  open?: boolean,
+  container: Readonly<HTMLElement>,
+  title?: Readonly<string>
+  open?: Readonly<boolean>,
 }
 
 export interface EditorPropsInterface {
-  initialData: BlockInterface<BlockDataInterface, BlockSettingsInterface>[],
-  blockTypes: BlockTypeInterface<BlockDataInterface, BlockSettingsInterface>[],
-  disableEditor?: boolean,
-  disablePreview?: boolean,
-  sidebarProps: EditorSidebarPropsInterface,
+  initialData: Readonly<BlockInterface<BlockDataInterface, BlockSettingsInterface>>[],
+  blockTypes: Readonly<BlockTypeInterface<BlockDataInterface, BlockSettingsInterface>>[],
+  disableEditor?: Readonly<boolean>,
+  disablePreview?: Readonly<boolean>,
+  sidebarProps: Readonly<EditorSidebarPropsInterface>,
 
   onChange?(data: BlockInterface<BlockDataInterface, BlockSettingsInterface>[]): void,
 }

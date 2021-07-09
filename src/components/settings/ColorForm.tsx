@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import {
   Grid, debounce, Box, Button,
 } from '@material-ui/core';
+import { ColorFormPropsInterface } from '@/types/components/settings/ColorFormPropsInterface';
 
-const ColorForm = (props) => {
+const ColorForm: React.FunctionComponent<ColorFormPropsInterface> = (props) => {
   const {
     id, settings, onChange, open,
   } = props;
-  const handleChange = (prop) => (e) => {
+  const handleChange = (prop: string) => (e: ChangeEvent<HTMLInputElement>) => {
     onChange({
       ...settings,
       [prop || e.target.name]: e.target.value,
@@ -37,7 +38,8 @@ const ColorForm = (props) => {
             <Box ml="auto">
               <Button
                 onClick={() => {
-                  document.getElementById(colorInputId).value = undefined;
+                  const colorInput = document.getElementById(colorInputId) as HTMLInputElement;
+                  colorInput.value = undefined;
                   onChange({ ...settings, color: undefined });
                 }}
               >
@@ -62,7 +64,8 @@ const ColorForm = (props) => {
             <Box ml="auto">
               <Button
                 onClick={() => {
-                  document.getElementById(bgColorInputId).value = undefined;
+                  const bgColorInputElement = document.getElementById(bgColorInputId) as HTMLInputElement;
+                  bgColorInputElement.value = undefined;
                   onChange({ ...settings, backgroundColor: undefined });
                 }}
               >

@@ -55,10 +55,6 @@ module.exports = (env, argv) => {
       }),
       new webpack.HotModuleReplacementPlugin(),
     );
-    config.cache = {
-      type: 'filesystem',
-      allowCollectingMemory: true,
-    };
     config.devServer = {
       contentBase: path.join(__dirname, 'dist'),
       compress: true,

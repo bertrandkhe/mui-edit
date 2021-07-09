@@ -1,11 +1,11 @@
 import React from 'react';
 import { BlockDataInterface, BlockInterface } from '@/types/components/BlockInterface';
 
-interface SettingsFormProps<D,S> extends BlockInterface<D, S> {
+interface SettingsFormProps<D,S> extends Partial<BlockInterface<D, S>> {
     onChange(settings: S): void,
 }
 
-interface EditFormProps<D,S> extends BlockInterface<D, S> {
+interface EditFormProps<D,S> extends Partial<BlockInterface<D, S>> {
     onChange(data: D): void,
     onClose(): void,
     editorContainer: HTMLElement,

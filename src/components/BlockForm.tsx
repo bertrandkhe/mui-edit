@@ -8,7 +8,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import {
-  Button, ListItemIcon, ListItemText, makeStyles, Menu, MenuItem, Typography, Box,
+  Button,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  Menu,
+  MenuItem,
+  Typography,
+  Box,
 } from '@material-ui/core';
 import { BlockFormPropsInterface } from '@/types/components/BlockFormPropsInterface';
 
@@ -133,9 +140,6 @@ const BlockForm: React.FunctionComponent<BlockFormPropsInterface> = (props) => {
     });
   };
 
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
   return (
     <div key={id} data-id={id} className={clsx(['sortable-item', localClasses.root])}>
       <div className={localClasses.header}>
@@ -146,36 +150,36 @@ const BlockForm: React.FunctionComponent<BlockFormPropsInterface> = (props) => {
           </Typography>
           <div className={localClasses.actions}>
             {state.showEditForm && (
-            <Button onClick={toggleShowEditForm} className={localClasses.iconBtn}>
-              <RemoveIcon
-                fontSize="small"
-              />
-            </Button>
+              <Button onClick={toggleShowEditForm} className={localClasses.iconBtn}>
+                <RemoveIcon
+                  fontSize="small"
+                />
+              </Button>
             )}
             {!state.showEditForm && (
-            <Button onClick={toggleShowEditForm} className={localClasses.iconBtn}>
-              <EditIcon
-                fontSize="small"
-              />
-            </Button>
+              <Button onClick={toggleShowEditForm} className={localClasses.iconBtn}>
+                <EditIcon
+                  fontSize="small"
+                />
+              </Button>
             )}
             {state.showSettingsForm
             && (
-            <Button onClick={toggleShowSettingsForm} className={localClasses.iconBtn}>
-              <RemoveIcon
-                fontSize="small"
-              />
-            </Button>
+              <Button onClick={toggleShowSettingsForm} className={localClasses.iconBtn}>
+                <RemoveIcon
+                  fontSize="small"
+                />
+              </Button>
             )}
             {!state.showSettingsForm
             && (
-            <Button
-              onClick={toggleShowSettingsForm}
-              className={localClasses.iconBtn}
-              disabled={!blockType.hasSettings}
-            >
-              <SettingsIcon fontSize="small" />
-            </Button>
+              <Button
+                onClick={toggleShowSettingsForm}
+                className={localClasses.iconBtn}
+                disabled={!blockType.hasSettings}
+              >
+                <SettingsIcon fontSize="small" />
+              </Button>
             )}
             <Button
               className={localClasses.iconBtn}
