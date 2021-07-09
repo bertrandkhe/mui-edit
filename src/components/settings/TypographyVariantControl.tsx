@@ -1,15 +1,15 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, ReactElement } from 'react';
 import {
   FormControl, InputLabel, NativeSelect, Typography,
 } from '@material-ui/core';
-import { TypographyVariantInputProps } from '@/types/components/settings/TypographyVariantInputProps';
+import { TypographyVariantControlPropsInterface } from '@/types/components/settings/TypographyVariantControlPropsInterface';
+import { Variant } from '@material-ui/core/styles/createTypography';
 
-const TypographyVariantInput: React.FunctionComponent<TypographyVariantInputProps> = (props) => {
+const TypographyVariantControl = (props: TypographyVariantControlPropsInterface): ReactElement => {
   const {
     id,
     name,
     onChange,
-    settings,
     label,
     options = [
       { value: 'h1', label: 'Title 1' },
@@ -23,23 +23,21 @@ const TypographyVariantInput: React.FunctionComponent<TypographyVariantInputProp
       { value: 'body1', label: 'Body 1' },
       { value: 'body2', label: 'Body 2' },
     ],
+    defaultValue,
   } = props;
   const htmlId = `${name}-select-${id}`;
-  const handleChange = (prop?: string) => (e: ChangeEvent<HTMLSelectElement>) => {
-    onChange({
-      ...settings,
-      [prop || e.currentTarget.name]: e.currentTarget.value,
-    });
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    onChange(e.currentTarget.value as Variant);
   };
   return (
     <FormControl fullWidth>
       <InputLabel htmlFor={htmlId}>{label}</InputLabel>
       <NativeSelect
         inputProps={{
-          defaultValue: settings[name],
+          defaultValue,
           id: htmlId,
         }}
-        onChange={handleChange()}
+        onChange={handleChange}
         name="titleVariant"
       >
         {options.map((option) => (
@@ -53,4 +51,4 @@ const TypographyVariantInput: React.FunctionComponent<TypographyVariantInputProp
   );
 };
 
-export default TypographyVariantInput;
+export default TypographyVariantControl;

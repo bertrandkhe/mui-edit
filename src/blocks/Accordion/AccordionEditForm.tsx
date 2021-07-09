@@ -2,14 +2,22 @@ import React, { useState } from 'react';
 import Editor from '@/components/Editor';
 import { Portal } from '@material-ui/core';
 import Section from '../Section';
+import { EditFormPropsInterface } from '@/types/components/EditFormPropsInterface';
+import { AccordionDataInterface } from '@/blocks/Accordion/types/AccordionDataInterface';
+import { AccordionSettingsInterface } from '@/blocks/Accordion/types/AccordionSettingsInterface';
+import {
+  BlockDataInterface,
+  BlockInterface,
+  BlockSettingsInterface
+} from '@/types/components/BlockInterface';
 
-const AccordionEditForm = (props) => {
+const AccordionEditForm: React.FunctionComponent<EditFormPropsInterface<AccordionDataInterface, AccordionSettingsInterface>> = (props) => {
   const {
     data, onChange, onClose, editorContainer,
   } = props;
   const [isOpen, setOpen] = useState(true);
 
-  const handleChange = (newItems) => {
+  const handleChange = (newItems: BlockInterface<BlockDataInterface, BlockSettingsInterface>[]) => {
     onChange({
       ...data,
       items: newItems,

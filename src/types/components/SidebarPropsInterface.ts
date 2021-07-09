@@ -12,8 +12,6 @@ export interface SidebarPropsInterface {
   container: HTMLElement,
   title: string,
   open: boolean,
-
   setData<D, S>(data: BlockInterface<D, S>[]): void,
-
   onBack?(): void,
 }

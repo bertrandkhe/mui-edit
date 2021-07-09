@@ -1,3 +1,6 @@
+type Direction = 'top' | 'right' | 'bottom' | 'left';
+type SpacingType = 'margin' | 'padding';
+
 export interface SpacingFormPropsSettingsInterface {
   paddingTop?: number
   paddingRight?: number
@@ -15,9 +18,9 @@ export interface SpacingFormPropsInterface {
   max?: Readonly<number>
   step?: Readonly<number>
   spacings?: Readonly<number[]>
-  spacingType: Readonly<string>
-  directions: Readonly<string[]>
-  open: Readonly<boolean>
+  spacingType: Readonly<SpacingType>
+  directions?: Readonly<Direction[]>
+  open?: Readonly<boolean>
   settings: SpacingFormPropsSettingsInterface,
   onChange(settings: SpacingFormPropsSettingsInterface): void
 }
