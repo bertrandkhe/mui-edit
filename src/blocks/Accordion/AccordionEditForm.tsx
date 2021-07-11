@@ -1,54 +1,59 @@
 import React, { useState } from 'react';
 import Editor from '@/components/Editor';
 import { Portal } from '@material-ui/core';
-import Section from '../Section';
 import { EditFormPropsInterface } from '@/types/components/EditFormPropsInterface';
-import { AccordionDataInterface } from '@/blocks/Accordion/types/AccordionDataInterface';
-import { AccordionSettingsInterface } from '@/blocks/Accordion/types/AccordionSettingsInterface';
+import { AccordionData } from '@/blocks/Accordion/types/AccordionData';
+import { AccordionSettings } from '@/blocks/Accordion/types/AccordionSettings';
 import {
-  BlockDataInterface,
-  BlockInterface,
-  BlockSettingsInterface
+  Block,
 } from '@/types/components/BlockInterface';
+import { BlockType } from '@/types/components/BlockTypeInterface';
 
-const AccordionEditForm: React.FunctionComponent<EditFormPropsInterface<AccordionDataInterface, AccordionSettingsInterface>> = (props) => {
-  const {
-    data, onChange, onClose, editorContainer,
-  } = props;
-  const [isOpen, setOpen] = useState(true);
+const AccordionEditFormFactory = (
+  blockTypes: BlockType[],
+): React.FunctionComponent<
+  EditFormPropsInterface<AccordionData, AccordionSettings>
+> => {
+  const AccordionEditForm: React.FunctionComponent<
+    EditFormPropsInterface<AccordionData, AccordionSettings>
+  > = (props) => {
+    const {
+      data, onChange, onClose, editorContainer,
+    } = props;
+    const [isOpen, setOpen] = useState(true);
 
-  const handleChange = (newItems: BlockInterface<BlockDataInterface, BlockSettingsInterface>[]) => {
-    onChange({
-      ...data,
-      items: newItems,
-    });
+    const handleChange = (newItems: Block[]) => {
+      onChange({
+        ...data,
+        items: newItems,
+      });
+    };
+
+    const handleBack = () => {
+      setOpen(false);
+      setTimeout(() => {
+        onClose();
+      }, 400);
+    };
+
+    return (
+      <Portal container={editorContainer}>
+        <Editor
+          initialData={data.items}
+          onChange={handleChange}
+          blockTypes={blockTypes}
+          sidebarProps={{
+            container: editorContainer,
+            title: 'Edit accordion',
+            onBack: handleBack,
+            open: isOpen,
+          }}
+          disablePreview
+        />
+      </Portal>
+    );
   };
-
-  const handleBack = () => {
-    setOpen(false);
-    setTimeout(() => {
-      onClose();
-    }, 400);
-  };
-
-  return (
-    <Portal container={editorContainer}>
-      <Editor
-        initialData={data.items}
-        onChange={handleChange}
-        blockTypes={[
-          Section,
-        ]}
-        sidebarProps={{
-          container: editorContainer,
-          title: 'Edit accordion',
-          onBack: handleBack,
-          open: isOpen,
-        }}
-        disablePreview
-      />
-    </Portal>
-  );
+  return AccordionEditForm;
 };
 
-export default AccordionEditForm;
+export default AccordionEditFormFactory;

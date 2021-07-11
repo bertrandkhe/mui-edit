@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import {
   SpacingFormPropsInterface,
-  SpacingFormPropsSettingsInterface
+  SpacingFormPropsSettingsInterface,
 } from '@/types/components/settings/SpacingFormPropsInterface';
 
 const SpacingForm: React.FunctionComponent<SpacingFormPropsInterface> = (props) => {
@@ -43,7 +43,7 @@ const SpacingForm: React.FunctionComponent<SpacingFormPropsInterface> = (props) 
       </summary>
       <Grid container spacing={2}>
         {directions.map((direction) => {
-          const prop = `${spacingType}${direction[0].toUpperCase()}${direction.slice(1)}` as keyof SpacingFormPropsSettingsInterface;
+          const prop = `${spacingType}${direction[0].toUpperCase()}${direction.slice(1)}`;
           const htmlId = `${spacingType}-${direction}-select-${id}`;
           return (
             <Grid item xs={6} key={direction}>
@@ -51,7 +51,7 @@ const SpacingForm: React.FunctionComponent<SpacingFormPropsInterface> = (props) 
                 <InputLabel htmlFor={htmlId}>{direction}</InputLabel>
                 <NativeSelect
                   inputProps={{
-                    defaultValue: settings[prop],
+                    defaultValue: settings[prop as keyof SpacingFormPropsSettingsInterface],
                     id: htmlId,
                   }}
                   onChange={handleChange()}

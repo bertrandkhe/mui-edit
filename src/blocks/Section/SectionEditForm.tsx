@@ -4,7 +4,9 @@ import { EditFormPropsInterface } from '@/types/components/EditFormPropsInterfac
 import { SectionDataInterface } from '@/blocks/Section/types/SectionDataInterface';
 import { SectionSettingsInterface } from '@/blocks/Section/types/SectionSettingsInterface';
 
-const SectionEditForm: React.FunctionComponent<EditFormPropsInterface<SectionDataInterface, SectionSettingsInterface>> = (props) => {
+const SectionEditForm: React.FunctionComponent<
+  EditFormPropsInterface<SectionDataInterface, SectionSettingsInterface>
+> = (props) => {
   const { data, onChange } = props;
   const handleChange = (prop: string) => (e: ChangeEvent<HTMLInputElement>) => {
     onChange({

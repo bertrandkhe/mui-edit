@@ -5,7 +5,9 @@ import { BlockInterface } from '@/types/components/BlockInterface';
 import { SectionDataInterface } from '@/blocks/Section/types/SectionDataInterface';
 import { SectionSettingsInterface } from '@/blocks/Section/types/SectionSettingsInterface';
 
-const SectionView: React.FunctionComponent<BlockInterface<SectionDataInterface, SectionSettingsInterface>> = (props) => {
+const SectionView: React.FunctionComponent<
+  BlockInterface<SectionDataInterface, SectionSettingsInterface>
+> = (props) => {
   const { data, settings } = props;
   return (
     <Box

@@ -2,12 +2,13 @@ import React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { CssBaseline } from '@material-ui/core';
 import { AppPropsInterface } from '@/types/components/AppPropsInterface';
-import Editor from './Editor';
-import Accordion from '@/blocks/Accordion';
+import AccordionFactory from '@/blocks/Accordion';
 import Section from '@/blocks/Section';
+import Editor from './Editor';
 
 const App: React.FunctionComponent<AppPropsInterface> = (props) => {
-  const {container} = props;
+  const { container } = props;
+  const Accordion = AccordionFactory([Section]);
   return (
     <>
       <CssBaseline />

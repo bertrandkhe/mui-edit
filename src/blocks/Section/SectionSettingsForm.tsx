@@ -9,7 +9,9 @@ import { SectionSettingsInterface } from '@/blocks/Section/types/SectionSettings
 import { SettingsFormPropsInterface } from '@/types/components/SettingsFormPropsInterface';
 import { SectionDataInterface } from '@/blocks/Section/types/SectionDataInterface';
 
-const SectionSettingsForm: React.FunctionComponent<SettingsFormPropsInterface<SectionDataInterface, SectionSettingsInterface>> = (props) => {
+const SectionSettingsForm: React.FunctionComponent<
+  SettingsFormPropsInterface<SectionDataInterface, SectionSettingsInterface>
+> = (props) => {
   const { settings, onChange, id } = props;
   return (
     <form>
@@ -81,6 +83,6 @@ const SectionSettingsForm: React.FunctionComponent<SettingsFormPropsInterface<Se
       </Grid>
     </form>
   );
-}
+};
 
 export default SectionSettingsForm;

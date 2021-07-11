@@ -1,22 +1,28 @@
-import AccordionView from './AccordionView';
+import { BlockTypeInterface, BlockType } from '@/types/components/BlockTypeInterface';
+import { AccordionData } from '@/blocks/Accordion/types/AccordionData';
+import { AccordionSettings } from '@/blocks/Accordion/types/AccordionSettings';
 import AccordionEditForm from './AccordionEditForm';
-import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
-import { AccordionDataInterface } from '@/blocks/Accordion/types/AccordionDataInterface';
-import { AccordionSettingsInterface } from '@/blocks/Accordion/types/AccordionSettingsInterface';
+import AccordionView from './AccordionView';
 
-const Accordion: BlockTypeInterface<AccordionDataInterface, AccordionSettingsInterface> = {
-  id: 'accordion',
-  label: 'Accordion',
-  defaultData: {
-    items: [],
-  },
-  defaultSettings: {},
-  hasSettings: false,
-  blockLabel: () => {
-    return 'Accordion';
-  },
-  view: AccordionView,
-  editForm: AccordionEditForm,
+const AccordionFactory = (
+  blockTypes: BlockType[],
+): BlockTypeInterface<AccordionData, AccordionSettings> => {
+  const Accordion: BlockTypeInterface<AccordionData, AccordionSettings> = {
+    id: 'accordion',
+    label: 'Accordion',
+    defaultData: {
+      items: [],
+    },
+    defaultSettings: {},
+    hasSettings: false,
+    blockLabel: () => {
+      return 'Accordion';
+    },
+    view: AccordionView(blockTypes),
+    editForm: AccordionEditForm(blockTypes),
+    settingsForm: () => null,
+  };
+  return Accordion;
 };
 
-export default Accordion;
+export default AccordionFactory;

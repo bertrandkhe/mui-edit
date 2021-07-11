@@ -1,8 +1,13 @@
 import React, { ChangeEvent, ReactElement } from 'react';
 import {
-  FormControl, InputLabel, NativeSelect, Typography,
+  FormControl,
+  InputLabel,
+  NativeSelect,
+  Typography,
 } from '@material-ui/core';
-import { TypographyVariantControlPropsInterface } from '@/types/components/settings/TypographyVariantControlPropsInterface';
+import {
+  TypographyVariantControlPropsInterface,
+} from '@/types/components/settings/TypographyVariantControlPropsInterface';
 import { Variant } from '@material-ui/core/styles/createTypography';
 
 const TypographyVariantControl = (props: TypographyVariantControlPropsInterface): ReactElement => {
@@ -41,7 +46,6 @@ const TypographyVariantControl = (props: TypographyVariantControlPropsInterface)
         name="titleVariant"
       >
         {options.map((option) => (
-          // @ts-ignore
           <Typography component="option" value={option.value} variant={option.value} key={option.value}>
             {option.label}
           </Typography>

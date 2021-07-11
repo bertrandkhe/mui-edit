@@ -1,8 +1,8 @@
-import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
-import { BlockDataInterface, BlockInterface, BlockSettingsInterface } from '@/types/components/BlockInterface';
+import { BlockType } from '@/types/components/BlockTypeInterface';
+import { Block } from '@/types/components/BlockInterface';
 
 export interface PreviewPropsInterface {
-  blockTypes: BlockTypeInterface<BlockDataInterface, BlockSettingsInterface>[]
-  data: BlockInterface<BlockDataInterface, BlockSettingsInterface>[]
+  blockTypes: BlockType[]
+  data: Block[]
   className?: string
 }

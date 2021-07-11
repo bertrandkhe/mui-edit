@@ -1,11 +1,10 @@
-import React from 'react';
-import { useState } from "react";
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core';
+import { EditorPropsInterface } from '@/types/components/EditorPropsInterface';
+import { Block } from '@/types/components/BlockInterface';
 import Preview from './Preview';
 import Sidebar from './Sidebar';
-import { EditorPropsInterface } from "@/types/components/EditorPropsInterface";
-import { BlockDataInterface, BlockInterface, BlockSettingsInterface } from "@/types/components/BlockInterface";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -18,7 +17,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Editor: React.FunctionComponent<EditorPropsInterface> = (props) => {
+const Editor = (props: EditorPropsInterface): React.ReactElement | null => {
   const {
     initialData = [],
     onChange,
@@ -31,7 +30,7 @@ const Editor: React.FunctionComponent<EditorPropsInterface> = (props) => {
   const [data, setData] = useState(initialData);
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
 
-  function handleChange(updatedData: BlockInterface<BlockDataInterface, BlockSettingsInterface>[]) {
+  function handleChange(updatedData: Block[]): void {
     setData(updatedData);
     if (onChange) {
       onChange(updatedData);
@@ -50,10 +49,11 @@ const Editor: React.FunctionComponent<EditorPropsInterface> = (props) => {
     open: true,
   };
 
-  const mergedSidebarProps = {...defaultSidebarProps, ...sidebarProps};
+  const mergedSidebarProps = { ...defaultSidebarProps, ...sidebarProps };
 
   if (disablePreview) {
     return (
+      // eslint-disable-next-line react/jsx-props-no-spreading
       <Sidebar {...mergedSidebarProps} />
     );
   }
@@ -74,6 +74,7 @@ const Editor: React.FunctionComponent<EditorPropsInterface> = (props) => {
         blockTypes={sortedBlockTypes}
         data={data}
       />
+      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <Sidebar {...mergedSidebarProps} />
     </div>
   );

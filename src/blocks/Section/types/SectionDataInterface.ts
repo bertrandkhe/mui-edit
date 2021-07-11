@@ -1,6 +1,5 @@
-import { BlockDataInterface } from '@/types/components/BlockInterface';
-
-export interface SectionDataInterface extends BlockDataInterface{
+export type SectionDataInterface = {
   title: string
   body: string
+  [key: string]: unknown
 }

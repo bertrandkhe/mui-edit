@@ -1,16 +1,15 @@
-import React from 'react';
-import { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
 import Sortable from 'sortablejs';
 import yellow from '@material-ui/core/colors/yellow';
 
 import { makeStyles, debounce, Button } from '@material-ui/core';
-import AddBlockButton from './AddBlockButton';
-import BlockForm from './BlockForm';
 import { SidebarPropsInterface } from '@/types/components/SidebarPropsInterface';
-import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
-import { BlockDataInterface, BlockSettingsInterface } from '@/types/components/BlockInterface';
+import { BlockType } from '@/types/components/BlockTypeInterface';
+import { Block } from '@/types/components/BlockInterface';
+import BlockForm from './BlockForm';
+import AddBlockButton from './AddBlockButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,7 +68,7 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
     title = 'Blocks',
     open = true,
   } = props;
-  const blocksWrapperRef = useRef(null);
+  const blocksWrapperRef = useRef<HTMLDivElement>(null);
   const localClasses = useStyles();
   const [mounted, setMounted] = useState(false);
 
@@ -83,28 +82,37 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
   }, []);
 
   useEffect(() => {
+    if (!blocksWrapperRef.current) {
+      return;
+    }
     const sortable = new Sortable(blocksWrapperRef.current, {
       animation: 150,
       draggable: '.sortable-item',
       handle: '.sortable-handle',
       onUpdate: () => {
-        const newData = sortable.toArray().map((id: string) => data.find((block) => block.id === id));
+        const newData = sortable
+          .toArray()
+          .map((id: string) => (
+            data.find(
+              (block): boolean => block.id === id,
+            ))) as Block[];
         setData(newData);
       },
     });
+    // eslint-disable-next-line consistent-return
     return () => {
       sortable.destroy();
     };
   }, [data, setData]);
 
-  const handleAddBlock = (blockType: BlockTypeInterface<BlockDataInterface, BlockSettingsInterface>) => {
+  const handleAddBlock = (blockType: BlockType) => {
     setData([
       ...data,
       {
         id: uuidv4(),
         type: blockType.id,
         data: blockType.defaultData,
-        settings: blockType.hasSettings ? blockType.defaultSettings : undefined,
+        settings: blockType.defaultSettings,
         meta: {
           created: Date.now(),
           changed: Date.now(),
@@ -118,8 +126,11 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
   };
 
   const handleClone = (id: string) => (withData = true) => {
-    const block = data.find((b) => b.id === id);
+    const block = data.find((b) => b.id === id) as Block;
     const blockType = blockTypes.find((bt) => bt.id === block.type);
+    if (!blockType) {
+      return;
+    }
     setData([
       ...data,
       {
@@ -136,7 +147,7 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
   };
 
   function handleEditBlockData(id: string) {
-    return (blockData: BlockDataInterface) => {
+    return (blockData: Record<string, unknown>) => {
       setData(data.map((block) => {
         if (block.id !== id) {
           return block;
@@ -154,7 +165,7 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
   }
 
   function handleEditBlockSettings(id: string) {
-    return (blockSettings: BlockSettingsInterface) => {
+    return (blockSettings: Record<string, unknown>) => {
       setData(data.map((block) => {
         if (block.id !== id) {
           return block;
@@ -172,7 +183,7 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
   }
 
   return (
-    <div className={clsx([localClasses.root, classes.root, {open: mounted && open}])}>
+    <div className={clsx([localClasses.root, classes.root, { open: mounted && open }])}>
       <div className={localClasses.header}>
         {onBack && (
           <Button
@@ -189,8 +200,11 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
       </div>
       <div ref={blocksWrapperRef}>
         {data.map((block) => {
-          const {type, id, meta} = block;
+          const { type, id, meta } = block;
           const blockType = blockTypes.find((bt) => bt.id === type);
+          if (!blockType) {
+            return null;
+          }
           return (
             <BlockForm
               editorContainer={container}

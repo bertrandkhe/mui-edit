@@ -1,7 +1,6 @@
-import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
-import { BlockDataInterface, BlockSettingsInterface } from '@/types/components/BlockInterface';
+import { BlockType } from '@/types/components/BlockTypeInterface';
 
 export interface AddBlockButtonPropsInterface {
-  blockTypes: BlockTypeInterface<BlockDataInterface, BlockSettingsInterface>[],
-  onAddBlock(blockType: BlockTypeInterface<BlockDataInterface, BlockSettingsInterface>): void
+  blockTypes: BlockType[],
+  onAddBlock(blockType: BlockType): void
 }

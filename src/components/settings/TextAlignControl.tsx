@@ -10,7 +10,7 @@ const TextAlignControl = (props: TextAlignControlPropsInterface): ReactElement =
     name,
     onChange,
     options = ['left', 'center', 'justify', 'right'],
-    defaultValue = 'left'
+    defaultValue = 'left',
   } = props;
   const htmlId = `${name}-select-${id}`;
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -27,8 +27,8 @@ const TextAlignControl = (props: TextAlignControlPropsInterface): ReactElement =
         onChange={handleChange}
         name={name}
       >
-        {options.map((opt, i) => (
-          <option key={i} value={opt}>{opt}</option>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>{opt}</option>
         ))}
       </NativeSelect>
     </FormControl>

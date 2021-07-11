@@ -9,18 +9,17 @@ import {
 } from '@material-ui/core';
 import { ContainerFormPropsInterface } from '@/types/components/settings/ContainerFormPropsInterface';
 
-interface HandleChangeArgs<V,E> {
+interface HandleChangeArgs<V, E> {
   prop?: string
   value?(e: E): V
 }
-
 
 const ContainerForm: React.FunctionComponent<ContainerFormPropsInterface> = (props) => {
   const {
     id, settings, onChange, open,
   } = props;
 
-  function handleChange<V,E extends ChangeEvent<HTMLSelectElement | HTMLInputElement>>(args?: HandleChangeArgs<V,E>) {
+  function handleChange<V, E extends ChangeEvent<HTMLSelectElement | HTMLInputElement>>(args?: HandleChangeArgs<V, E>) {
     const { prop, value } = args || {};
     return (e: E) => {
       onChange({

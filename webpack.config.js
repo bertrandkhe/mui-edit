@@ -27,7 +27,7 @@ const config = {
   },
   plugins: [
     new ESLintPlugin({
-      extensions: ['js', 'jsx'],
+      extensions: ['js', 'jsx', 'ts', 'tsx'],
     }),
     new ForkTsCheckerWebpackPlugin(),
   ],

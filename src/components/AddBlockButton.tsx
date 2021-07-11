@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { Button, Menu, MenuItem } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { AddBlockButtonPropsInterface } from '@/types/components/AddBlockButtonPropsInterface';
-import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
-import { BlockDataInterface, BlockSettingsInterface } from '@/types/components/BlockInterface';
+import { BlockType } from '@/types/components/BlockTypeInterface';
+
+type MenuState = {
+  anchorEl: null | HTMLElement
+};
 
 const AddBlockButton: React.FunctionComponent<AddBlockButtonPropsInterface> = (props) => {
   const { onAddBlock, blockTypes } = props;
-  const [menuState, setMenuState] = useState({
+  const [menuState, setMenuState] = useState<MenuState>({
     anchorEl: null,
   });
 
@@ -15,7 +18,7 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonPropsInterface> = (p
     setMenuState({ ...menuState, anchorEl: null });
   };
 
-  const handleAddBlock = (blockType: BlockTypeInterface<BlockDataInterface, BlockSettingsInterface>) => () => {
+  const handleAddBlock = (blockType: BlockType) => () => {
     onAddBlock(blockType);
     handleCloseMenu();
   };

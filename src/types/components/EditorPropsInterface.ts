@@ -1,17 +1,17 @@
-import { BlockDataInterface, BlockInterface, BlockSettingsInterface } from '@/types/components/BlockInterface';
-import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
+import { Block } from '@/types/components/BlockInterface';
 import { SidebarPropsInterface } from '@/types/components/SidebarPropsInterface';
+import { BlockType } from '@/types/components/BlockTypeInterface';
 
 interface EditorSidebarProps extends Partial<SidebarPropsInterface> {
   container: HTMLElement,
 }
 
 export interface EditorPropsInterface {
-  initialData: Readonly<BlockInterface<BlockDataInterface, BlockSettingsInterface>>[],
-  blockTypes: Readonly<BlockTypeInterface<BlockDataInterface, BlockSettingsInterface>>[],
+  initialData: Block[],
+  blockTypes: BlockType[],
   disableEditor?: Readonly<boolean>,
   disablePreview?: Readonly<boolean>,
   sidebarProps: Readonly<EditorSidebarProps>,
 
-  onChange?(data: BlockInterface<BlockDataInterface, BlockSettingsInterface>[]): void,
+  onChange?(data: Block[]): void,
 }

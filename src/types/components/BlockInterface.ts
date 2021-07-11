@@ -3,14 +3,6 @@ export interface BlockMeta {
     created: number,
 }
 
-export interface BlockDataInterface {
-
-}
-
-export interface BlockSettingsInterface {
-
-}
-
 export interface BlockInterface<D, S> {
     id: string
     type: string
@@ -18,3 +10,7 @@ export interface BlockInterface<D, S> {
     settings: S,
     meta: BlockMeta,
 }
+
+export type BlockData<D = Record<string, unknown>> = D
+export type BlockSettings<S = Record<string, unknown>> = S
+export type Block = BlockInterface<BlockData, BlockSettings>

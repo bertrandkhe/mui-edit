@@ -1,6 +1,9 @@
 import React, { ChangeEvent } from 'react';
 import {
-  Grid, debounce, Box, Button,
+  Grid,
+  debounce,
+  Box,
+  Button,
 } from '@material-ui/core';
 import { ColorFormPropsInterface } from '@/types/components/settings/ColorFormPropsInterface';
 
@@ -24,22 +27,20 @@ const ColorForm: React.FunctionComponent<ColorFormPropsInterface> = (props) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Box display="flex" mt={2} alignItems="center">
-            <Box mr={1}>
+            <label htmlFor={colorInputId}>
               <input
                 type="color"
                 id={colorInputId}
                 defaultValue={settings.color || '#fff'}
                 onChange={debounce(handleChange('color'), 300)}
               />
-            </Box>
-            <Box>
-              <label htmlFor={colorInputId}>Text color</label>
-            </Box>
+              Text color
+            </label>
             <Box ml="auto">
               <Button
                 onClick={() => {
                   const colorInput = document.getElementById(colorInputId) as HTMLInputElement;
-                  colorInput.value = undefined;
+                  colorInput.value = '';
                   onChange({ ...settings, color: undefined });
                 }}
               >
@@ -50,22 +51,20 @@ const ColorForm: React.FunctionComponent<ColorFormPropsInterface> = (props) => {
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" alignItems="center">
-            <Box mr={1}>
+            <label htmlFor={bgColorInputId}>
               <input
                 type="color"
                 id={bgColorInputId}
                 defaultValue={settings.backgroundColor || '#fff'}
                 onChange={debounce(handleChange('backgroundColor'), 300)}
               />
-            </Box>
-            <Box>
-              <label htmlFor={bgColorInputId}>Background color</label>
-            </Box>
+              Background color
+            </label>
             <Box ml="auto">
               <Button
                 onClick={() => {
                   const bgColorInputElement = document.getElementById(bgColorInputId) as HTMLInputElement;
-                  bgColorInputElement.value = undefined;
+                  bgColorInputElement.value = '';
                   onChange({ ...settings, backgroundColor: undefined });
                 }}
               >

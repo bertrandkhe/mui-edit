@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
   deleteActions: {
     display: 'flex',
   },
+  cancelBtn: {
+    marginRight: theme.spacing(1),
+  },
 }));
 
 const BlockForm: React.FunctionComponent<BlockFormPropsInterface> = (props) => {
@@ -118,7 +121,7 @@ const BlockForm: React.FunctionComponent<BlockFormPropsInterface> = (props) => {
     });
   };
 
-  const handleCloneBlock = (withData?: boolean) => () => {
+  const handleCloneBlock = (withData = true) => () => {
     handleCloseMoreMenu();
     onClone(withData);
   };
@@ -243,7 +246,7 @@ const BlockForm: React.FunctionComponent<BlockFormPropsInterface> = (props) => {
           })}
         </div>
       )}
-      {blockType.hasSettings && state.showSettingsForm
+      {blockType.hasSettings && blockType.settingsForm && state.showSettingsForm
       && (
         <div>
           {React.createElement(blockType.settingsForm, {
@@ -263,15 +266,13 @@ const BlockForm: React.FunctionComponent<BlockFormPropsInterface> = (props) => {
             Are you sure you want to delete this block?
           </Box>
           <div className={localClasses.deleteActions}>
-            <Box
-              component={Button}
-              // @ts-ignore
+            <Button
               variant="outlined"
               onClick={handleDeleteCancel}
-              mr={2}
+              className={localClasses.cancelBtn}
             >
               Cancel
-            </Box>
+            </Button>
             <Button
               variant="contained"
               color="secondary"
