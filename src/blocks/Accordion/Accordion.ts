@@ -13,7 +13,7 @@ const AccordionFactory = (
     defaultData: {
       items: [],
     },
-    defaultSettings: {},
+    defaultSettings: null,
     hasSettings: false,
     blockLabel: () => {
       return 'Accordion';

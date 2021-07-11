@@ -5,7 +5,7 @@ const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const config = {
-  entry: ['./src/main.tsx'],
+  entry: ['./src/components/Editor.tsx'],
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
@@ -46,7 +46,7 @@ module.exports = (env, argv) => {
     config.devtool = 'inline-source-map';
     config.entry = [
       'react-hot-loader/patch',
-      ...config.entry,
+      './src/App.tsx',
     ];
     config.resolve.alias['react-dom'] = '@hot-loader/react-dom';
     config.plugins.push(

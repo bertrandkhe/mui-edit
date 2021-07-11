@@ -4,5 +4,4 @@ import {
 
 export type AccordionData = {
   items: Block[]
-  [key: string]: any
 }

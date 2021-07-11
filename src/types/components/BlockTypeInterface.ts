@@ -15,5 +15,4 @@ export interface BlockTypeInterface<D, S> {
     view: React.FunctionComponent<BlockInterface<D, S>>
 }
 
-// eslint-disable-next-line
 export type BlockType = BlockTypeInterface<any, any>

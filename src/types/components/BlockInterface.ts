@@ -11,6 +11,4 @@ export interface BlockInterface<D, S> {
     meta: BlockMeta,
 }
 
-export type BlockData<D = Record<string, unknown>> = D
-export type BlockSettings<S = Record<string, unknown>> = S
-export type Block = BlockInterface<BlockData, BlockSettings>
+export type Block = BlockInterface<any, any>

@@ -147,7 +147,7 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
   };
 
   function handleEditBlockData(id: string) {
-    return (blockData: Record<string, unknown>) => {
+    return (blockData: unknown) => {
       setData(data.map((block) => {
         if (block.id !== id) {
           return block;
@@ -165,7 +165,7 @@ const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
   }
 
   function handleEditBlockSettings(id: string) {
-    return (blockSettings: Record<string, unknown>) => {
+    return (blockSettings: unknown) => {
       setData(data.map((block) => {
         if (block.id !== id) {
           return block;
