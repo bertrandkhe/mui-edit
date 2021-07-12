@@ -3,8 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
 import Sortable from 'sortablejs';
 import yellow from '@material-ui/core/colors/yellow';
-
-import { makeStyles, debounce, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { debounce } from '@material-ui/core/utils';
+import { Button } from '@material-ui/core';
 import { SidebarPropsInterface } from '@/types/components/SidebarPropsInterface';
 import { BlockType } from '@/types/components/BlockTypeInterface';
 import { Block } from '@/types/components/BlockInterface';

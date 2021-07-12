@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { EditorPropsInterface } from '@/types/components/EditorPropsInterface';
 import { Block } from '@/types/components/BlockInterface';
 import Preview from './Preview';

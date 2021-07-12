@@ -46,7 +46,7 @@ module.exports = (env, argv) => {
     config.devtool = 'inline-source-map';
     config.entry = [
       'react-hot-loader/patch',
-      './src/App.tsx',
+      './src/main.tsx',
     ];
     config.resolve.alias['react-dom'] = '@hot-loader/react-dom';
     config.plugins.push(

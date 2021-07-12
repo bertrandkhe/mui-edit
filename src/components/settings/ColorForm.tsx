@@ -1,10 +1,10 @@
 import React, { ChangeEvent } from 'react';
 import {
   Grid,
-  debounce,
   Box,
   Button,
 } from '@material-ui/core';
+import { debounce } from '@material-ui/core/utils';
 import { ColorFormPropsInterface } from '@/types/components/settings/ColorFormPropsInterface';
 
 const ColorForm: React.FunctionComponent<ColorFormPropsInterface> = (props) => {
