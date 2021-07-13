@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { EditorPropsInterface } from '@/types/components/EditorPropsInterface';
-import { Block } from '@/types/components/BlockInterface';
+import { EditorProps } from '@/types/EditorProps';
+import { Block } from '@/types/Block';
 import Preview from './Preview';
 import Sidebar from './Sidebar';
 
@@ -17,7 +17,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Editor = (props: EditorPropsInterface): React.ReactElement | null => {
+const Editor = (props: EditorProps): React.ReactElement | null => {
   const {
     initialData = [],
     onChange,

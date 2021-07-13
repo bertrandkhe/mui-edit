@@ -1,5 +1,5 @@
 import React from 'react';
-import { BlockInterface } from '@/types/components/BlockInterface';
+import { Block } from '@/types/Block';
 import { ImageData } from '@/blocks/Image/types/ImageData';
 import { ImageSettings } from '@/blocks/Image/types/ImageSettings';
 import { makeStyles } from '@material-ui/core/styles';
@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const ImageView = (props: BlockInterface<ImageData, ImageSettings>): React.ReactElement => {
+const ImageView = (props: Block<ImageData, ImageSettings>): React.ReactElement => {
   const { data, settings } = props;
   const classes = useStyles({ height: settings.height });
   if (settings.maxWidth === 'full') {

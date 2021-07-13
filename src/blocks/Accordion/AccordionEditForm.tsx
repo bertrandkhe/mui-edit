@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import Editor from '@/components/Editor';
 import { Portal } from '@material-ui/core';
-import { EditFormPropsInterface } from '@/types/components/EditFormPropsInterface';
+import { EditFormProps } from '@/types/EditFormProps';
 import { AccordionData } from '@/blocks/Accordion/types/AccordionData';
 import { AccordionSettings } from '@/blocks/Accordion/types/AccordionSettings';
 import {
   Block,
-} from '@/types/components/BlockInterface';
-import { BlockType } from '@/types/components/BlockTypeInterface';
+} from '@/types/Block';
+import { BlockType } from '@/types/BlockType';
 
 const AccordionEditFormFactory = (
   blockTypes: BlockType[],
 ): React.FunctionComponent<
-  EditFormPropsInterface<AccordionData, AccordionSettings>
+  EditFormProps<AccordionData, AccordionSettings>
 > => {
   const AccordionEditForm: React.FunctionComponent<
-    EditFormPropsInterface<AccordionData, AccordionSettings>
+    EditFormProps<AccordionData, AccordionSettings>
   > = (props) => {
     const {
       data, onChange, onClose, editorContainer,

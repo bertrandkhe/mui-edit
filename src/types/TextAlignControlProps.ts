@@ -1,6 +1,6 @@
 import * as CSS from 'csstype';
 
-export interface TextAlignControlPropsInterface {
+export interface TextAlignControlProps {
   id: string
   label: string
   name: string

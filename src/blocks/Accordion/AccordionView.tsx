@@ -1,15 +1,15 @@
 import React from 'react';
 import Preview from '@/components/Preview';
-import { BlockInterface } from '@/types/components/BlockInterface';
+import { Block } from '@/types/Block';
 import { AccordionData } from '@/blocks/Accordion/types/AccordionData';
 import { AccordionSettings } from '@/blocks/Accordion/types/AccordionSettings';
-import { BlockType } from '@/types/components/BlockTypeInterface';
+import { BlockType } from '@/types/BlockType';
 
 const AccordionViewFactory = (
   blockTypes: BlockType[],
-): React.FunctionComponent<BlockInterface<AccordionData, AccordionSettings>> => {
+): React.FunctionComponent<Block<AccordionData, AccordionSettings>> => {
   const AccordionView: React.FunctionComponent<
-    BlockInterface<AccordionData, AccordionSettings>
+    Block<AccordionData, AccordionSettings>
     > = (props) => {
       const { data } = props;
       const { items } = data;

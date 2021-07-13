@@ -1,11 +1,11 @@
 import { Grid, TextField } from '@material-ui/core';
 import React, { ChangeEvent } from 'react';
-import { EditFormPropsInterface } from '@/types/components/EditFormPropsInterface';
-import { SectionDataInterface } from '@/blocks/Section/types/SectionDataInterface';
-import { SectionSettingsInterface } from '@/blocks/Section/types/SectionSettingsInterface';
+import { EditFormProps } from '@/types/EditFormProps';
+import { SectionData } from '@/blocks/Section/types/SectionData';
+import { SectionSettings } from '@/blocks/Section/types/SectionSettings';
 
 const SectionEditForm: React.FunctionComponent<
-  EditFormPropsInterface<SectionDataInterface, SectionSettingsInterface>
+  EditFormProps<SectionData, SectionSettings>
 > = (props) => {
   const { data, onChange } = props;
   const handleChange = (prop: string) => (e: ChangeEvent<HTMLInputElement>) => {

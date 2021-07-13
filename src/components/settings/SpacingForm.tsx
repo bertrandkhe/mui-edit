@@ -3,11 +3,11 @@ import {
   Grid, InputLabel, NativeSelect, FormControl,
 } from '@material-ui/core';
 import {
-  SpacingFormPropsInterface,
-  SpacingFormPropsSettingsInterface,
-} from '@/types/components/settings/SpacingFormPropsInterface';
+  SpacingFormProps,
+  SpacingFormPropsSettings,
+} from '@/types/SpacingFormProps';
 
-const SpacingForm: React.FunctionComponent<SpacingFormPropsInterface> = (props) => {
+const SpacingForm: React.FunctionComponent<SpacingFormProps> = (props) => {
   const {
     id,
     onChange,
@@ -51,7 +51,7 @@ const SpacingForm: React.FunctionComponent<SpacingFormPropsInterface> = (props) 
                 <InputLabel htmlFor={htmlId}>{direction}</InputLabel>
                 <NativeSelect
                   inputProps={{
-                    defaultValue: settings[prop as keyof SpacingFormPropsSettingsInterface],
+                    defaultValue: settings[prop as keyof SpacingFormPropsSettings],
                     id: htmlId,
                   }}
                   onChange={handleChange()}

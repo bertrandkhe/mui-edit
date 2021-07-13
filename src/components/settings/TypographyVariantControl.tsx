@@ -6,11 +6,11 @@ import {
   Typography,
 } from '@material-ui/core';
 import {
-  TypographyVariantControlPropsInterface,
-} from '@/types/components/settings/TypographyVariantControlPropsInterface';
+  TypographyVariantControlProps,
+} from '@/types/TypographyVariantControlProps';
 import { Variant } from '@material-ui/core/styles/createTypography';
 
-const TypographyVariantControl = (props: TypographyVariantControlPropsInterface): ReactElement => {
+const TypographyVariantControl = (props: TypographyVariantControlProps): ReactElement => {
   const {
     id,
     name,

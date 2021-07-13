@@ -1,12 +1,12 @@
 import React from 'react';
 import { Box, Container, Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
-import { BlockInterface } from '@/types/components/BlockInterface';
-import { SectionDataInterface } from '@/blocks/Section/types/SectionDataInterface';
-import { SectionSettingsInterface } from '@/blocks/Section/types/SectionSettingsInterface';
+import { Block } from '@/types/Block';
+import { SectionData } from '@/blocks/Section/types/SectionData';
+import { SectionSettings } from '@/blocks/Section/types/SectionSettings';
 
 const SectionView: React.FunctionComponent<
-  BlockInterface<SectionDataInterface, SectionSettingsInterface>
+  Block<SectionData, SectionSettings>
 > = (props) => {
   const { data, settings } = props;
   return (

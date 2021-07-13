@@ -1,6 +1,6 @@
 import {
   Block,
-} from '@/types/components/BlockInterface';
+} from '@/types/Block';
 
 export type AccordionData = {
   items: Block[]

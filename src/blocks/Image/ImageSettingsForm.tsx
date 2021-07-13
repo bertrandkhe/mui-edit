@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { SettingsFormPropsInterface } from '@/types/components/SettingsFormPropsInterface';
+import { SettingsFormProps } from '@/types/SettingsFormProps';
 import { ImageData } from '@/blocks/Image/types/ImageData';
 import { ImageSettings } from '@/blocks/Image/types/ImageSettings';
 import {
@@ -10,8 +10,9 @@ import {
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as CSS from 'csstype';
+import SpacingForm from '@/components/settings/SpacingForm';
 
-const ImageSettingsForm = (props: SettingsFormPropsInterface<ImageData, ImageSettings>): React.ReactElement => {
+const ImageSettingsForm = (props: SettingsFormProps<ImageData, ImageSettings>): React.ReactElement => {
   const {
     id, settings, onChange,
   } = props;
@@ -67,6 +68,15 @@ const ImageSettingsForm = (props: SettingsFormPropsInterface<ImageData, ImageSet
               // eslint-disable-next-line react/jsx-props-no-spreading
               <TextField {...params} label="Height" />
             )}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <SpacingForm
+            id={id}
+            spacingType="margin"
+            settings={settings}
+            onChange={onChange}
+            directions={['top', 'bottom']}
           />
         </Grid>
       </Grid>

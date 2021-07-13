@@ -1,11 +1,11 @@
-import { Block } from '@/types/components/BlockInterface';
-import { BlockType } from '@/types/components/BlockTypeInterface';
+import { Block } from '@/types/Block';
+import { BlockType } from '@/types/BlockType';
 
 export interface SidebarClasses {
   root?: string,
 }
 
-export interface SidebarPropsInterface {
+export interface SidebarProps {
   classes?: SidebarClasses,
   data: Block[],
   blockTypes: BlockType[],

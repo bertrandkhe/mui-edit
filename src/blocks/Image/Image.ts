@@ -1,11 +1,11 @@
-import { BlockTypeInterface } from '@/types/components/BlockTypeInterface';
+import { BlockType } from '@/types/BlockType';
 import { ImageData } from '@/blocks/Image/types/ImageData';
 import { ImageSettings } from '@/blocks/Image/types/ImageSettings';
 import ImageView from '@/blocks/Image/ImageView';
 import ImageEditForm from '@/blocks/Image/ImageEditForm';
 import ImageSettingsForm from '@/blocks/Image/ImageSettingsForm';
 
-const Image = (uploadFn: (f: Blob) => Promise<string>): BlockTypeInterface<ImageData, ImageSettings> => {
+const Image = (uploadFn: (f: Blob) => Promise<string>): BlockType<ImageData, ImageSettings> => {
   return {
     id: 'image',
     hasSettings: true,

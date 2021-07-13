@@ -5,7 +5,7 @@ type Option = {
   label: string
 };
 
-export interface TypographyVariantControlPropsInterface {
+export interface TypographyVariantControlProps {
   id: string
   name: string
   label: string

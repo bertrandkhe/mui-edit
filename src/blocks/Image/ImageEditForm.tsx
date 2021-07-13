@@ -1,11 +1,11 @@
 import React, { ChangeEvent } from 'react';
-import { EditFormPropsInterface } from '@/types/components/EditFormPropsInterface';
+import { EditFormProps } from '@/types/EditFormProps';
 import { ImageData } from '@/blocks/Image/types/ImageData';
 import { ImageSettings } from '@/blocks/Image/types/ImageSettings';
 import { Grid, TextField } from '@material-ui/core';
 
 const ImageEditForm = (uploadFn: (f: Blob) => Promise<string>) => (
-  (props: EditFormPropsInterface<ImageData, ImageSettings>): React.ReactElement => {
+  (props: EditFormProps<ImageData, ImageSettings>): React.ReactElement => {
     const { data, onChange } = props;
 
     const handleChange = (prop: string) => (e: ChangeEvent<HTMLInputElement>): void => {

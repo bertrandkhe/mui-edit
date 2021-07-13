@@ -5,12 +5,12 @@ import ContainerForm from '@/components/settings/ContainerForm';
 import SpacingForm from '@/components/settings/SpacingForm';
 import ColorForm from '@/components/settings/ColorForm';
 import React from 'react';
-import { SectionSettingsInterface } from '@/blocks/Section/types/SectionSettingsInterface';
-import { SettingsFormPropsInterface } from '@/types/components/SettingsFormPropsInterface';
-import { SectionDataInterface } from '@/blocks/Section/types/SectionDataInterface';
+import { SectionSettings } from '@/blocks/Section/types/SectionSettings';
+import { SettingsFormProps } from '@/types/SettingsFormProps';
+import { SectionData } from '@/blocks/Section/types/SectionData';
 
 const SectionSettingsForm: React.FunctionComponent<
-  SettingsFormPropsInterface<SectionDataInterface, SectionSettingsInterface>
+  SettingsFormProps<SectionData, SectionSettings>
 > = (props) => {
   const { settings, onChange, id } = props;
   return (

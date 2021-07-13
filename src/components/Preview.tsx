@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { PreviewPropsInterface } from '@/types/components/PreviewPropsInterface';
+import { PreviewProps } from '@/types/PreviewProps';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -9,7 +9,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Preview: React.FunctionComponent<PreviewPropsInterface> = (props) => {
+const Preview: React.FunctionComponent<PreviewProps> = (props) => {
   const { blockTypes, data, className } = props;
   const localClasses = useStyles();
   return (

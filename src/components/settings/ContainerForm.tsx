@@ -7,14 +7,14 @@ import {
   InputLabel,
   NativeSelect,
 } from '@material-ui/core';
-import { ContainerFormPropsInterface } from '@/types/components/settings/ContainerFormPropsInterface';
+import { ContainerFormProps } from '@/types/ContainerFormProps';
 
 interface HandleChangeArgs<V, E> {
   prop?: string
   value?(e: E): V
 }
 
-const ContainerForm: React.FunctionComponent<ContainerFormPropsInterface> = (props) => {
+const ContainerForm: React.FunctionComponent<ContainerFormProps> = (props) => {
   const {
     id, settings, onChange, open,
   } = props;

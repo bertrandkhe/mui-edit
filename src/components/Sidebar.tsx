@@ -6,9 +6,9 @@ import yellow from '@material-ui/core/colors/yellow';
 import { makeStyles } from '@material-ui/core/styles';
 import { debounce } from '@material-ui/core/utils';
 import { Button } from '@material-ui/core';
-import { SidebarPropsInterface } from '@/types/components/SidebarPropsInterface';
-import { BlockType } from '@/types/components/BlockTypeInterface';
-import { Block } from '@/types/components/BlockInterface';
+import { SidebarProps } from '@/types/SidebarProps';
+import { BlockType } from '@/types/BlockType';
+import { Block } from '@/types/Block';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
 
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Sidebar: React.FunctionComponent<SidebarPropsInterface> = (props) => {
+const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   const {
     classes = {},
     data,
