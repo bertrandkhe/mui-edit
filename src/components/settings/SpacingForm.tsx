@@ -5,7 +5,7 @@ import {
 import {
   SpacingFormProps,
   SpacingFormPropsSettings,
-} from '@/types/SpacingFormProps';
+} from '../../types/SpacingFormProps';
 
 const SpacingForm: React.FunctionComponent<SpacingFormProps> = (props) => {
   const {

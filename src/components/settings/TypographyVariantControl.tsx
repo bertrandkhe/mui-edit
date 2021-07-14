@@ -5,10 +5,10 @@ import {
   NativeSelect,
   Typography,
 } from '@material-ui/core';
+import { Variant } from '@material-ui/core/styles/createTypography';
 import {
   TypographyVariantControlProps,
-} from '@/types/TypographyVariantControlProps';
-import { Variant } from '@material-ui/core/styles/createTypography';
+} from '../../types/TypographyVariantControlProps';
 
 const TypographyVariantControl = (props: TypographyVariantControlProps): ReactElement => {
   const {

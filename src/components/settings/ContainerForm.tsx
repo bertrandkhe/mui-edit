@@ -7,7 +7,7 @@ import {
   InputLabel,
   NativeSelect,
 } from '@material-ui/core';
-import { ContainerFormProps } from '@/types/ContainerFormProps';
+import { ContainerFormProps } from '../../types/ContainerFormProps';
 
 interface HandleChangeArgs<V, E> {
   prop?: string

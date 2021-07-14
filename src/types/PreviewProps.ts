@@ -1,5 +1,5 @@
-import { BlockType } from '@/types/BlockType';
-import { Block } from '@/types/Block';
+import { BlockType } from './BlockType';
+import { Block } from './Block';
 
 export interface PreviewProps {
   blockTypes: BlockType[]

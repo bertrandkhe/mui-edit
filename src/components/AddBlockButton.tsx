@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Menu, MenuItem } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { AddBlockButtonProps } from '@/types/AddBlockButtonProps';
-import { BlockType } from '@/types/BlockType';
+import { AddBlockButtonProps } from '../types/AddBlockButtonProps';
+import { BlockType } from '../types/BlockType';
 
 type MenuState = {
   anchorEl: null | HTMLElement

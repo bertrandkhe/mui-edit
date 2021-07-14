@@ -1,4 +1,4 @@
-import { BlockType } from '@/types/BlockType';
+import { BlockType } from './BlockType';
 
 export interface AddBlockButtonProps {
   blockTypes: BlockType[],

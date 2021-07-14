@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { PreviewProps } from '@/types/PreviewProps';
+import { PreviewProps } from '../types/PreviewProps';
 
 const useStyles = makeStyles(() => ({
   root: {

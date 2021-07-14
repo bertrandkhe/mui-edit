@@ -5,7 +5,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { debounce } from '@material-ui/core/utils';
-import { ColorFormProps } from '@/types/ColorFormProps';
+import { ColorFormProps } from '../../types/ColorFormProps';
 
 const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
   const {

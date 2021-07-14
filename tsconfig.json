@@ -6,7 +6,6 @@
     "strictNullChecks": true,
     "strict": true,
     "lib": ["es6", "dom"],
-    "sourceMap": true,
     "module": "es6",
     "target": "es6",
     "jsx": "react",
@@ -14,10 +13,14 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
     "esModuleInterop": true,
-    "paths": {
-      "@/components/*": ["components/*"],
-      "@/types/*": ["types/*"],
-      "@/blocks/*": ["blocks/*"]
-    }
-  }
+    "declaration": true
+  },
+  "include": [
+    "src/**/*",
+  ],
+  "exclude": [
+    "src/main.tsx",
+    "src/App.tsx",
+    "webpack.config.js"
+  ]
 }

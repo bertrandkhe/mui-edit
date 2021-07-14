@@ -1,6 +1,6 @@
-import { Block } from '@/types/Block';
-import { SidebarProps } from '@/types/SidebarProps';
-import { BlockType } from '@/types/BlockType';
+import { Block } from './Block';
+import { SidebarProps } from './SidebarProps';
+import { BlockType } from './BlockType';
 
 interface EditorSidebarProps extends Partial<SidebarProps> {
   container: HTMLElement,

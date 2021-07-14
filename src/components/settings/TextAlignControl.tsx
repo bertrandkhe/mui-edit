@@ -1,7 +1,7 @@
 import React, { ChangeEvent, ReactElement } from 'react';
 import { FormControl, InputLabel, NativeSelect } from '@material-ui/core';
-import { TextAlignControlProps } from '@/types/TextAlignControlProps';
 import * as CSS from 'csstype';
+import { TextAlignControlProps } from '../../types/TextAlignControlProps';
 
 const TextAlignControl = (props: TextAlignControlProps): ReactElement => {
   const {

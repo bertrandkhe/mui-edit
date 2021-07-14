@@ -33,10 +33,6 @@ const config = {
   ],
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.wasm', '.ts', '.tsx'],
-    alias: {
-      '@/components': path.resolve(__dirname, 'src/components'),
-      '@/blocks': path.resolve(__dirname, 'src/blocks'),
-    },
   },
 };
 

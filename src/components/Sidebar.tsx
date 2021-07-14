@@ -6,9 +6,9 @@ import yellow from '@material-ui/core/colors/yellow';
 import { makeStyles } from '@material-ui/core/styles';
 import { debounce } from '@material-ui/core/utils';
 import { Button } from '@material-ui/core';
-import { SidebarProps } from '@/types/SidebarProps';
-import { BlockType } from '@/types/BlockType';
-import { Block } from '@/types/Block';
+import { SidebarProps } from '../types/SidebarProps';
+import { BlockType } from '../types/BlockType';
+import { Block } from '../types/Block';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
 

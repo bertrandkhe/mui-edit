@@ -1,4 +1,4 @@
-import { Block } from '@/types/Block';
+import { Block } from './Block';
 
 export interface SettingsFormProps<D, S> extends Partial<Block<D, S>> {
   id: string
