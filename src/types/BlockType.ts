@@ -10,7 +10,7 @@ export interface BlockType<D = any, S = any> {
     defaultData: D,
     defaultSettings: S,
     blockLabel(data: D): string,
-    settingsForm: React.FunctionComponent<SettingsFormProps<D, S>>,
-    editForm: React.FunctionComponent<EditFormProps<D, S>>
-    view: React.FunctionComponent<Block<D, S>>
+    settingsForm: React.FunctionComponent<SettingsFormProps<D, S>> | null,
+    editForm: React.FunctionComponent<EditFormProps<D, S>> | null
+    view: React.FunctionComponent<Block<D, S>> | null
 }

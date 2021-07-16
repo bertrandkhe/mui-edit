@@ -231,7 +231,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
           </div>
         </div>
       </div>
-      {state.showEditForm
+      {state.showEditForm && blockType.editForm
       && (
         <div>
           {React.createElement(blockType.editForm, {

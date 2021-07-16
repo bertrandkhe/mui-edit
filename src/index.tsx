@@ -6,8 +6,10 @@ import ContainerForm from './components/settings/ContainerForm';
 import SpacingForm from './components/settings/SpacingForm';
 import TextAlignControl from './components/settings/TextAlignControl';
 import TypographyVariantControl from './components/settings/TypographyVariantControl';
+import FileUploadControl from './components/FileUploadControl';
+import AddBlockButton from './components/AddBlockButton';
 
-export default {
+export {
   Editor,
   Preview,
   Sidebar,
@@ -16,4 +18,8 @@ export default {
   TextAlignControl,
   SpacingForm,
   TypographyVariantControl,
+  FileUploadControl,
+  AddBlockButton,
 };
+
+export default Editor;

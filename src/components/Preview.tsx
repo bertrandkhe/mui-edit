@@ -6,17 +6,23 @@ import { PreviewProps } from '../types/PreviewProps';
 const useStyles = makeStyles(() => ({
   root: {
     width: '100%',
+    height: '100%',
+    overflowY: 'auto',
   },
 }));
 
 const Preview: React.FunctionComponent<PreviewProps> = (props) => {
-  const { blockTypes, data, className } = props;
+  const {
+    blockTypes,
+    data,
+    className,
+  } = props;
   const localClasses = useStyles();
   return (
     <div className={clsx([localClasses.root, className])}>
       {data.map((block) => {
         const blockType = blockTypes.find((bt) => bt.id === block.type);
-        if (!blockType) {
+        if (!blockType || !blockType.view) {
           return null;
         }
         return React.createElement(blockType.view, {

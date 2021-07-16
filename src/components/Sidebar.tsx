@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
 import Sortable from 'sortablejs';
 import yellow from '@material-ui/core/colors/yellow';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { debounce } from '@material-ui/core/utils';
 import { Button } from '@material-ui/core';
 import { SidebarProps } from '../types/SidebarProps';
@@ -11,6 +11,7 @@ import { BlockType } from '../types/BlockType';
 import { Block } from '../types/Block';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
+import defaultTheme from '../theme';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,6 +69,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     onBack,
     title = 'Blocks',
     open = true,
+    theme = defaultTheme,
   } = props;
   const blocksWrapperRef = useRef<HTMLDivElement>(null);
   const localClasses = useStyles();
@@ -184,52 +186,54 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   }
 
   return (
-    <div className={clsx([localClasses.root, classes.root, { open: mounted && open }])}>
-      <div className={localClasses.header}>
-        {onBack && (
-          <Button
-            onClick={onBack}
-            size="small"
-            className={localClasses.headerBtn}
-            variant="contained"
-            color="primary"
-          >
-            Back
-          </Button>
-        )}
-        <div className={localClasses.title}>{title}</div>
+    <ThemeProvider theme={theme}>
+      <div className={clsx([localClasses.root, classes.root, { open: mounted && open }])}>
+        <div className={localClasses.header}>
+          {onBack && (
+            <Button
+              onClick={onBack}
+              size="small"
+              className={localClasses.headerBtn}
+              variant="contained"
+              color="primary"
+            >
+              Back
+            </Button>
+          )}
+          <div className={localClasses.title}>{title}</div>
+        </div>
+        <div ref={blocksWrapperRef}>
+          {data.map((block) => {
+            const { type, id, meta } = block;
+            const blockType = blockTypes.find((bt) => bt.id === type);
+            if (!blockType) {
+              return null;
+            }
+            return (
+              <BlockForm
+                editorContainer={container}
+                key={id}
+                blockType={blockType}
+                block={block}
+                onDataChange={debounce(handleEditBlockData(id), 200)}
+                onSettingsChange={handleEditBlockSettings(id)}
+                onDelete={handleDeleteBlock(id)}
+                onClone={handleClone(id)}
+                initialState={{
+                  showEditForm: Date.now() - meta.created < 2000,
+                }}
+              />
+            );
+          })}
+        </div>
+        <footer className={localClasses.footer}>
+          <AddBlockButton
+            blockTypes={blockTypes}
+            onAddBlock={handleAddBlock}
+          />
+        </footer>
       </div>
-      <div ref={blocksWrapperRef}>
-        {data.map((block) => {
-          const { type, id, meta } = block;
-          const blockType = blockTypes.find((bt) => bt.id === type);
-          if (!blockType) {
-            return null;
-          }
-          return (
-            <BlockForm
-              editorContainer={container}
-              key={id}
-              blockType={blockType}
-              block={block}
-              onDataChange={debounce(handleEditBlockData(id), 200)}
-              onSettingsChange={handleEditBlockSettings(id)}
-              onDelete={handleDeleteBlock(id)}
-              onClone={handleClone(id)}
-              initialState={{
-                showEditForm: Date.now() - meta.created < 2000,
-              }}
-            />
-          );
-        })}
-      </div>
-      <footer className={localClasses.footer}>
-        <AddBlockButton
-          blockTypes={blockTypes}
-          onAddBlock={handleAddBlock}
-        />
-      </footer>
-    </div>
+    </ThemeProvider>
   );
 };
 

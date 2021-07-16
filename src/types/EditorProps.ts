@@ -12,6 +12,5 @@ export interface EditorProps {
   disableEditor?: Readonly<boolean>,
   disablePreview?: Readonly<boolean>,
   sidebarProps: Readonly<EditorSidebarProps>,
-
   onChange?(data: Block[]): void,
 }

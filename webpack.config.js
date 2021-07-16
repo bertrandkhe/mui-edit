@@ -32,6 +32,7 @@ const config = {
     new ForkTsCheckerWebpackPlugin(),
   ],
   resolve: {
+    alias: {},
     extensions: ['.js', '.jsx', '.json', '.wasm', '.ts', '.tsx'],
   },
 };
