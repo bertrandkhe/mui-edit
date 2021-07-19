@@ -1,3 +1,4 @@
+import { Theme } from '@material-ui/core/styles';
 import { Block } from './Block';
 import { SidebarProps } from './SidebarProps';
 import { BlockType } from './BlockType';
@@ -13,4 +14,6 @@ export interface EditorProps {
   disablePreview?: Readonly<boolean>,
   sidebarProps: Readonly<EditorSidebarProps>,
   onChange?(data: Block[]): void,
+  editorTheme?: Theme,
+  previewTheme?: Theme,
 }

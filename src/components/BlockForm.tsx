@@ -64,8 +64,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     editorContainer,
     block,
     blockType,
-    onDataChange,
-    onSettingsChange,
+    onChange,
     onDelete,
     onClone,
     initialState = {},
@@ -77,6 +76,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     id,
     type,
   } = block;
+
   const [state, setState] = useState({
     showEditForm: false,
     showSettingsForm: false,
@@ -140,6 +140,20 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     setState({
       ...state,
       showDeleteForm: false,
+    });
+  };
+
+  const handleDataChange = (newData: typeof block.data) => {
+    onChange({
+      ...block,
+      data: newData,
+    });
+  };
+
+  const handleSettingsChange = (newSettings: typeof block.settings) => {
+    onChange({
+      ...block,
+      settings: newSettings,
     });
   };
 
@@ -211,14 +225,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
                   Clone
                 </ListItemText>
               </MenuItem>
-              {/* <MenuItem onClick={handleCloneBlock(false)}> */}
-              {/*  <ListItemIcon className={localClasses.listItemIcon}> */}
-              {/*    <FileCopyIcon fontSize="small" /> */}
-              {/*  </ListItemIcon> */}
-              {/*  <ListItemText> */}
-              {/*    Clone without data */}
-              {/*  </ListItemText> */}
-              {/* </MenuItem> */}
               <MenuItem onClick={handleDeleteBlock}>
                 <ListItemIcon className={localClasses.listItemIcon}>
                   <DeleteIcon fontSize="small" />
@@ -240,7 +246,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             data,
             meta,
             settings,
-            onChange: onDataChange,
+            onChange: handleDataChange,
             onClose: toggleShowEditForm,
             editorContainer,
           })}
@@ -255,7 +261,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             data,
             meta,
             settings,
-            onChange: onSettingsChange,
+            onChange: handleSettingsChange,
           })}
         </div>
       )}

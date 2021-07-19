@@ -28,14 +28,13 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
       <Button
         size="large"
         color="primary"
-        variant="contained"
         startIcon={<AddIcon />}
         onClick={(e) => setMenuState({
           ...menuState,
           anchorEl: e.currentTarget,
         })}
       >
-        Add
+        Add block
       </Button>
       <Menu
         open={Boolean(menuState.anchorEl)}

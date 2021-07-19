@@ -13,8 +13,7 @@ export interface BlockFormProps {
   block: Block,
   blockType: BlockType,
   initialState?: BlockFormInitialState,
-  onDataChange(data: Record<string, unknown>): void,
-  onSettingsChange(settings: Record<string, unknown>): void,
+  onChange(block: Block): void,
   onClone(withData: boolean): void,
   onDelete(): void,
 }

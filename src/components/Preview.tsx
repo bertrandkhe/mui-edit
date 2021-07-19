@@ -1,15 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
 import { PreviewProps } from '../types/PreviewProps';
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    height: '100%',
-    overflowY: 'auto',
-  },
-}));
 
 const Preview: React.FunctionComponent<PreviewProps> = (props) => {
   const {
@@ -17,9 +8,8 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
     data,
     className,
   } = props;
-  const localClasses = useStyles();
   return (
-    <div className={clsx([localClasses.root, className])}>
+    <div className={clsx([className])}>
       {data.map((block) => {
         const blockType = blockTypes.find((bt) => bt.id === block.type);
         if (!blockType || !blockType.view) {

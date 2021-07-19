@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
 import Sortable from 'sortablejs';
 import yellow from '@material-ui/core/colors/yellow';
-import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { debounce } from '@material-ui/core/utils';
 import { Button } from '@material-ui/core';
 import { SidebarProps } from '../types/SidebarProps';
@@ -11,18 +11,18 @@ import { BlockType } from '../types/BlockType';
 import { Block } from '../types/Block';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
-import defaultTheme from '../theme';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
-    width: 350,
+    overflowY: 'auto',
+    width: 365,
     borderLeft: `1px solid ${theme.palette.grey[100]}`,
     boxShadow: '-1px 0 10px rgba(0,0,0,0.2)',
     marginLeft: 'auto',
     position: 'absolute',
     top: 0,
-    right: -350,
+    right: -365,
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: 'white',
@@ -40,11 +40,6 @@ const useStyles = makeStyles((theme) => ({
       background: yellow[100],
     },
   },
-  header: {
-    borderBottom: `1px solid ${theme.palette.grey[100]}`,
-    display: 'flex',
-    alignItems: 'center',
-  },
   headerBtn: {
     height: '100%',
     borderRadius: 0,
@@ -53,9 +48,20 @@ const useStyles = makeStyles((theme) => ({
   title: {
     padding: theme.spacing(2),
   },
+  header: {
+    borderBottom: `1px solid ${theme.palette.grey[100]}`,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  body: {
+    height: 'calc(100% - 92px)',
+    overflowY: 'auto',
+  },
   footer: {
     marginTop: 'auto',
     display: 'flex',
+    borderTop: '1px solid #eee',
+    justifyContent: 'center',
   },
 }));
 
@@ -69,7 +75,6 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     onBack,
     title = 'Blocks',
     open = true,
-    theme = defaultTheme,
   } = props;
   const blocksWrapperRef = useRef<HTMLDivElement>(null);
   const localClasses = useStyles();
@@ -149,91 +154,71 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     ]);
   };
 
-  function handleEditBlockData(id: string) {
-    return (blockData: unknown) => {
-      setData(data.map((block) => {
-        if (block.id !== id) {
-          return block;
-        }
-        return {
-          ...block,
-          data: blockData,
-          meta: {
-            ...block.meta,
-            changed: Date.now(),
-          },
-        };
-      }));
-    };
-  }
-
-  function handleEditBlockSettings(id: string) {
-    return (blockSettings: unknown) => {
-      setData(data.map((block) => {
-        if (block.id !== id) {
-          return block;
-        }
-        return {
-          ...block,
-          settings: blockSettings,
-          meta: {
-            ...block.meta,
-            changed: Date.now(),
-          },
-        };
-      }));
-    };
-  }
+  const handleChange = (id: string) => (newBlock: Block) => {
+    setData(data.map((block) => {
+      if (block.id !== id) {
+        return block;
+      }
+      return {
+        ...newBlock,
+        meta: {
+          ...newBlock.meta,
+          changed: Date.now(),
+        },
+      };
+    }));
+  };
 
   return (
-    <ThemeProvider theme={theme}>
-      <div className={clsx([localClasses.root, classes.root, { open: mounted && open }])}>
-        <div className={localClasses.header}>
-          {onBack && (
-            <Button
-              onClick={onBack}
-              size="small"
-              className={localClasses.headerBtn}
-              variant="contained"
-              color="primary"
-            >
-              Back
-            </Button>
-          )}
-          <div className={localClasses.title}>{title}</div>
-        </div>
-        <div ref={blocksWrapperRef}>
-          {data.map((block) => {
-            const { type, id, meta } = block;
-            const blockType = blockTypes.find((bt) => bt.id === type);
-            if (!blockType) {
-              return null;
-            }
-            return (
-              <BlockForm
-                editorContainer={container}
-                key={id}
-                blockType={blockType}
-                block={block}
-                onDataChange={debounce(handleEditBlockData(id), 200)}
-                onSettingsChange={handleEditBlockSettings(id)}
-                onDelete={handleDeleteBlock(id)}
-                onClone={handleClone(id)}
-                initialState={{
-                  showEditForm: Date.now() - meta.created < 2000,
-                }}
-              />
-            );
-          })}
-        </div>
-        <footer className={localClasses.footer}>
-          <AddBlockButton
-            blockTypes={blockTypes}
-            onAddBlock={handleAddBlock}
-          />
-        </footer>
+    <div className={clsx([localClasses.root, classes.root, { open: mounted && open }])}>
+      <div className={localClasses.header}>
+        {onBack && (
+          <Button
+            onClick={onBack}
+            size="small"
+            className={localClasses.headerBtn}
+            variant="contained"
+            color="primary"
+          >
+            Back
+          </Button>
+        )}
+        <div className={localClasses.title}>{title}</div>
       </div>
-    </ThemeProvider>
+      <div ref={blocksWrapperRef} className={localClasses.body}>
+        {data.map((block) => {
+          const {
+            type,
+            id,
+            meta
+          } = block;
+          const blockType = blockTypes.find((bt) => bt.id === type);
+          if (!blockType) {
+            return null;
+          }
+          return (
+            <BlockForm
+              editorContainer={container}
+              key={id}
+              blockType={blockType}
+              block={block}
+              onChange={handleChange(id)}
+              onDelete={handleDeleteBlock(id)}
+              onClone={handleClone(id)}
+              initialState={{
+                showEditForm: Date.now() - meta.created < 2000,
+              }}
+            />
+          );
+        })}
+      </div>
+      <footer className={localClasses.footer}>
+        <AddBlockButton
+          blockTypes={blockTypes}
+          onAddBlock={handleAddBlock}
+        />
+      </footer>
+    </div>
   );
 };
 

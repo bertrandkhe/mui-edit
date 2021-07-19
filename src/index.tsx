@@ -8,6 +8,7 @@ import TextAlignControl from './components/settings/TextAlignControl';
 import TypographyVariantControl from './components/settings/TypographyVariantControl';
 import FileUploadControl from './components/FileUploadControl';
 import AddBlockButton from './components/AddBlockButton';
+import LinkControl from './components/LinkControl';
 
 export {
   Editor,
@@ -20,6 +21,7 @@ export {
   TypographyVariantControl,
   FileUploadControl,
   AddBlockButton,
+  LinkControl,
 };
 
 export default Editor;

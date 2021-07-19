@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core';
 import { Block } from './Block';
 import { BlockType } from './BlockType';
 
@@ -15,5 +14,4 @@ export interface SidebarProps {
   open: boolean,
   setData(data: Block[]): void,
   onBack?(): void,
-  theme?: Theme,
 }
