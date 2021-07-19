@@ -1,6 +1,6 @@
-export interface Relationship {
-  data: {
-    id: string,
-    type: string,
+export interface Relationship<D = any> {
+  data: D,
+  links: {
+    self: string,
   },
 }
