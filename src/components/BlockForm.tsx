@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import clsx from 'clsx';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import EditIcon from '@material-ui/icons/Edit';
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 
 const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
   const {
-    editorContainer,
+    container,
     block,
     blockType,
     onChange,
@@ -216,6 +216,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
                 horizontal: 'left',
               }}
               onClose={handleCloseMoreMenu}
+              container={container?.ownerDocument.body}
             >
               <MenuItem onClick={handleCloneBlock()}>
                 <ListItemIcon className={localClasses.listItemIcon}>
@@ -248,7 +249,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             settings,
             onChange: handleDataChange,
             onClose: toggleShowEditForm,
-            editorContainer,
+            container,
           })}
         </div>
       )}

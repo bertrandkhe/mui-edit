@@ -9,7 +9,7 @@ interface BlockFormInitialState {
 }
 
 export interface BlockFormProps {
-  editorContainer: HTMLElement,
+  container?: HTMLElement,
   block: Block,
   blockType: BlockType,
   initialState?: BlockFormInitialState,

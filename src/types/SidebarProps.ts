@@ -9,7 +9,7 @@ export interface SidebarProps {
   classes?: SidebarClasses,
   data: Block[],
   blockTypes: BlockType[],
-  container: HTMLElement,
+  container?: HTMLElement,
   title: string,
   open: boolean,
   setData(data: Block[]): void,

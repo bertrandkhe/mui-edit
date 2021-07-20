@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import Sortable from 'sortablejs';
 import yellow from '@material-ui/core/colors/yellow';
 import { makeStyles } from '@material-ui/core/styles';
-import { debounce } from '@material-ui/core/utils';
 import { Button } from '@material-ui/core';
 import { SidebarProps } from '../types/SidebarProps';
 import { BlockType } from '../types/BlockType';
@@ -190,7 +189,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
           const {
             type,
             id,
-            meta
+            meta,
           } = block;
           const blockType = blockTypes.find((bt) => bt.id === type);
           if (!blockType) {
@@ -198,7 +197,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
           }
           return (
             <BlockForm
-              editorContainer={container}
+              container={container}
               key={id}
               blockType={blockType}
               block={block}
@@ -216,6 +215,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
         <AddBlockButton
           blockTypes={blockTypes}
           onAddBlock={handleAddBlock}
+          container={container}
         />
       </footer>
     </div>

@@ -5,6 +5,8 @@ import { Button, CssBaseline } from '@material-ui/core';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import TabletIcon from '@material-ui/icons/Tablet';
 import LaptopIcon from '@material-ui/icons/Laptop';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import { EditorProps } from '../types/EditorProps';
 import { Block } from '../types/Block';
 import Preview from './Preview';
@@ -36,6 +38,11 @@ const useStyles = makeStyles((theme) => ({
     background: 'white',
     borderBottom: '1px solid #eee',
     width: '100%',
+  },
+  headerInner: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   previewIframe: {
     boxShadow: '0 9px 10px rgba(0,0,0,0.5)',
@@ -77,10 +84,9 @@ const useStyles = makeStyles((theme) => ({
   previewWidth: {
     width: 'calc(100% - 365px)',
   },
-  previewActions: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  centerActions: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 }));
 
@@ -91,9 +97,12 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     blockTypes = [],
     disableEditor = false,
     disablePreview = false,
-    sidebarProps,
+    sidebarProps = {},
     editorTheme = defaultTheme,
     previewTheme = defaultTheme,
+    onFullScreen,
+    onFullScreenExit,
+    isFullScreen = false,
   } = props;
   const [data, setData] = useState(initialData);
   const [maxWidth, setMaxWidth] = useState<'xs' | 'md' | false>(false);
@@ -141,17 +150,34 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     <div title="editor" className={clsx([localClasses.root])}>
       <ThemeProvider theme={editorTheme}>
         <header className={localClasses.header}>
-          <div className={clsx([localClasses.previewWidth, localClasses.previewActions])}>
-            <Button onClick={() => setMaxWidth('xs')}>
-              <PhoneIphoneIcon />
-            </Button>
-            <Button onClick={() => setMaxWidth('md')}>
-              <TabletIcon />
-            </Button>
-            <Button onClick={() => setMaxWidth(false)}>
-              <LaptopIcon />
-            </Button>
+          <div className={clsx([localClasses.previewWidth, localClasses.headerInner])}>
+            <div className={localClasses.centerActions}>
+              <Button onClick={() => setMaxWidth('xs')}>
+                <PhoneIphoneIcon />
+              </Button>
+              <Button onClick={() => setMaxWidth('md')}>
+                <TabletIcon />
+              </Button>
+              <Button onClick={() => setMaxWidth(false)}>
+                <LaptopIcon />
+              </Button>
+            </div>
+            {onFullScreen && (
+              <div>
+                {isFullScreen && (
+                  <Button onClick={onFullScreenExit}>
+                    <FullscreenExitIcon />
+                  </Button>
+                )}
+                {!isFullScreen && (
+                  <Button onClick={onFullScreen}>
+                    <FullscreenIcon />
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
+
         </header>
         <div className={clsx([localClasses.previewWidth, localClasses.previewContainer])}>
           <Iframe

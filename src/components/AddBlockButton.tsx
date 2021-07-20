@@ -9,7 +9,7 @@ type MenuState = {
 };
 
 const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => {
-  const { onAddBlock, blockTypes } = props;
+  const { onAddBlock, blockTypes, container } = props;
   const [menuState, setMenuState] = useState<MenuState>({
     anchorEl: null,
   });
@@ -40,6 +40,7 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
         open={Boolean(menuState.anchorEl)}
         anchorEl={menuState.anchorEl}
         onClose={handleCloseMenu}
+        container={container?.ownerDocument.body}
       >
         {blockTypes.map((blockType) => (
           <MenuItem

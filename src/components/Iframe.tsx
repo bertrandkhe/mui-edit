@@ -3,11 +3,17 @@ import { createPortal } from 'react-dom';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 import { create, Jss } from 'jss';
 
-const Iframe = (props: { children: React.ReactNode, className: string, title: string }) => {
+const Iframe = (props: {
+  children: React.ReactNode,
+  className: string,
+  title: string,
+  onBodyMount?(body: HTMLElement): void,
+}) => {
   const {
     children,
     className,
     title,
+    onBodyMount,
   } = props;
   const [contentRef, setContentRef] = useState<HTMLIFrameElement | null>(null);
   const [jss, setJss] = useState<Jss | null>(null);
@@ -18,11 +24,19 @@ const Iframe = (props: { children: React.ReactNode, className: string, title: st
     if (!headNode) {
       return;
     }
-    setJss(create({
-      plugins: jssPreset().plugins,
-      insertionPoint: headNode,
-    }));
-  }, [headNode]);
+    if (!jss) {
+      setJss(create({
+        plugins: jssPreset().plugins,
+        insertionPoint: headNode,
+      }));
+    }
+  }, [headNode, jss]);
+
+  useEffect(() => {
+    if (mountNode && onBodyMount) {
+      onBodyMount(mountNode);
+    }
+  }, [mountNode, onBodyMount]);
 
   return (
     <iframe

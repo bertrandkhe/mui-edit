@@ -5,5 +5,5 @@ export interface EditFormProps<D, S> extends Partial<Block<D, S>> {
   data: D,
   onChange(data: D): void,
   onClose(): void,
-  editorContainer: HTMLElement,
+  container?: HTMLElement,
 }

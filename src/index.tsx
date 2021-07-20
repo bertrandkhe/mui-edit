@@ -9,8 +9,10 @@ import TypographyVariantControl from './components/settings/TypographyVariantCon
 import FileUploadControl from './components/FileUploadControl';
 import AddBlockButton from './components/AddBlockButton';
 import LinkControl from './components/LinkControl';
+import Iframe from './components/Iframe';
 
 export {
+  Iframe,
   Editor,
   Preview,
   Sidebar,
