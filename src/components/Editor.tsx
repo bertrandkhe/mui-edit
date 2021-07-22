@@ -189,6 +189,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
               <Preview
                 blockTypes={sortedBlockTypes}
                 data={data}
+                setData={handleDataChange}
               />
             </ThemeProvider>
           </Iframe>

@@ -1,13 +1,33 @@
 import React from 'react';
 import clsx from 'clsx';
 import { PreviewProps } from '../types/PreviewProps';
+import { Block } from '../types/Block';
 
 const Preview: React.FunctionComponent<PreviewProps> = (props) => {
   const {
     blockTypes,
     data,
     className,
+    setData,
   } = props;
+
+  const handleChange = (id: string) => (newBlock: Block) => {
+    if (setData) {
+      setData(data.map((block) => {
+        if (block.id !== id) {
+          return block;
+        }
+        return {
+          ...newBlock,
+          meta: {
+            ...newBlock.meta,
+            changed: Date.now(),
+          },
+        };
+      }));
+    }
+  };
+
   return (
     <div className={clsx([className])}>
       {data.map((block) => {
@@ -17,6 +37,7 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
         }
         return React.createElement(blockType.view, {
           ...block,
+          onChange: handleChange(block.id),
           key: block.id,
         });
       })}

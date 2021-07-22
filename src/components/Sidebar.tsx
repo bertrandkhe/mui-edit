@@ -10,6 +10,7 @@ import { BlockType } from '../types/BlockType';
 import { Block } from '../types/Block';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
+import { createBlock } from '../utils/block';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -115,16 +116,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   const handleAddBlock = (blockType: BlockType) => {
     setData([
       ...data,
-      {
-        id: uuidv4(),
-        type: blockType.id,
-        data: blockType.defaultData,
-        settings: blockType.defaultSettings,
-        meta: {
-          created: Date.now(),
-          changed: Date.now(),
-        },
-      },
+      createBlock(blockType),
     ]);
   };
 

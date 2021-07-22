@@ -5,4 +5,5 @@ export interface PreviewProps {
   blockTypes: BlockType[]
   data: Block[]
   className?: string,
+  setData?(data: Block[]): void,
 }
