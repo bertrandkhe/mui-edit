@@ -18,7 +18,8 @@
       "js": "never",
       "jsx": "never"
     }],
-    "max-len": ["error", { "code": 120 }]
+    "max-len": ["error", { "code": 120 }],
+    "react/require-default-props": "off"
   },
   "env": {
     "browser": true

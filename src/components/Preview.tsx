@@ -9,6 +9,7 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
     data,
     className,
     setData,
+    context,
   } = props;
 
   const handleChange = (id: string) => (newBlock: Block) => {
@@ -38,6 +39,7 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
         return React.createElement(blockType.view, {
           ...block,
           onChange: handleChange(block.id),
+          context,
           key: block.id,
         });
       })}

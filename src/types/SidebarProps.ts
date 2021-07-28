@@ -14,4 +14,5 @@ export interface SidebarProps {
   open: boolean,
   setData(data: Block[]): void,
   onBack?(): void,
+  context: Record<string, any>,
 }

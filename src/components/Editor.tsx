@@ -103,6 +103,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     onFullScreen,
     onFullScreenExit,
     isFullScreen = false,
+    context = {},
   } = props;
   const [data, setData] = useState(initialData);
   const [maxWidth, setMaxWidth] = useState<'xs' | 'md' | false>(false);
@@ -122,6 +123,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
 
   const defaultSidebarProps = {
     data,
+    context,
     setData: handleDataChange,
     blockTypes: sortedBlockTypes,
     title: 'Blocks',
@@ -142,6 +144,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
       <Preview
         blockTypes={sortedBlockTypes}
         data={data}
+        context={context}
       />
     );
   }
@@ -190,6 +193,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
                 blockTypes={sortedBlockTypes}
                 data={data}
                 setData={handleDataChange}
+                context={context}
               />
             </ThemeProvider>
           </Iframe>

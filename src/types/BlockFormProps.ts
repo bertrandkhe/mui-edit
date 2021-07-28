@@ -16,4 +16,5 @@ export interface BlockFormProps {
   onChange(block: Block): void,
   onClone(withData: boolean): void,
   onDelete(): void,
+  context: Record<string, any>,
 }

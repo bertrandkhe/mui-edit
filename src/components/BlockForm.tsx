@@ -68,6 +68,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     onDelete,
     onClone,
     initialState = {},
+    context,
   } = props;
   const {
     data,
@@ -250,6 +251,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             onChange: handleDataChange,
             onClose: toggleShowEditForm,
             container,
+            context,
           })}
         </div>
       )}
@@ -263,6 +265,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             meta,
             settings,
             onChange: handleSettingsChange,
+            context,
           })}
         </div>
       )}

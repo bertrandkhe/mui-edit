@@ -6,4 +6,5 @@ export interface PreviewProps {
   data: Block[]
   className?: string,
   setData?(data: Block[]): void,
+  context: Record<string, any>,
 }

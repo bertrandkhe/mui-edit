@@ -75,6 +75,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     onBack,
     title = 'Blocks',
     open = true,
+    context,
   } = props;
   const blocksWrapperRef = useRef<HTMLDivElement>(null);
   const localClasses = useStyles();
@@ -199,6 +200,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
               initialState={{
                 showEditForm: Date.now() - meta.created < 2000,
               }}
+              context={context}
             />
           );
         })}
