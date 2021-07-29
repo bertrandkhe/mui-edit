@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import EditIcon from '@material-ui/icons/Edit';

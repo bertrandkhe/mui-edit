@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, MutableRefObject } from 'react';
 import clsx from 'clsx';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { Button, CssBaseline } from '@material-ui/core';
@@ -102,11 +102,13 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     previewTheme = defaultTheme,
     onFullScreen,
     onFullScreenExit,
+    onPreviewIframeLoad,
     isFullScreen = false,
     context = {},
   } = props;
   const [data, setData] = useState(initialData);
   const [maxWidth, setMaxWidth] = useState<'xs' | 'md' | false>(false);
+  const previewIframeRef = useRef<HTMLIFrameElement>(null) as MutableRefObject<HTMLIFrameElement | null>;
   const localClasses = useStyles({ maxWidth });
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
 
@@ -186,6 +188,14 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
           <Iframe
             title="preview"
             className={localClasses.previewIframe}
+            ref={(iframeEl) => {
+              if (iframeEl) {
+                previewIframeRef.current = iframeEl;
+                if (onPreviewIframeLoad) {
+                  onPreviewIframeLoad(iframeEl);
+                }
+              }
+            }}
           >
             <ThemeProvider theme={previewTheme}>
               <CssBaseline />
@@ -193,7 +203,10 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
                 blockTypes={sortedBlockTypes}
                 data={data}
                 setData={handleDataChange}
-                context={context}
+                context={{
+                  ...context,
+                  previewIframeRef,
+                }}
               />
             </ThemeProvider>
           </Iframe>

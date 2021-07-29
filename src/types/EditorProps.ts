@@ -13,6 +13,7 @@ export interface EditorProps {
   onChange?(data: Block[]): void,
   onFullScreen?(): void,
   onFullScreenExit?(): void,
+  onPreviewIframeLoad?(iframe: HTMLIFrameElement): void,
   isFullScreen?: boolean,
   editorTheme?: Theme,
   previewTheme?: Theme,

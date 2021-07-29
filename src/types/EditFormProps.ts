@@ -1,6 +1,6 @@
 import { Block } from './Block';
 
-export interface EditFormProps<D, S, C> extends Partial<Block<D, S>> {
+export interface EditFormProps<D, S, C = Record<string, any>> extends Partial<Block<D, S>> {
   id: string
   data: D,
   onChange(data: D): void,

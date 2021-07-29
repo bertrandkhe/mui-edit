@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect, ForwardedRef, MutableRefObject,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 import { create, Jss } from 'jss';
 
-const Iframe = (props: {
+const Iframe = React.forwardRef((props: {
   children: React.ReactNode,
   className: string,
   title: string,
   onBodyMount?(body: HTMLElement): void,
-}) => {
+}, ref: ForwardedRef<HTMLIFrameElement>) => {
   const {
     children,
     className,
@@ -42,7 +44,17 @@ const Iframe = (props: {
     <iframe
       title={title}
       className={className}
-      ref={setContentRef}
+      ref={(node) => {
+        setContentRef(node);
+        if (ref) {
+          if (typeof ref === 'function') {
+            ref(node);
+          } else {
+            const mutableRef = ref as MutableRefObject<HTMLIFrameElement | null>;
+            mutableRef.current = node;
+          }
+        }
+      }}
     >
       {jss && mountNode && createPortal(
         (
@@ -54,6 +66,6 @@ const Iframe = (props: {
       )}
     </iframe>
   );
-};
+});
 
 export default Iframe;
