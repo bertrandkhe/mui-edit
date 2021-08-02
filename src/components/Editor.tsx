@@ -14,10 +14,10 @@ import Sidebar from './Sidebar';
 import defaultTheme from '../theme';
 import Iframe from './Iframe';
 
-const maxHeight = (props: { maxWidth: 'xs' | 'md' | false }) => {
+const maxHeight = (props: { maxWidth: 'sm' | 'md' | false }) => {
   const { maxWidth } = props;
   switch (maxWidth) {
-    case 'xs':
+    case 'sm':
       return 790;
 
     case 'md':
@@ -49,10 +49,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     margin: 'auto',
     border: 'none',
-    marginTop: (props: { maxWidth: 'xs' | 'md' | false }) => {
+    marginTop: (props: { maxWidth: 'sm' | 'md' | false }) => {
       const { maxWidth } = props;
       switch (maxWidth) {
-        case 'xs':
+        case 'sm':
         case 'md':
           return theme.spacing(3);
 
@@ -64,14 +64,14 @@ const useStyles = makeStyles((theme) => ({
     maxHeight,
     overflowY: 'auto',
     maxWidth: '100%',
-    width: (props: { maxWidth: 'xs' | 'md' | false }) => {
+    width: (props: { maxWidth: 'sm' | 'md' | false }) => {
       const { maxWidth } = props;
       switch (maxWidth) {
-        case 'xs':
-          return 414;
+        case 'sm':
+          return 480;
 
         case 'md':
-          return 1024;
+          return theme.breakpoints.values[maxWidth];
 
         default:
           return '100%';
@@ -107,7 +107,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     context = {},
   } = props;
   const [data, setData] = useState(initialData);
-  const [maxWidth, setMaxWidth] = useState<'xs' | 'md' | false>(false);
+  const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
   const previewIframeRef = useRef<HTMLIFrameElement>(null) as MutableRefObject<HTMLIFrameElement | null>;
   const localClasses = useStyles({ maxWidth });
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
@@ -157,7 +157,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
         <header className={localClasses.header}>
           <div className={clsx([localClasses.previewWidth, localClasses.headerInner])}>
             <div className={localClasses.centerActions}>
-              <Button onClick={() => setMaxWidth('xs')}>
+              <Button onClick={() => setMaxWidth('sm')}>
                 <PhoneIphoneIcon />
               </Button>
               <Button onClick={() => setMaxWidth('md')}>
