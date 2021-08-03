@@ -5,7 +5,8 @@ import { BlockType } from './BlockType';
 
 export interface EditorProps {
   initialData: Block[],
-  context?: Record<string, any>,
+  container?: HTMLElement,
+  context?: Record<string, unknown>,
   blockTypes: BlockType[],
   disableEditor?: Readonly<boolean>,
   disablePreview?: Readonly<boolean>,

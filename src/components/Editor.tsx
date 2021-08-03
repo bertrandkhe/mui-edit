@@ -152,7 +152,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   }
 
   return (
-    <div title="editor" className={clsx([localClasses.root])}>
+    <div className={clsx([localClasses.root])}>
       <ThemeProvider theme={editorTheme}>
         <header className={localClasses.header}>
           <div className={clsx([localClasses.previewWidth, localClasses.headerInner])}>

@@ -9,7 +9,9 @@ import TypographyVariantControl from './components/settings/TypographyVariantCon
 import FileUploadControl from './components/FileUploadControl';
 import AddBlockButton from './components/AddBlockButton';
 import LinkControl from './components/LinkControl';
+import ButtonControl from './components/ButtonControl';
 import Iframe from './components/Iframe';
+import { EditorContextProvider, useEditorContext } from './components/EditorContextProvider';
 
 export {
   Iframe,
@@ -24,6 +26,9 @@ export {
   FileUploadControl,
   AddBlockButton,
   LinkControl,
+  ButtonControl,
+  EditorContextProvider,
+  useEditorContext,
 };
 
 export default Editor;
