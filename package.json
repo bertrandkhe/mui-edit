@@ -1,6 +1,6 @@
 {
   "name": "mui-edit",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "license": "GPL-3.0-or-later",
   "private": false,
   "author": "Bertrand KHE",
@@ -39,7 +39,6 @@
     "html-webpack-plugin": "^5.3.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-hot-loader": "^4.13.0",
     "react-markdown": "^6.0.2",
     "rimraf": "^3.0.2",
     "sortablejs": "^1.14.0",

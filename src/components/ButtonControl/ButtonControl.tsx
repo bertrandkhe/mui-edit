@@ -26,7 +26,7 @@ const ButtonControl = (
   } = props;
 
   const handleChange = (prop: keyof ButtonItem) => (
-    e: ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>,
   ) => {
     onChange({
       ...defaultValue,

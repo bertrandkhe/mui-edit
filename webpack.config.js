@@ -42,22 +42,20 @@ module.exports = (env, argv) => {
   if (argv.mode === 'development') {
     config.devtool = 'inline-source-map';
     config.entry = [
-      'react-hot-loader/patch',
       './src/main.tsx',
     ];
-    config.resolve.alias['react-dom'] = '@hot-loader/react-dom';
     config.plugins.push(
       new HtmlWebpackPlugin({
         title: 'Development',
       }),
-      new webpack.HotModuleReplacementPlugin(),
+      // new webpack.HotModuleReplacementPlugin(),
     );
     config.devServer = {
       contentBase: path.join(__dirname, 'dist'),
       compress: true,
       port: 9001,
-      hot: true,
-      hotOnly: true,
+      // hot: true,
+      // hotOnly: true,
     };
   }
   return config;

@@ -1,6 +1,5 @@
 import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { hot } from 'react-hot-loader/root';
 import { CssBaseline } from '@material-ui/core';
 import Editor from './components/Editor';
 
@@ -10,9 +9,7 @@ const App = (props: { container: HTMLElement }): React.ReactElement => {
     <>
       <CssBaseline />
       <Editor
-        sidebarProps={{
-          container,
-        }}
+        container={container}
         initialData={[]}
         blockTypes={[]}
       />
@@ -20,4 +17,4 @@ const App = (props: { container: HTMLElement }): React.ReactElement => {
   );
 };
 
-export default hot(App);
+export default App;

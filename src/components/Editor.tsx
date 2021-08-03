@@ -1,4 +1,4 @@
-import React, { useState, useRef, MutableRefObject } from 'react';
+import React, { useState, useRef } from 'react';
 import clsx from 'clsx';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { Button, CssBaseline } from '@material-ui/core';
@@ -13,6 +13,7 @@ import Preview from './Preview';
 import Sidebar from './Sidebar';
 import defaultTheme from '../theme';
 import Iframe from './Iframe';
+import { EditorContextProvider } from './EditorContextProvider';
 
 const maxHeight = (props: { maxWidth: 'sm' | 'md' | false }) => {
   const { maxWidth } = props;
@@ -105,10 +106,11 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     onPreviewIframeLoad,
     isFullScreen = false,
     context = {},
+    container,
   } = props;
   const [data, setData] = useState(initialData);
   const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
-  const previewIframeRef = useRef<HTMLIFrameElement>(null) as MutableRefObject<HTMLIFrameElement | null>;
+  const previewIframeRef = useRef<HTMLIFrameElement|null>(null);
   const localClasses = useStyles({ maxWidth });
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
 
@@ -132,7 +134,11 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     open: true,
   };
 
-  const mergedSidebarProps = { ...defaultSidebarProps, ...sidebarProps };
+  const mergedSidebarProps = {
+    ...defaultSidebarProps,
+    ...sidebarProps,
+    container,
+  };
 
   if (disablePreview) {
     return (
@@ -152,69 +158,77 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   }
 
   return (
-    <div className={clsx([localClasses.root])}>
-      <ThemeProvider theme={editorTheme}>
-        <header className={localClasses.header}>
-          <div className={clsx([localClasses.previewWidth, localClasses.headerInner])}>
-            <div className={localClasses.centerActions}>
-              <Button onClick={() => setMaxWidth('sm')}>
-                <PhoneIphoneIcon />
-              </Button>
-              <Button onClick={() => setMaxWidth('md')}>
-                <TabletIcon />
-              </Button>
-              <Button onClick={() => setMaxWidth(false)}>
-                <LaptopIcon />
-              </Button>
-            </div>
-            {onFullScreen && (
-              <div>
-                {isFullScreen && (
-                  <Button onClick={onFullScreenExit}>
-                    <FullscreenExitIcon />
-                  </Button>
-                )}
-                {!isFullScreen && (
-                  <Button onClick={onFullScreen}>
-                    <FullscreenIcon />
-                  </Button>
-                )}
+    <EditorContextProvider
+      context={{
+        ...context,
+        container,
+        previewIframeRef,
+      }}
+    >
+      <div className={clsx([localClasses.root])}>
+        <ThemeProvider theme={editorTheme}>
+          <header className={localClasses.header}>
+            <div className={clsx([localClasses.previewWidth, localClasses.headerInner])}>
+              <div className={localClasses.centerActions}>
+                <Button onClick={() => setMaxWidth('sm')}>
+                  <PhoneIphoneIcon />
+                </Button>
+                <Button onClick={() => setMaxWidth('md')}>
+                  <TabletIcon />
+                </Button>
+                <Button onClick={() => setMaxWidth(false)}>
+                  <LaptopIcon />
+                </Button>
               </div>
-            )}
-          </div>
+              {onFullScreen && (
+                <div>
+                  {isFullScreen && (
+                    <Button onClick={onFullScreenExit}>
+                      <FullscreenExitIcon />
+                    </Button>
+                  )}
+                  {!isFullScreen && (
+                    <Button onClick={onFullScreen}>
+                      <FullscreenIcon />
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
 
-        </header>
-        <div className={clsx([localClasses.previewWidth, localClasses.previewContainer])}>
-          <Iframe
-            title="preview"
-            className={localClasses.previewIframe}
-            ref={(iframeEl) => {
-              if (iframeEl) {
-                previewIframeRef.current = iframeEl;
-                if (onPreviewIframeLoad) {
-                  onPreviewIframeLoad(iframeEl);
+          </header>
+          <div className={clsx([localClasses.previewWidth, localClasses.previewContainer])}>
+            <Iframe
+              title="preview"
+              className={localClasses.previewIframe}
+              ref={(iframeEl) => {
+                if (iframeEl) {
+                  previewIframeRef.current = iframeEl;
+                  if (onPreviewIframeLoad) {
+                    onPreviewIframeLoad(iframeEl);
+                  }
                 }
-              }
-            }}
-          >
-            <ThemeProvider theme={previewTheme}>
-              <CssBaseline />
-              <Preview
-                blockTypes={sortedBlockTypes}
-                data={data}
-                setData={handleDataChange}
-                context={{
-                  ...context,
-                  previewIframeRef,
-                }}
-              />
-            </ThemeProvider>
-          </Iframe>
-        </div>
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <Sidebar {...mergedSidebarProps} />
-      </ThemeProvider>
-    </div>
+              }}
+            >
+              <ThemeProvider theme={previewTheme}>
+                <CssBaseline />
+                <Preview
+                  blockTypes={sortedBlockTypes}
+                  data={data}
+                  setData={handleDataChange}
+                  context={{
+                    ...context,
+                    previewIframeRef,
+                  }}
+                />
+              </ThemeProvider>
+            </Iframe>
+          </div>
+          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+          <Sidebar {...mergedSidebarProps} />
+        </ThemeProvider>
+      </div>
+    </EditorContextProvider>
   );
 };
 
