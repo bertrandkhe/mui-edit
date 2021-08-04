@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     backgroundColor: 'white',
     transition: '0.4s',
+    zIndex: 1,
 
     '&.open': {
       right: 0,
