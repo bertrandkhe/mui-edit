@@ -1,28 +1,48 @@
-import React, { ChangeEvent } from 'react';
-import { Grid, TextField } from '@material-ui/core';
-import { LinkItem } from '../../types/LinkItem';
+import React, { ChangeEvent, useState } from 'react';
+import {
+  FormControl,
+  Grid,
+  InputLabel,
+  NativeSelect,
+  TextField,
+} from '@material-ui/core';
+import { useEditorContext } from '../EditorContextProvider';
 
-const LinkControl = (
-  props: {
-    label: string
-    defaultValue: LinkItem,
-    onChange(value: LinkItem): void,
-    open: boolean,
-  },
-): React.ReactElement => {
+export type LinkItem = {
+  url: string
+  label: string
+  target: '_self' | '_blank',
+};
+
+type LinkControlProps = {
+  id?: string,
+  label: string
+  defaultValue: LinkItem,
+  onChange(value: LinkItem): void,
+  open: boolean,
+};
+
+const LinkControl: React.FunctionComponent<LinkControlProps> = (props) => {
   const {
+    id,
     label,
     defaultValue,
     onChange,
     open,
   } = props;
+  const context = useEditorContext();
+  const [htmlId] = useState(id || context.generateId());
 
-  const handleChange = (prop: keyof LinkItem) => (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (prop: keyof LinkItem) => (
+    e: ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>,
+  ) => {
     onChange({
       ...defaultValue,
       [prop]: e.target.value,
     });
   };
+
+  const targetHtmlId = `link-target-${htmlId}`;
 
   return (
     <details open={open}>
@@ -46,6 +66,20 @@ const LinkControl = (
             multiline
             fullWidth
           />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <InputLabel htmlFor={targetHtmlId}>Target</InputLabel>
+            <NativeSelect
+              id={targetHtmlId}
+              defaultValue={defaultValue.target}
+              onChange={handleChange('target')}
+              fullWidth
+            >
+              <option value="_self">Open in same tab</option>
+              <option value="_blank">Open in new tab</option>
+            </NativeSelect>
+          </FormControl>
         </Grid>
       </Grid>
     </details>

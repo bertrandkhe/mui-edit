@@ -13,6 +13,8 @@ import ButtonControl from './components/ButtonControl';
 import Iframe from './components/Iframe';
 import { EditorContextProvider, useEditorContext } from './components/EditorContextProvider';
 
+export * from './types';
+
 export {
   Iframe,
   Editor,

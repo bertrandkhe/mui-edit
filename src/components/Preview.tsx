@@ -1,7 +1,13 @@
 import React from 'react';
 import clsx from 'clsx';
-import { PreviewProps } from '../types/PreviewProps';
-import { Block } from '../types/Block';
+import { Block, BlockType } from '../types';
+
+export interface PreviewProps {
+  blockTypes: BlockType[]
+  data: Block[]
+  className?: string,
+  setData?(data: Block[]): void,
+}
 
 const Preview: React.FunctionComponent<PreviewProps> = (props) => {
   const {
@@ -9,7 +15,6 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
     data,
     className,
     setData,
-    context,
   } = props;
 
   const handleChange = (id: string) => (newBlock: Block) => {
@@ -39,7 +44,6 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
         return React.createElement(blockType.view, {
           ...block,
           onChange: handleChange(block.id),
-          context,
           key: block.id,
         });
       })}

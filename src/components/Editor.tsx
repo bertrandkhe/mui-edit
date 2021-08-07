@@ -1,19 +1,36 @@
 import React, { useState, useRef } from 'react';
 import clsx from 'clsx';
-import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import { makeStyles, Theme, ThemeProvider } from '@material-ui/core/styles';
 import { Button, CssBaseline } from '@material-ui/core';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import TabletIcon from '@material-ui/icons/Tablet';
 import LaptopIcon from '@material-ui/icons/Laptop';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
-import { EditorProps } from '../types/EditorProps';
-import { Block } from '../types/Block';
+import { Block, BlockType } from '../types';
 import Preview from './Preview';
 import Sidebar from './Sidebar';
 import defaultTheme from '../theme';
 import Iframe from './Iframe';
 import { EditorContextProvider } from './EditorContextProvider';
+
+export interface EditorProps {
+  initialData: Block[],
+  container?: HTMLElement,
+  context?: Record<string, unknown>,
+  blockTypes: BlockType[],
+  disableEditor?: Readonly<boolean>,
+  disablePreview?: Readonly<boolean>,
+  onBack?(): void,
+  onChange?(data: Block[]): void,
+  onFullScreen?(): void,
+  onFullScreenExit?(): void,
+  onPreviewIframeLoad?(iframe: HTMLIFrameElement): void,
+  isFullScreen?: boolean,
+  editorTheme?: Theme,
+  previewTheme?: Theme,
+  title?: string,
+}
 
 const maxHeight = (props: { maxWidth: 'sm' | 'md' | false }) => {
   const { maxWidth } = props;
@@ -25,9 +42,12 @@ const maxHeight = (props: { maxWidth: 'sm' | 'md' | false }) => {
       return 768;
 
     default:
-      return 'calc(100% - 37px)';
+      return '100%';
   }
 };
+
+const headerHeight = 37;
+const sidebarWidth = 365;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
     background: 'white',
     borderBottom: '1px solid #eee',
     width: '100%',
+    height: headerHeight,
   },
   headerInner: {
     display: 'flex',
@@ -79,11 +100,11 @@ const useStyles = makeStyles((theme) => ({
       }
     },
   },
-  previewContainer: {
-    height: '100%',
-  },
   previewWidth: {
-    width: 'calc(100% - 365px)',
+    width: `calc(100% - ${sidebarWidth}px)`,
+  },
+  previewHeight: {
+    height: `calc(100% - ${headerHeight}px)`,
   },
   centerActions: {
     marginLeft: 'auto',
@@ -95,10 +116,10 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   const {
     initialData = [],
     onChange,
+    onBack,
     blockTypes = [],
     disableEditor = false,
     disablePreview = false,
-    sidebarProps = {},
     editorTheme = defaultTheme,
     previewTheme = defaultTheme,
     onFullScreen,
@@ -107,6 +128,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     isFullScreen = false,
     context = {},
     container,
+    title,
   } = props;
   const [data, setData] = useState(initialData);
   const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
@@ -125,19 +147,13 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     return null;
   }
 
-  const defaultSidebarProps = {
+  const mergedSidebarProps = {
     data,
-    context,
+    onBack,
     setData: handleDataChange,
     blockTypes: sortedBlockTypes,
-    title: 'Blocks',
+    title: title || 'Blocks',
     open: true,
-  };
-
-  const mergedSidebarProps = {
-    ...defaultSidebarProps,
-    ...sidebarProps,
-    container,
   };
 
   if (disablePreview) {
@@ -152,7 +168,6 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
       <Preview
         blockTypes={sortedBlockTypes}
         data={data}
-        context={context}
       />
     );
   }
@@ -197,7 +212,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
             </div>
 
           </header>
-          <div className={clsx([localClasses.previewWidth, localClasses.previewContainer])}>
+          <div className={clsx([localClasses.previewWidth, localClasses.previewHeight])}>
             <Iframe
               title="preview"
               className={localClasses.previewIframe}
@@ -216,10 +231,6 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
                   blockTypes={sortedBlockTypes}
                   data={data}
                   setData={handleDataChange}
-                  context={{
-                    ...context,
-                    previewIframeRef,
-                  }}
                 />
               </ThemeProvider>
             </Iframe>

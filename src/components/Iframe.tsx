@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, ForwardedRef, MutableRefObject,
+  useState, useEffect, ForwardedRef,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
@@ -10,7 +10,7 @@ const Iframe = React.forwardRef((props: {
   className: string,
   title: string,
   onBodyMount?(body: HTMLElement): void,
-}, ref: ForwardedRef<HTMLIFrameElement>) => {
+}, ref: ForwardedRef<HTMLIFrameElement|null>) => {
   const {
     children,
     className,
@@ -46,14 +46,15 @@ const Iframe = React.forwardRef((props: {
       className={className}
       ref={(node) => {
         setContentRef(node);
-        if (ref) {
-          if (typeof ref === 'function') {
-            ref(node);
-          } else {
-            const mutableRef = ref as MutableRefObject<HTMLIFrameElement | null>;
-            mutableRef.current = node;
-          }
+        if (!ref) {
+          return;
         }
+        if (typeof ref === 'function') {
+          ref(node);
+          return;
+        }
+        const mutableRef = ref;
+        mutableRef.current = node;
       }}
     >
       {jss && mountNode && createPortal(

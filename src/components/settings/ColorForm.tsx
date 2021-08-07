@@ -5,7 +5,19 @@ import {
   Button,
 } from '@material-ui/core';
 import { debounce } from '@material-ui/core/utils';
-import { ColorFormProps } from '../../types/ColorFormProps';
+import * as CSS from 'csstype';
+
+export interface ColorPropsSettings {
+  color?: CSS.Property.Color
+  backgroundColor?: CSS.Property.BackgroundColor,
+}
+
+export interface ColorFormProps {
+  id: Readonly<string>
+  settings: Readonly<ColorPropsSettings>
+  onChange(settings: ColorPropsSettings): void
+  open?: Readonly<boolean>
+}
 
 const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
   const {

@@ -1,7 +1,15 @@
 import React, { ChangeEvent, ReactElement } from 'react';
 import { FormControl, InputLabel, NativeSelect } from '@material-ui/core';
 import * as CSS from 'csstype';
-import { TextAlignControlProps } from '../../types/TextAlignControlProps';
+
+export interface TextAlignControlProps {
+  id: string
+  label: string
+  name: string
+  onChange(textAlign: CSS.Property.TextAlign): void
+  options?: CSS.Property.TextAlign[]
+  defaultValue?: CSS.Property.TextAlign
+}
 
 const TextAlignControl = (props: TextAlignControlProps): ReactElement => {
   const {

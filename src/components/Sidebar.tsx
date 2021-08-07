@@ -5,12 +5,24 @@ import Sortable from 'sortablejs';
 import yellow from '@material-ui/core/colors/yellow';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
-import { SidebarProps } from '../types/SidebarProps';
-import { BlockType } from '../types/BlockType';
-import { Block } from '../types/Block';
+import { BlockType, Block } from '../types';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
 import { createBlock } from '../utils/block';
+
+export interface SidebarClasses {
+  root?: string,
+}
+
+export interface SidebarProps {
+  classes?: SidebarClasses,
+  data: Block[],
+  blockTypes: BlockType[],
+  title: string,
+  open: boolean,
+  setData(data: Block[]): void,
+  onBack?(): void,
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,11 +84,9 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     data,
     blockTypes,
     setData,
-    container,
     onBack,
     title = 'Blocks',
     open = true,
-    context,
   } = props;
   const blocksWrapperRef = useRef<HTMLDivElement>(null);
   const localClasses = useStyles();
@@ -191,7 +201,6 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
           }
           return (
             <BlockForm
-              container={container}
               key={id}
               blockType={blockType}
               block={block}
@@ -201,7 +210,6 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
               initialState={{
                 showEditForm: Date.now() - meta.created < 2000,
               }}
-              context={context}
             />
           );
         })}
@@ -210,7 +218,6 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
         <AddBlockButton
           blockTypes={blockTypes}
           onAddBlock={handleAddBlock}
-          container={container}
         />
       </footer>
     </div>

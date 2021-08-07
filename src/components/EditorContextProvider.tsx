@@ -1,13 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 
-export type EditorContext = Record<string, unknown>;
+export type EditorContext = {
+  container?: HTMLElement
+  generateId(): string,
+} & Record<string, unknown>;
 
 export type EditorContextProviderProps = {
-  context: EditorContext,
+  context: Partial<EditorContext>,
   children: React.ReactNode,
 };
 
-export const EditorContext = React.createContext<EditorContext>({});
+let idIncr = 0;
+
+export const EditorContext = React.createContext<EditorContext>({
+  generateId(): string {
+    const currentId = idIncr;
+    idIncr += 1;
+    return `id-${currentId}`;
+  },
+});
 
 export const useEditorContext = (): EditorContext => {
   return useContext(EditorContext);
@@ -15,8 +26,23 @@ export const useEditorContext = (): EditorContext => {
 
 export const EditorContextProvider: React.FunctionComponent<EditorContextProviderProps> = (props) => {
   const { context, children } = props;
+  const idRef = useRef(0);
+
+  const generateId = () => {
+    const currentId = idRef.current;
+    idRef.current += 1;
+    return `id-${currentId}`;
+  };
+
+  const editorContext = { ...context };
+  if (!editorContext.generateId) {
+    editorContext.generateId = generateId;
+  }
+
   return (
-    <EditorContext.Provider value={context}>
+    <EditorContext.Provider
+      value={editorContext as EditorContext}
+    >
       {children}
     </EditorContext.Provider>
   );

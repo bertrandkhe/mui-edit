@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import {
   FormControl,
   Grid,
@@ -6,11 +6,16 @@ import {
   NativeSelect,
   TextField,
 } from '@material-ui/core';
-import { ButtonItem } from '../../types/ButtonItem';
+import { LinkItem } from '../../types';
+import { useEditorContext } from '../EditorContextProvider';
+
+export type ButtonItem = {
+  variant: 'outlined' | 'contained',
+} & LinkItem;
 
 const ButtonControl = (
   props: {
-    id: string,
+    id?: string,
     label: string
     defaultValue: ButtonItem,
     onChange(value: ButtonItem): void,
@@ -24,6 +29,8 @@ const ButtonControl = (
     onChange,
     open,
   } = props;
+  const context = useEditorContext();
+  const [htmlId] = useState(id || context.generateId());
 
   const handleChange = (prop: keyof ButtonItem) => (
     e: ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>,
@@ -33,6 +40,8 @@ const ButtonControl = (
       [prop]: e.target.value,
     });
   };
+  const targetHtmlId = `btn-target-${htmlId}`;
+  const variantHtmlId = `btn-variant-${htmlId}`;
 
   return (
     <details open={open}>
@@ -58,14 +67,29 @@ const ButtonControl = (
           />
         </Grid>
         <Grid item xs={12}>
-          <FormControl>
-            <InputLabel htmlFor={`btn-variant-${id}`}>Variant</InputLabel>
+          <FormControl fullWidth>
+            <InputLabel htmlFor={targetHtmlId}>Target</InputLabel>
+            <NativeSelect
+              id={targetHtmlId}
+              defaultValue={defaultValue.target}
+              onChange={handleChange('target')}
+              fullWidth
+            >
+              <option value="_self">Open in same tab</option>
+              <option value="_blank">Open in new tab</option>
+            </NativeSelect>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <InputLabel htmlFor={variantHtmlId}>Variant</InputLabel>
             <NativeSelect
               defaultValue={defaultValue.variant}
               onChange={handleChange('variant')}
               inputProps={{
-                id: `btn-variant-${id}`,
+                id: variantHtmlId,
               }}
+              fullWidth
             >
               <option value="outlined">Outlined</option>
               <option value="contained">Contained</option>

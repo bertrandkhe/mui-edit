@@ -6,9 +6,20 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Variant } from '@material-ui/core/styles/createTypography';
-import {
-  TypographyVariantControlProps,
-} from '../../types/TypographyVariantControlProps';
+
+type Option = {
+  value: Variant
+  label: string
+};
+
+export interface TypographyVariantControlProps {
+  id: string
+  name: string
+  label: string
+  onChange(variant: Variant): void
+  options?: Option[]
+  defaultValue?: Variant
+}
 
 const TypographyVariantControl = (props: TypographyVariantControlProps): ReactElement => {
   const {

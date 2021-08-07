@@ -1,15 +1,22 @@
-import { Relationship } from './Relationship';
-
 export interface BlockMeta {
     changed: number,
     created: number,
 }
 
-export interface Block<D = any, S = any> {
+export type RelationshipItem = {
+    id: string,
+    type: string,
+}
+
+export interface Relationship<D extends RelationshipItem> {
+    data: D|D[],
+}
+
+export interface Block<D = any, S = any, R extends RelationshipItem = RelationshipItem> {
     id: string
     type: string
     data: D,
     settings: S,
-    relationships?: Record<string, Relationship>,
+    relationships?: Record<string, Relationship<R>>,
     meta: BlockMeta,
 }

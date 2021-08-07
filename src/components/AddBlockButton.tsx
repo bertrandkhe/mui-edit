@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import { Button, Menu, MenuItem } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { AddBlockButtonProps } from '../types/AddBlockButtonProps';
-import { BlockType } from '../types/BlockType';
+import { BlockType } from '../types';
+import { useEditorContext } from './EditorContextProvider';
 
 type MenuState = {
   anchorEl: null | HTMLElement
 };
 
+export interface AddBlockButtonProps {
+  blockTypes: BlockType[],
+  onAddBlock(blockType: BlockType): void,
+}
+
 const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => {
-  const { onAddBlock, blockTypes, container } = props;
+  const { onAddBlock, blockTypes } = props;
   const [menuState, setMenuState] = useState<MenuState>({
     anchorEl: null,
   });
+  const editorContext = useEditorContext();
+  const { container } = editorContext;
 
   const handleCloseMenu = () => {
     setMenuState({ ...menuState, anchorEl: null });

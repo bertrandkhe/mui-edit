@@ -17,7 +17,24 @@ import {
   Box,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { BlockFormProps } from '../types/BlockFormProps';
+import { Block, BlockType } from '../types';
+import { useEditorContext } from './EditorContextProvider';
+
+interface BlockFormInitialState {
+  showEditForm?: boolean,
+  showSettingsForm?: boolean,
+  showDeleteForm?: boolean,
+  moreAnchorEl?: HTMLElement,
+}
+
+export interface BlockFormProps {
+  block: Block,
+  blockType: BlockType,
+  initialState?: BlockFormInitialState,
+  onChange(block: Block): void,
+  onClone(withData: boolean): void,
+  onDelete(): void,
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,14 +78,12 @@ const useStyles = makeStyles((theme) => ({
 
 const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
   const {
-    container,
     block,
     blockType,
     onChange,
     onDelete,
     onClone,
     initialState = {},
-    context,
   } = props;
   const {
     data,
@@ -85,6 +100,8 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     moreAnchorEl: null,
     ...initialState,
   });
+  const editorContext = useEditorContext();
+  const { container } = editorContext;
   const localClasses = useStyles();
 
   const toggleShowEditForm = () => {
@@ -250,8 +267,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             settings,
             onChange: handleDataChange,
             onClose: toggleShowEditForm,
-            container,
-            context,
           })}
         </div>
       )}
@@ -265,7 +280,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             meta,
             settings,
             onChange: handleSettingsChange,
-            context,
           })}
         </div>
       )}

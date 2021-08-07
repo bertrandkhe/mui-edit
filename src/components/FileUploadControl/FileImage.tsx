@@ -10,7 +10,7 @@ import {
   CardActions,
   Button,
 } from '@material-ui/core';
-import { FileItem } from '../../types/FileItem';
+import { FileItem } from './index';
 
 const useStyles = makeStyles((theme) => ({
   root: {

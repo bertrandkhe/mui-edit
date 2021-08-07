@@ -5,7 +5,7 @@ import { Button, Grid, Typography } from '@material-ui/core';
 import Sortable from 'sortablejs';
 import { DragHandle } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
-import { FileItem } from '../../types/FileItem';
+import { FileItem } from './index';
 import FileImage from './FileImage';
 
 const useStyles = makeStyles((theme) => ({
