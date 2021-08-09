@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { Block, BlockType } from '../types';
+import BlockView from './BlockView';
 
 export interface PreviewProps {
   blockTypes: BlockType[]
@@ -37,15 +38,14 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
   return (
     <div className={clsx([className])}>
       {data.map((block) => {
-        const blockType = blockTypes.find((bt) => bt.id === block.type);
-        if (!blockType || !blockType.view) {
-          return null;
-        }
-        return React.createElement(blockType.view, {
-          ...block,
-          onChange: handleChange(block.id),
-          key: block.id,
-        });
+        return (
+          <BlockView
+            block={block}
+            blockTypes={blockTypes}
+            onChange={handleChange(block.id)}
+            key={block.id}
+          />
+        );
       })}
     </div>
   );

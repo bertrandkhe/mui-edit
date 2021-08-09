@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
-const main = () => {
+const index = () => {
   const root = document.createElement('div');
   document.body.appendChild(root);
   root.style.border = '1px solid #eee';
@@ -20,4 +20,4 @@ const main = () => {
   );
 };
 
-main();
+index();

@@ -42,7 +42,7 @@ module.exports = (env, argv) => {
   if (argv.mode === 'development') {
     config.devtool = 'inline-source-map';
     config.entry = [
-      './src/main.tsx',
+      './src/dev/index.tsx',
     ];
     config.plugins.push(
       new HtmlWebpackPlugin({

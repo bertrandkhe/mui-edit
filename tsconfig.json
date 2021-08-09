@@ -19,8 +19,6 @@
     "src/**/*",
   ],
   "exclude": [
-    "src/main.tsx",
-    "src/App.tsx",
     "webpack.config.js"
   ]
 }

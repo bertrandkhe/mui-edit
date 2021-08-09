@@ -41,9 +41,13 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.grey[100]}`,
     padding: theme.spacing(1.5),
   },
-  header: {},
+  header: {
+  },
   headerActions: {
     display: 'flex',
+  },
+  form: {
+    marginTop: theme.spacing(2),
   },
   labelDragIcon: {
     marginRight: theme.spacing(0.25),
@@ -91,6 +95,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     meta,
     id,
     type,
+    relationships,
   } = block;
 
   const [state, setState] = useState({
@@ -172,6 +177,13 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     onChange({
       ...block,
       settings: newSettings,
+    });
+  };
+
+  const handleRelsChange = (newRels: typeof block.relationships) => {
+    onChange({
+      ...block,
+      relationships: newRels,
     });
   };
 
@@ -258,21 +270,23 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
       </div>
       {state.showEditForm && blockType.editForm
       && (
-        <div>
+        <div className={localClasses.form}>
           {React.createElement(blockType.editForm, {
             id,
             type,
             data,
             meta,
             settings,
+            relationships,
             onChange: handleDataChange,
+            onRelsChange: handleRelsChange,
             onClose: toggleShowEditForm,
           })}
         </div>
       )}
       {blockType.hasSettings && blockType.settingsForm && state.showSettingsForm
       && (
-        <div>
+        <div className={localClasses.form}>
           {React.createElement(blockType.settingsForm, {
             id,
             type,
@@ -285,7 +299,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
       )}
       {state.showDeleteForm
       && (
-        <div className={clsx([])}>
+        <div className={clsx([localClasses.form])}>
           <Box mb={2}>
             Are you sure you want to delete this block?
           </Box>
