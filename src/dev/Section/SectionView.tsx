@@ -2,10 +2,10 @@ import React from 'react';
 import { Box, Container, Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
 import { ViewProps } from '../../types';
-import { SectionData, SectionRelationships, SectionSettings } from './Section';
+import { SectionData, SectionSettings } from './Section';
 
 const SectionView: React.FunctionComponent<
-  ViewProps<SectionData, SectionSettings, SectionRelationships>
+  ViewProps<SectionData, SectionSettings>
 > = (props) => {
   const { data, settings } = props;
   return (

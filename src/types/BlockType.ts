@@ -1,22 +1,20 @@
 import React from 'react';
 import {
   Block,
-  Relationships,
 } from './Block';
 
 export interface EditFormProps<
   D,
   S,
-  R extends Relationships = Relationships,
-> extends Partial<Block<D, S, R>> {
+  ST = any,
+> extends Partial<Block<D, S, ST>> {
   id: string
   data: D,
   onChange(data: D): void,
-  onRelsChange(relationships: Relationships): void,
   onClose(): void,
 }
 
-export interface SettingsFormProps<D, S> extends Partial<Block<D, S>> {
+export interface SettingsFormProps<D, S, ST = any> extends Partial<Block<D, S, ST>> {
   id: string
   data: D,
   settings: S
@@ -26,16 +24,14 @@ export interface SettingsFormProps<D, S> extends Partial<Block<D, S>> {
 export interface ViewProps<
   D,
   S,
-  R extends Relationships = Relationships,
   ST = any,
-  > extends Block<D, S, R, ST> {
-  onChange?(block: Block<D, S, R>): void,
+  > extends Block<D, S, ST> {
+  onChange?(block: Block<D, S, ST>): void,
 }
 
 export interface BlockType<
   D = any,
   S = any,
-  R extends Relationships = Relationships,
   ST = any,
 > {
   id: string,
@@ -43,11 +39,10 @@ export interface BlockType<
   hasSettings: boolean,
   defaultData: D,
   defaultSettings: S,
-  defaultRelationships?: R,
   blockLabel(data: D): string,
-  settingsForm: React.FunctionComponent<SettingsFormProps<D, S>> | null,
-  editForm: React.FunctionComponent<EditFormProps<D, S, R>> | null
-  view: React.FunctionComponent<ViewProps<D, S, R, ST>> | null,
+  settingsForm: React.FunctionComponent<SettingsFormProps<D, S, ST>> | null,
+  editForm: React.FunctionComponent<EditFormProps<D, S, ST>> | null
+  view: React.FunctionComponent<ViewProps<D, S, ST>> | null,
   loader?: React.FunctionComponent|null,
-  getInitialState?(block: Block<D, S, R, ST>, context: Record<string, any>): Promise<ST>|ST,
+  getInitialState?(block: Block<D, S, ST>, context: Record<string, any>): Promise<ST>|ST,
 }

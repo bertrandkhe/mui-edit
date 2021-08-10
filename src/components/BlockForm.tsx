@@ -95,7 +95,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     meta,
     id,
     type,
-    relationships,
   } = block;
 
   const [state, setState] = useState({
@@ -177,13 +176,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     onChange({
       ...block,
       settings: newSettings,
-    });
-  };
-
-  const handleRelsChange = (newRels: typeof block.relationships) => {
-    onChange({
-      ...block,
-      relationships: newRels,
     });
   };
 
@@ -277,9 +269,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             data,
             meta,
             settings,
-            relationships,
             onChange: handleDataChange,
-            onRelsChange: handleRelsChange,
             onClose: toggleShowEditForm,
           })}
         </div>
