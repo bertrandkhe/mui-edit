@@ -11,10 +11,11 @@ type MenuState = {
 export interface AddBlockButtonProps {
   blockTypes: BlockType[],
   onAddBlock(blockType: BlockType): void,
+  disabled?: boolean,
 }
 
 const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => {
-  const { onAddBlock, blockTypes } = props;
+  const { onAddBlock, blockTypes, disabled } = props;
   const [menuState, setMenuState] = useState<MenuState>({
     anchorEl: null,
   });
@@ -40,6 +41,7 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
           ...menuState,
           anchorEl: e.currentTarget,
         })}
+        disabled={disabled}
       >
         Add block
       </Button>

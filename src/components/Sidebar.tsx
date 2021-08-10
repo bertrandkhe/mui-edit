@@ -20,6 +20,7 @@ export interface SidebarProps {
   blockTypes: BlockType[],
   title: string,
   open: boolean,
+  cardinality: number,
   setData(data: Block[]): void,
   onBack?(): void,
 }
@@ -87,6 +88,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     onBack,
     title = 'Blocks',
     open = true,
+    cardinality,
   } = props;
   const blocksWrapperRef = useRef<HTMLDivElement>(null);
   const localClasses = useStyles();
@@ -218,6 +220,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
         <AddBlockButton
           blockTypes={blockTypes}
           onAddBlock={handleAddBlock}
+          disabled={cardinality >= 0 && data.length >= cardinality}
         />
       </footer>
     </div>

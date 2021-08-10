@@ -30,6 +30,7 @@ export interface EditorProps {
   editorTheme?: Theme,
   previewTheme?: Theme,
   title?: string,
+  cardinality?: number,
 }
 
 const maxHeight = (props: { maxWidth: 'sm' | 'md' | false }) => {
@@ -127,6 +128,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     onPreviewIframeLoad,
     isFullScreen = false,
     context = {},
+    cardinality = -1,
     container,
     title,
   } = props;
@@ -154,6 +156,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     blockTypes: sortedBlockTypes,
     title: title || 'Blocks',
     open: true,
+    cardinality,
   };
 
   if (disablePreview) {
