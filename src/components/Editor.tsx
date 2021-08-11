@@ -15,7 +15,8 @@ import Iframe from './Iframe';
 import { EditorContextProvider } from './EditorContextProvider';
 
 export interface EditorProps {
-  initialData: Block[],
+  data?: Block[],
+  initialData?: Block[],
   container?: HTMLElement,
   context?: Record<string, unknown>,
   blockTypes: BlockType[],
@@ -115,6 +116,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Editor = (props: EditorProps): React.ReactElement | null => {
   const {
+    data: propsData,
     initialData = [],
     onChange,
     onBack,
@@ -132,14 +134,24 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     container,
     title,
   } = props;
+  const isControlled = !!propsData;
   const [data, setData] = useState(initialData);
   const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
   const previewIframeRef = useRef<HTMLIFrameElement|null>(null);
   const localClasses = useStyles({ maxWidth });
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
 
+  function getData(): Block[] {
+    if (isControlled) {
+      return propsData as Block[];
+    }
+    return data;
+  }
+
   function handleDataChange(updatedData: Block[]): void {
-    setData(updatedData);
+    if (!isControlled) {
+      setData(updatedData);
+    }
     if (onChange) {
       onChange(updatedData);
     }
@@ -150,7 +162,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   }
 
   const mergedSidebarProps = {
-    data,
+    data: getData(),
     onBack,
     setData: handleDataChange,
     blockTypes: sortedBlockTypes,
@@ -170,7 +182,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     return (
       <Preview
         blockTypes={sortedBlockTypes}
-        data={data}
+        data={getData()}
       />
     );
   }
@@ -232,7 +244,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
                 <CssBaseline />
                 <Preview
                   blockTypes={sortedBlockTypes}
-                  data={data}
+                  data={getData()}
                   setData={handleDataChange}
                 />
               </ThemeProvider>

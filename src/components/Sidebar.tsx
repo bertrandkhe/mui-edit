@@ -218,6 +218,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
       </div>
       <footer className={localClasses.footer}>
         <AddBlockButton
+          data={data}
           blockTypes={blockTypes}
           onAddBlock={handleAddBlock}
           disabled={cardinality >= 0 && data.length >= cardinality}

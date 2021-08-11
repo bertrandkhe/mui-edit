@@ -10,7 +10,7 @@ import { LinkItem } from '../../types';
 import { useEditorContext } from '../EditorContextProvider';
 
 export type ButtonItem = {
-  variant: 'outlined' | 'contained',
+  variant: 'outlined' | 'contained' | 'text',
 } & LinkItem;
 
 const ButtonControl = (
@@ -91,6 +91,7 @@ const ButtonControl = (
               }}
               fullWidth
             >
+              <option value="text">Text</option>
               <option value="outlined">Outlined</option>
               <option value="contained">Contained</option>
             </NativeSelect>

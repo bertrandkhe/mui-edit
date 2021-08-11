@@ -45,4 +45,6 @@ export interface BlockType<
   view: React.FunctionComponent<ViewProps<D, S, ST>> | null,
   loader?: React.FunctionComponent|null,
   getInitialState?(block: Block<D, S, ST>, context: Record<string, any>): Promise<ST>|ST,
+  cardinality?: number,
+  disabled?: boolean,
 }

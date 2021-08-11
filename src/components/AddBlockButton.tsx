@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Menu, MenuItem } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { BlockType } from '../types';
+import { Block, BlockType } from '../types';
 import { useEditorContext } from './EditorContextProvider';
 
 type MenuState = {
@@ -9,13 +9,19 @@ type MenuState = {
 };
 
 export interface AddBlockButtonProps {
+  data: Block[],
   blockTypes: BlockType[],
   onAddBlock(blockType: BlockType): void,
   disabled?: boolean,
 }
 
 const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => {
-  const { onAddBlock, blockTypes, disabled } = props;
+  const {
+    data,
+    onAddBlock,
+    blockTypes,
+    disabled,
+  } = props;
   const [menuState, setMenuState] = useState<MenuState>({
     anchorEl: null,
   });
@@ -30,6 +36,16 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
     onAddBlock(blockType);
     handleCloseMenu();
   };
+
+  const count: Record<string, number> = {};
+
+  data.forEach((b) => {
+    if (!count[b.type]) {
+      count[b.type] = 1;
+    } else {
+      count[b.type] += 1;
+    }
+  });
 
   return (
     <>
@@ -51,14 +67,21 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
         onClose={handleCloseMenu}
         container={container?.ownerDocument.body}
       >
-        {blockTypes.map((blockType) => (
-          <MenuItem
-            key={blockType.id}
-            onClick={handleAddBlock(blockType)}
-          >
-            {blockType.label}
-          </MenuItem>
-        ))}
+        {blockTypes.map((blockType) => {
+          const { cardinality = -1 } = blockType;
+          const limitReached = cardinality > 0
+            ? count[blockType.id] >= cardinality
+            : false;
+          return (
+            <MenuItem
+              key={blockType.id}
+              onClick={handleAddBlock(blockType)}
+              disabled={blockType.disabled || limitReached}
+            >
+              {blockType.label}
+            </MenuItem>
+          );
+        })}
       </Menu>
     </>
   );
