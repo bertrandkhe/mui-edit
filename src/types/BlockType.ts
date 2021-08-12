@@ -29,6 +29,8 @@ export interface ViewProps<
   onChange?(block: Block<D, S, ST>): void,
 }
 
+export type EditorContext = Record<string, any>;
+
 export interface BlockType<
   D = any,
   S = any,
@@ -44,7 +46,7 @@ export interface BlockType<
   editForm: React.FunctionComponent<EditFormProps<D, S, ST>> | null
   view: React.FunctionComponent<ViewProps<D, S, ST>> | null,
   loader?: React.FunctionComponent|null,
-  getInitialState?(block: Block<D, S, ST>, context: Record<string, any>): Promise<ST>|ST,
+  getInitialState?(block: Block<D, S, ST>, context: EditorContext): Promise<ST>|ST,
   cardinality?: number,
   disabled?: boolean,
 }
