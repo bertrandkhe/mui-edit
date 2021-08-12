@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import { DragIndicator, Delete } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/core/styles';
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+import DeleteIcon from '@material-ui/icons/Delete';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   TextField,
   Card,
@@ -82,7 +83,7 @@ const FileImage = (
       <CardActions className={classes.actions}>
         {!disableHandle && (
           <div className={clsx([classes.actionsBtn, classes.dragAction])}>
-            <DragIndicator />
+            <DragIndicatorIcon />
           </div>
         )}
         <div className={classes.actionsRight}>
@@ -94,7 +95,7 @@ const FileImage = (
             }}
             disabled={isDeleting}
           >
-            <Delete />
+            <DeleteIcon />
           </Button>
         </div>
       </CardActions>

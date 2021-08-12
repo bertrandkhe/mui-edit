@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Container, Typography } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 import ReactMarkdown from 'react-markdown';
 import { ViewProps } from '../../types';
 import { SectionData, SectionSettings } from './Section';

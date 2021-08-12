@@ -5,7 +5,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { debounce } from '@material-ui/core/utils';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import * as CSS from 'csstype';
 import { useEditorContext } from '../EditorContextProvider';
 

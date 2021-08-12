@@ -3,8 +3,8 @@ import React, {
 } from 'react';
 import { Button, Grid, Typography } from '@material-ui/core';
 import Sortable from 'sortablejs';
-import { DragHandle } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/core/styles';
+import DragHandle from '@material-ui/icons/DragHandle';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { FileItem } from './index';
 import FileImage from './FileImage';
 

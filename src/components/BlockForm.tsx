@@ -16,7 +16,7 @@ import {
   Typography,
   Box,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Block, BlockType } from '../types';
 import { useEditorContext } from './EditorContextProvider';
 
