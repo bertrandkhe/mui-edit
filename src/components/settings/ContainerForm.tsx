@@ -1,12 +1,10 @@
 import React, { ChangeEvent } from 'react';
-import {
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  InputLabel,
-  NativeSelect,
-} from '@material-ui/core';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Grid from '@material-ui/core/Grid';
+import InputLabel from '@material-ui/core/InputLabel';
+import NativeSelect from '@material-ui/core/NativeSelect';
 
 export interface ContainerFormPropsSettings {
   containerMaxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false

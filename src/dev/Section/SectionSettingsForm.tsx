@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import TextAlignControl from '../../components/settings/TextAlignControl';
 import TypographyVariantControl from '../../components/settings/TypographyVariantControl';

@@ -1,9 +1,7 @@
 import React, { ChangeEvent, useRef, useState } from 'react';
-import {
-  Grid,
-  Box,
-  Button,
-} from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import { debounce } from '@material-ui/core/utils';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import * as CSS from 'csstype';

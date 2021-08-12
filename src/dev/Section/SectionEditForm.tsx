@@ -1,4 +1,5 @@
-import { Grid, TextField } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
 import React, { ChangeEvent } from 'react';
 import { EditFormProps } from '../../types';
 import { SectionData, SectionSettings } from './Section';

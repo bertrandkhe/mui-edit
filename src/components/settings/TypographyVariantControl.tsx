@@ -1,10 +1,8 @@
 import React, { ChangeEvent, ReactElement } from 'react';
-import {
-  FormControl,
-  InputLabel,
-  NativeSelect,
-  Typography,
-} from '@material-ui/core';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import Typography from '@material-ui/core/Typography';
 import { Variant } from '@material-ui/core/styles/createTypography';
 
 type Option = {
