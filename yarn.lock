@@ -1172,6 +1172,13 @@
   resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
 
+"@types/loadable__component@^5.13.4":
+  version "5.13.4"
+  resolved "https://registry.nlark.com/@types/loadable__component/download/@types/loadable__component-5.13.4.tgz#a4646b2406b1283efac1a9d9485824a905b33d4a"
+  integrity sha1-pGRrJAaxKD76wanZSFgkqQWzPUo=
+  dependencies:
+    "@types/react" "*"
+
 "@types/mdast@^3.0.0":
   version "3.0.4"
   resolved "https://registry.npmjs.org/@types/mdast/-/mdast-3.0.4.tgz"

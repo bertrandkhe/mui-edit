@@ -1,4 +1,5 @@
 import React from 'react';
+import { LoadableComponent } from '@loadable/component';
 import {
   Block,
 } from './Block';
@@ -42,9 +43,15 @@ export interface BlockType<
   defaultData: D,
   defaultSettings: S,
   blockLabel(data: D): string,
-  settingsForm: React.FunctionComponent<SettingsFormProps<D, S, ST>> | null,
-  editForm: React.FunctionComponent<EditFormProps<D, S, ST>> | null
-  view: React.FunctionComponent<ViewProps<D, S, ST>> | null,
+  settingsForm: LoadableComponent<SettingsFormProps<D, S, ST>>
+    | React.FunctionComponent<SettingsFormProps<D, S, ST>>
+    | null,
+  editForm: LoadableComponent<EditFormProps<D, S, ST>>
+    | React.FunctionComponent<EditFormProps<D, S, ST>>
+    | null,
+  view: LoadableComponent<ViewProps<D, S, ST>>
+    | React.FunctionComponent<ViewProps<D, S, ST>>
+    | null,
   loader?: React.FunctionComponent|null,
   getInitialState?(block: Block<D, S, ST>, context: EditorContext): Promise<ST>|ST,
   cardinality?: number,

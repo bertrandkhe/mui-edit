@@ -15,7 +15,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { Block, BlockType } from './types';
+import {
+  Block,
+  BlockType,
+} from './types';
 import { useEditorContext } from './EditorContextProvider';
 
 interface BlockFormInitialState {
