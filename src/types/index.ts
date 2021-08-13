@@ -1,6 +1,6 @@
-export { FileItem } from '../components/FileUploadControl';
-export { LinkItem } from '../components/LinkControl/LinkControl';
-export { ButtonItem } from '../components/ButtonControl/ButtonControl';
+export { FileItem } from '../FileUploadControl';
+export { LinkItem } from '../LinkControl/LinkControl';
+export { ButtonItem } from '../ButtonControl/ButtonControl';
 export {
   Block,
   RelationshipItem,

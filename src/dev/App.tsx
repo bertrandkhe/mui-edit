@@ -2,7 +2,7 @@ import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Section from './Section';
-import Editor from '../components/Editor';
+import Editor from '../Editor';
 
 const App = (props: { container: HTMLElement }): React.ReactElement => {
   const { container } = props;

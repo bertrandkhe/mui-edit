@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
-import { LinkItem } from '../../types';
+import { LinkItem } from '../types';
 import { useEditorContext } from '../EditorContextProvider';
 
 export type ButtonItem = {

@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { Block, BlockType } from '../types';
+import type { Block, BlockType } from './types';
 import BlockView from './BlockView';
 
 export interface PreviewProps {

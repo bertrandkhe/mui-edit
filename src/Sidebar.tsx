@@ -1,14 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
-import Sortable from 'sortablejs';
 import yellow from '@material-ui/core/colors/yellow';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
-import { BlockType, Block } from '../types';
+import { CircularProgress } from '@material-ui/core';
+import { BlockType, Block } from './types';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
-import { createBlock } from '../utils/block';
+import { createBlock } from './utils/block';
 
 export interface SidebarClasses {
   root?: string,
@@ -107,23 +107,34 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     if (!blocksWrapperRef.current) {
       return;
     }
-    const sortable = new Sortable(blocksWrapperRef.current, {
-      animation: 150,
-      draggable: '.sortable-item',
-      handle: '.sortable-handle',
-      onUpdate: () => {
-        const newData = sortable
-          .toArray()
-          .map((id: string) => (
-            data.find(
-              (block): boolean => block.id === id,
-            ))) as Block[];
-        setData(newData);
-      },
-    });
+    let sortable: import('sortablejs')|null = null;
+    (async () => {
+      const Sortable = (await import('sortablejs')).default;
+      if (!blocksWrapperRef.current) {
+        return;
+      }
+      sortable = new Sortable(blocksWrapperRef.current, {
+        animation: 150,
+        draggable: '.sortable-item',
+        handle: '.sortable-handle',
+        onUpdate: () => {
+          if (sortable) {
+            const newData = sortable
+              .toArray()
+              .map((id: string) => (
+                data.find(
+                  (block): boolean => block.id === id,
+                ))) as Block[];
+            setData(newData);
+          }
+        },
+      });
+    })();
     // eslint-disable-next-line consistent-return
     return () => {
-      sortable.destroy();
+      if (sortable) {
+        sortable.destroy();
+      }
     };
   }, [data, setData]);
 
@@ -202,17 +213,20 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
             return null;
           }
           return (
-            <BlockForm
-              key={id}
-              blockType={blockType}
-              block={block}
-              onChange={handleChange(id)}
-              onDelete={handleDeleteBlock(id)}
-              onClone={handleClone(id)}
-              initialState={{
-                showEditForm: Date.now() - meta.created < 2000,
-              }}
-            />
+            <React.Suspense fallback={<CircularProgress />}>
+              <BlockForm
+                key={id}
+                blockType={blockType}
+                block={block}
+                onChange={handleChange(id)}
+                onDelete={handleDeleteBlock(id)}
+                onClone={handleClone(id)}
+                initialState={{
+                  showEditForm: Date.now() - meta.created < 2000,
+                }}
+              />
+            </React.Suspense>
+
           );
         })}
       </div>

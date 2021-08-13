@@ -1,10 +1,10 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
-import TextAlignControl from '../../components/settings/TextAlignControl';
-import TypographyVariantControl from '../../components/settings/TypographyVariantControl';
-import ContainerForm from '../../components/settings/ContainerForm';
-import SpacingForm from '../../components/settings/SpacingForm';
-import ColorForm from '../../components/settings/ColorForm';
+import TextAlignControl from '../../settings/TextAlignControl';
+import TypographyVariantControl from '../../settings/TypographyVariantControl';
+import ContainerForm from '../../settings/ContainerForm';
+import SpacingForm from '../../settings/SpacingForm';
+import ColorForm from '../../settings/ColorForm';
 import { SettingsFormProps } from '../../types';
 import { SectionData, SectionSettings } from './Section';
 

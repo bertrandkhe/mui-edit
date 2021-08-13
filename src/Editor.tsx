@@ -8,10 +8,10 @@ import TabletIcon from '@material-ui/icons/Tablet';
 import LaptopIcon from '@material-ui/icons/Laptop';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
-import { Block, BlockType } from '../types';
+import { Block, BlockType } from './types';
 import Preview from './Preview';
 import Sidebar from './Sidebar';
-import defaultTheme from '../theme';
+import defaultTheme from './theme';
 import Iframe from './Iframe';
 import { EditorContextProvider } from './EditorContextProvider';
 

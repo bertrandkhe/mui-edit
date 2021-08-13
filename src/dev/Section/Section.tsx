@@ -4,9 +4,9 @@ import SectionView from './SectionView';
 import SectionSettingsForm from './SectionSettingsForm';
 import SectionEditForm from './SectionEditForm';
 import { BlockType } from '../../types';
-import { SpacingFormPropsSettings } from '../../components/settings/SpacingForm';
-import { ColorPropsSettings } from '../../components/settings/ColorForm';
-import { ContainerFormPropsSettings } from '../../components/settings/ContainerForm';
+import { SpacingFormPropsSettings } from '../../settings/SpacingForm';
+import { ColorPropsSettings } from '../../settings/ColorForm';
+import { ContainerFormPropsSettings } from '../../settings/ContainerForm';
 
 export type SectionData = {
   title: string

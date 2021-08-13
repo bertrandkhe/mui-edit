@@ -4,7 +4,6 @@ import React, {
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Sortable from 'sortablejs';
 import DragHandle from '@material-ui/icons/DragHandle';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { FileItem } from './index';
@@ -61,13 +60,23 @@ const FileUploadControl = (
     if (!fileListEl.current) {
       return;
     }
-    const sortable = new Sortable(fileListEl.current, {
-      handle: '.file-sortable-handle',
-      draggable: '.file',
-    });
+    let sortable: import('sortablejs')|null = null;
+    (async () => {
+      const Sortable = (await import('sortablejs')).default;
+      if (!fileListEl.current) {
+        return;
+      }
+      sortable = new Sortable(fileListEl.current, {
+        handle: '.file-sortable-handle',
+        draggable: '.file',
+      });
+    })();
+
     // eslint-disable-next-line consistent-return
     return () => {
-      sortable.destroy();
+      if (sortable) {
+        sortable.destroy();
+      }
     };
   }, [files]);
 

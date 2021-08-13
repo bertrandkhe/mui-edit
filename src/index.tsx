@@ -1,17 +1,17 @@
-import Editor from './components/Editor';
-import Preview from './components/Preview';
-import Sidebar from './components/Sidebar';
-import ColorForm from './components/settings/ColorForm';
-import ContainerForm from './components/settings/ContainerForm';
-import SpacingForm from './components/settings/SpacingForm';
-import TextAlignControl from './components/settings/TextAlignControl';
-import TypographyVariantControl from './components/settings/TypographyVariantControl';
-import FileUploadControl from './components/FileUploadControl';
-import AddBlockButton from './components/AddBlockButton';
-import LinkControl from './components/LinkControl';
-import ButtonControl from './components/ButtonControl';
-import Iframe from './components/Iframe';
-import { EditorContextProvider, useEditorContext } from './components/EditorContextProvider';
+import Editor from './Editor';
+import Preview from './Preview';
+import Sidebar from './Sidebar';
+import ColorForm from './settings/ColorForm';
+import ContainerForm from './settings/ContainerForm';
+import SpacingForm from './settings/SpacingForm';
+import TextAlignControl from './settings/TextAlignControl';
+import TypographyVariantControl from './settings/TypographyVariantControl';
+import FileUploadControl from './FileUploadControl';
+import AddBlockButton from './AddBlockButton';
+import LinkControl from './LinkControl';
+import ButtonControl from './ButtonControl';
+import Iframe from './Iframe';
+import { EditorContextProvider, useEditorContext } from './EditorContextProvider';
 
 export * from './types';
 

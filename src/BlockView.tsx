@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Block, BlockType } from '../types';
+import type { Block, BlockType } from './types';
 import { useEditorContext } from './EditorContextProvider';
 
 type BlockViewProps = {
