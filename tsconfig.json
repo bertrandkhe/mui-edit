@@ -7,7 +7,7 @@
     "strict": true,
     "lib": ["es2015", "dom"],
     "module": "commonjs",
-    "target": "es5",
+    "target": "es2017",
     "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
@@ -19,6 +19,7 @@
     "src/**/*",
   ],
   "exclude": [
-    "webpack.config.js"
+    "webpack.config.js",
+    "src/dev"
   ]
 }
