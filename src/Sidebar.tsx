@@ -213,9 +213,8 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
             return null;
           }
           return (
-            <React.Suspense fallback={<CircularProgress />}>
+            <React.Suspense key={id} fallback={<CircularProgress />}>
               <BlockForm
-                key={id}
                 blockType={blockType}
                 block={block}
                 onChange={handleChange(id)}
