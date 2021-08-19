@@ -1,10 +1,14 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useState,
+} from 'react';
+import Sortable from 'sortablejs';
 import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
 import yellow from '@material-ui/core/colors/yellow';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
-import { CircularProgress } from '@material-ui/core';
 import { BlockType, Block } from './types';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
@@ -105,36 +109,24 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
 
   useEffect(() => {
     if (!blocksWrapperRef.current) {
-      return;
+      return undefined;
     }
-    let sortable: import('sortablejs')|null = null;
-    (async () => {
-      const Sortable = (await import('sortablejs')).default;
-      if (!blocksWrapperRef.current) {
-        return;
-      }
-      sortable = new Sortable(blocksWrapperRef.current, {
-        animation: 150,
-        draggable: '.sortable-item',
-        handle: '.sortable-handle',
-        onUpdate: () => {
-          if (sortable) {
-            const newData = sortable
-              .toArray()
-              .map((id: string) => (
-                data.find(
-                  (block): boolean => block.id === id,
-                ))) as Block[];
-            setData(newData);
-          }
-        },
-      });
-    })();
-    // eslint-disable-next-line consistent-return
+    const sortable = new Sortable(blocksWrapperRef.current, {
+      animation: 150,
+      draggable: '.sortable-item',
+      handle: '.sortable-handle',
+      onUpdate: () => {
+        const newData = sortable
+          .toArray()
+          .map((id: string) => (
+            data.find(
+              (block): boolean => block.id === id,
+            ))) as Block[];
+        setData(newData);
+      },
+    });
     return () => {
-      if (sortable) {
-        sortable.destroy();
-      }
+      sortable.destroy();
     };
   }, [data, setData]);
 
@@ -213,7 +205,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
             return null;
           }
           return (
-            <React.Suspense key={id} fallback={<CircularProgress />}>
+            <React.Suspense fallback={null} key={block.id}>
               <BlockForm
                 blockType={blockType}
                 block={block}
@@ -225,7 +217,6 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
                 }}
               />
             </React.Suspense>
-
           );
         })}
       </div>
