@@ -3,6 +3,7 @@ import React, { useContext, useRef } from 'react';
 export type EditorContext = {
   container?: HTMLElement
   generateId(): string,
+  mode: 'edit' | 'view',
 } & Record<string, unknown>;
 
 export type EditorContextProviderProps = {
@@ -18,6 +19,7 @@ export const EditorContext = React.createContext<EditorContext>({
     idIncr += 1;
     return `id-${currentId}`;
   },
+  mode: 'edit',
 });
 
 export const useEditorContext = (): EditorContext => {

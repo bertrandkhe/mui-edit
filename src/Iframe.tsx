@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, ForwardedRef,
+  useState, useEffect, ForwardedRef, useMemo,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
@@ -19,51 +19,64 @@ const Iframe = React.forwardRef((props: {
   } = props;
   const [contentRef, setContentRef] = useState<HTMLIFrameElement | null>(null);
   const [jss, setJss] = useState<Jss | null>(null);
-  const mountNode = contentRef?.contentWindow?.document?.body;
-  const headNode = contentRef?.contentWindow?.document?.head;
+  const iframeDoc = useMemo(() => contentRef?.contentWindow?.document, [contentRef]);
 
   useEffect(() => {
-    if (!headNode) {
+    if (!iframeDoc) {
       return;
     }
-    if (!jss) {
-      setJss(create({
-        plugins: jssPreset().plugins,
-        insertionPoint: headNode,
-      }));
-    }
-  }, [headNode, jss]);
+    const previewTitle = iframeDoc.createElement('title');
+    previewTitle.innerText = 'Preview';
+    iframeDoc.head.appendChild(previewTitle);
+    setJss(create({
+      plugins: jssPreset().plugins,
+      insertionPoint: previewTitle,
+    }));
+  }, [iframeDoc]);
 
   useEffect(() => {
-    if (mountNode && onBodyMount) {
-      onBodyMount(mountNode);
+    if (iframeDoc && onBodyMount) {
+      onBodyMount(iframeDoc.body);
     }
-  }, [mountNode, onBodyMount]);
+  }, [iframeDoc, onBodyMount]);
+
+  const handleIframeLoad = (node: HTMLIFrameElement) => {
+    return () => {
+      setContentRef(node);
+      if (!ref) {
+        return;
+      }
+      if (typeof ref === 'function') {
+        ref(node);
+        return;
+      }
+      // eslint-disable-next-line no-param-reassign
+      ref.current = node;
+    };
+  };
 
   return (
     <iframe
       title={title}
       className={className}
       ref={(node) => {
-        setContentRef(node);
-        if (!ref) {
+        if (!node || !node.contentDocument) {
           return;
         }
-        if (typeof ref === 'function') {
-          ref(node);
-          return;
+        if (node.contentDocument.readyState === 'complete') {
+          handleIframeLoad(node)();
+        } else {
+          node.addEventListener('load', handleIframeLoad(node));
         }
-        const mutableRef = ref;
-        mutableRef.current = node;
       }}
     >
-      {jss && mountNode && createPortal(
+      {jss && iframeDoc?.body && createPortal(
         (
           <StylesProvider jss={jss}>
             {children}
           </StylesProvider>
         ),
-        mountNode,
+        iframeDoc.body,
       )}
     </iframe>
   );

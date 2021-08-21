@@ -99,7 +99,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       setMounted(true);
     });
     return () => {
@@ -205,18 +205,17 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
             return null;
           }
           return (
-            <React.Suspense fallback={null} key={block.id}>
-              <BlockForm
-                blockType={blockType}
-                block={block}
-                onChange={handleChange(id)}
-                onDelete={handleDeleteBlock(id)}
-                onClone={handleClone(id)}
-                initialState={{
-                  showEditForm: Date.now() - meta.created < 2000,
-                }}
-              />
-            </React.Suspense>
+            <BlockForm
+              key={block.id}
+              blockType={blockType}
+              block={block}
+              onChange={handleChange(id)}
+              onDelete={handleDeleteBlock(id)}
+              onClone={handleClone(id)}
+              initialState={{
+                showEditForm: Date.now() - meta.changed < 2000,
+              }}
+            />
           );
         })}
       </div>

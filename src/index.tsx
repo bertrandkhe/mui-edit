@@ -1,6 +1,7 @@
 import Editor from './Editor';
 import Preview from './Preview';
 import Sidebar from './Sidebar';
+import BlockView from './BlockView';
 import ColorForm from './settings/ColorForm';
 import ContainerForm from './settings/ContainerForm';
 import SpacingForm from './settings/SpacingForm';
@@ -31,6 +32,7 @@ export {
   ButtonControl,
   EditorContextProvider,
   useEditorContext,
+  BlockView,
 };
 
 export default Editor;

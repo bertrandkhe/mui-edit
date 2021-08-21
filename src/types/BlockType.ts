@@ -27,7 +27,8 @@ export interface ViewProps<
   S,
   ST = any,
   > extends Block<D, S, ST> {
-  onChange?(block: Block<D, S, ST>): void,
+  onDataChange?(data: D): void,
+  onSettingsChange?(settings: S): void,
 }
 
 export type EditorContext = Record<string, any>;

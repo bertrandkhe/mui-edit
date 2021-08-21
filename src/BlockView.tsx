@@ -5,7 +5,7 @@ import { useEditorContext } from './EditorContextProvider';
 type BlockViewProps = {
   block: Block,
   blockTypes: BlockType[],
-  onChange(block: Block): void,
+  onChange?(block: Block): void,
 };
 
 const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
@@ -43,10 +43,29 @@ const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
     return null;
   }
 
+  const handleDataChange = (newData: typeof block.data) => {
+    if (onChange) {
+      onChange({
+        ...block,
+        data: newData,
+      });
+    }
+  };
+
+  const handleSettingsChange = (newSettings: typeof block.settings) => {
+    if (onChange) {
+      onChange({
+        ...block,
+        settings: newSettings,
+      });
+    }
+  };
+
   if (!blockType.getInitialState || initialState) {
     return React.createElement(blockType.view, {
       ...block,
-      onChange,
+      onDataChange: handleDataChange,
+      onSettingsChange: handleSettingsChange,
       key: block.id,
       initialState,
     });

@@ -184,6 +184,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
       <Preview
         blockTypes={sortedBlockTypes}
         data={getData()}
+        setData={handleDataChange}
       />
     );
   }
@@ -194,6 +195,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
         ...context,
         container,
         previewIframeRef,
+        mode: disableEditor ? 'view' : 'edit',
       }}
     >
       <div className={clsx([localClasses.root])}>
@@ -241,7 +243,17 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
                 }
               }}
             >
-              <ThemeProvider theme={previewTheme}>
+              <ThemeProvider
+                theme={{
+                  ...previewTheme,
+                  props: {
+                    ...previewTheme.props,
+                    MuiUseMediaQuery: {
+                      matchMedia: previewIframeRef.current?.contentWindow?.matchMedia,
+                    },
+                  },
+                }}
+              >
                 <CssBaseline />
                 <Preview
                   blockTypes={sortedBlockTypes}
