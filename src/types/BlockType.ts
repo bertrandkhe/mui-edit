@@ -27,6 +27,7 @@ export interface ViewProps<
   S,
   ST = any,
   > extends Block<D, S, ST> {
+  contentEditable?: boolean,
   onDataChange?(data: D): void,
   onSettingsChange?(settings: S): void,
 }

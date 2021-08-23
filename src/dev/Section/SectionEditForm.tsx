@@ -1,8 +1,10 @@
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import React, { ChangeEvent } from 'react';
+import type { Descendant } from 'slate';
 import { EditFormProps } from '../../types';
 import { SectionData, SectionSettings } from './Section';
+import RichTextControl from '../../RichTextControl';
 
 const SectionEditForm: React.FunctionComponent<
   EditFormProps<SectionData, SectionSettings>
@@ -20,20 +22,21 @@ const SectionEditForm: React.FunctionComponent<
         <Grid item xs={12}>
           <TextField
             required
-            defaultValue={data.title}
+            value={data.title}
             label="Title"
             onChange={handleChange('title')}
             fullWidth
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            multiline
-            required
-            defaultValue={data.body}
-            label="Body"
-            onChange={handleChange('body')}
-            fullWidth
+          <RichTextControl
+            value={data.body}
+            onChange={(newBody: Descendant[]) => {
+              onChange({
+                ...data,
+                body: newBody,
+              });
+            }}
           />
         </Grid>
       </Grid>

@@ -1,5 +1,6 @@
 import * as CSS from 'csstype';
 import { Variant } from '@material-ui/core/styles/createTypography';
+import type { Descendant } from 'slate';
 import SectionView from './SectionView';
 import SectionSettingsForm from './SectionSettingsForm';
 import SectionEditForm from './SectionEditForm';
@@ -10,7 +11,7 @@ import { ContainerFormPropsSettings } from '../../settings/ContainerForm';
 
 export type SectionData = {
   title: string
-  body: string
+  body: Descendant[],
 }
 
 export interface SectionSettings extends
@@ -26,7 +27,7 @@ const Section: BlockType<SectionData, SectionSettings> = {
   label: 'Section',
   defaultData: {
     title: '',
-    body: '',
+    body: [],
   },
   defaultSettings: {
     titleVariant: 'h3',

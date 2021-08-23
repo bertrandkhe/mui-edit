@@ -31,23 +31,20 @@ export interface SidebarProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100%',
-    overflowY: 'auto',
-    width: 365,
+    minHeight: '100%',
+    width: '100%',
     borderLeft: `1px solid ${theme.palette.grey[100]}`,
     boxShadow: '-1px 0 10px rgba(0,0,0,0.2)',
-    marginLeft: 'auto',
-    position: 'absolute',
-    top: 0,
-    right: -365,
+    transform: 'translateX(100%)',
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: 'white',
-    transition: '0.4s',
-    zIndex: 1,
+    transitionDuration: '.2s',
+    transitionProperty: 'right',
+    overflowX: 'visible',
 
     '&.open': {
-      right: 0,
+      transform: 'translateX(0)',
     },
 
     '& .sortable-item .sortable-handle': {
@@ -178,7 +175,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   };
 
   return (
-    <div className={clsx([localClasses.root, classes.root, { open: mounted && open }])}>
+    <div className={clsx(localClasses.root, classes.root, { open: mounted && open })}>
       <div className={localClasses.header}>
         {onBack && (
           <Button

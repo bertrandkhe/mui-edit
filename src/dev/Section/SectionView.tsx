@@ -2,14 +2,20 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import ReactMarkdown from 'react-markdown';
+import type { Descendant } from 'slate';
 import { ViewProps } from '../../types';
 import { SectionData, SectionSettings } from './Section';
+import EditableComponent from '../../EditableComponent';
+import RichTextControl from '../../RichTextControl';
 
 const SectionView: React.FunctionComponent<
   ViewProps<SectionData, SectionSettings>
 > = (props) => {
-  const { data, settings } = props;
+  const {
+    data, settings, onDataChange, contentEditable,
+  } = props;
+  console.log(data.body);
+
   return (
     <Box
       bgcolor={settings.backgroundColor}
@@ -24,10 +30,34 @@ const SectionView: React.FunctionComponent<
         disableGutters={settings.containerDisableGutters}
         maxWidth={settings.containerMaxWidth}
       >
-        <Typography variant={settings.titleVariant}>
+        <EditableComponent
+          contentEditable={contentEditable}
+          component={Typography}
+          variant={settings.titleVariant}
+          onContentChange={(newTitle: string) => {
+            if (onDataChange) {
+              onDataChange({
+                ...data,
+                title: newTitle,
+              });
+            }
+          }}
+        >
           {data.title}
-        </Typography>
-        <ReactMarkdown>{data.body}</ReactMarkdown>
+        </EditableComponent>
+        <RichTextControl
+          inline
+          value={data.body}
+          onChange={(newBody: Descendant[]) => {
+            if (!onDataChange) {
+              return;
+            }
+            onDataChange({
+              ...data,
+              body: newBody,
+            });
+          }}
+        />
       </Container>
     </Box>
   );

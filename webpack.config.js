@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const config = {
   entry: ['./src/index.tsx'],
@@ -48,14 +49,15 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         title: 'Development',
       }),
-      // new webpack.HotModuleReplacementPlugin(),
+      new webpack.HotModuleReplacementPlugin(),
+      new ReactRefreshWebpackPlugin(),
     );
     config.devServer = {
       contentBase: path.join(__dirname, 'dist'),
       compress: true,
       port: 9001,
-      // hot: true,
-      // hotOnly: true,
+      hot: true,
+      hotOnly: true,
     };
   }
   return config;

@@ -64,6 +64,7 @@ const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
   if (!blockType.getInitialState || initialState) {
     return React.createElement(blockType.view, {
       ...block,
+      contentEditable: context.mode === 'edit',
       onDataChange: handleDataChange,
       onSettingsChange: handleSettingsChange,
       key: block.id,

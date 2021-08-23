@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { RefObject, useContext, useRef } from 'react';
 
 export type EditorContext = {
   container?: HTMLElement
@@ -24,6 +24,22 @@ export const EditorContext = React.createContext<EditorContext>({
 
 export const useEditorContext = (): EditorContext => {
   return useContext(EditorContext);
+};
+
+export const usePreviewWindow = (): Window|undefined => {
+  const context = useEditorContext();
+  if (!context.previewIframeRef) {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+    return window;
+  }
+  const previewIframeRef = context.previewIframeRef as RefObject<HTMLIFrameElement>;
+  const previewWindow = previewIframeRef.current?.contentWindow;
+  if (!previewWindow) {
+    return undefined;
+  }
+  return previewWindow;
 };
 
 export const EditorContextProvider: React.FunctionComponent<EditorContextProviderProps> = (props) => {
