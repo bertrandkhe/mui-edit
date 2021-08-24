@@ -14,7 +14,6 @@ const SectionView: React.FunctionComponent<
   const {
     data, settings, onDataChange, contentEditable,
   } = props;
-  console.log(data.body);
 
   return (
     <Box

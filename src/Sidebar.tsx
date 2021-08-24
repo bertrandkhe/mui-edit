@@ -13,6 +13,7 @@ import { BlockType, Block } from './types';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
 import { createBlock } from './utils/block';
+import { useEditorContext } from './EditorContextProvider';
 
 export interface SidebarClasses {
   root?: string,
@@ -32,6 +33,7 @@ export interface SidebarProps {
 const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: '100%',
+    maxHeight: '100%',
     width: '100%',
     borderLeft: `1px solid ${theme.palette.grey[100]}`,
     boxShadow: '-1px 0 10px rgba(0,0,0,0.2)',
@@ -40,8 +42,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     backgroundColor: 'white',
     transitionDuration: '.2s',
-    transitionProperty: 'right',
+    transitionProperty: 'transform',
     overflowX: 'visible',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 1,
 
     '&.open': {
       transform: 'translateX(0)',
@@ -93,7 +99,9 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   } = props;
   const blocksWrapperRef = useRef<HTMLDivElement>(null);
   const localClasses = useStyles();
+  const context = useEditorContext();
   const [mounted, setMounted] = useState(false);
+  const [closing, setClosing] = useState(false);
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -108,24 +116,49 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     if (!blocksWrapperRef.current) {
       return undefined;
     }
-    const sortable = new Sortable(blocksWrapperRef.current, {
-      animation: 150,
-      draggable: '.sortable-item',
-      handle: '.sortable-handle',
-      onUpdate: () => {
-        const newData = sortable
-          .toArray()
-          .map((id: string) => (
-            data.find(
-              (block): boolean => block.id === id,
-            ))) as Block[];
-        setData(newData);
-      },
-    });
+    let sortable: Sortable|null = null;
+    const timeoutId = window.setTimeout(() => {
+      if (!blocksWrapperRef.current) {
+        return;
+      }
+      sortable = new Sortable(blocksWrapperRef.current, {
+        animation: 150,
+        draggable: '.sortable-item',
+        handle: '.sortable-handle',
+        onUpdate: () => {
+          if (!sortable) {
+            return;
+          }
+          const newData = sortable
+            .toArray()
+            .map((id: string) => (
+              data.find(
+                (block): boolean => block.id === id,
+              ))) as Block[];
+          setData(newData);
+        },
+      });
+    }, 200);
+
     return () => {
-      sortable.destroy();
+      window.clearTimeout(timeoutId);
+      if (sortable) {
+        sortable.destroy();
+      }
     };
   }, [data, setData]);
+
+  const handleBack = () => {
+    setClosing(true);
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        if (!onBack) {
+          return;
+        }
+        onBack();
+      });
+    }, 200);
+  };
 
   const handleAddBlock = (blockType: BlockType) => {
     setData([
@@ -164,23 +197,16 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
       if (block.id !== id) {
         return block;
       }
-      return {
-        ...newBlock,
-        meta: {
-          ...newBlock.meta,
-          changed: Date.now(),
-        },
-      };
+      return newBlock;
     }));
   };
 
   return (
-    <div className={clsx(localClasses.root, classes.root, { open: mounted && open })}>
+    <div className={clsx(localClasses.root, classes.root, { open: !closing && open && mounted })}>
       <div className={localClasses.header}>
         {onBack && (
           <Button
-            onClick={onBack}
-            size="small"
+            onClick={handleBack}
             className={localClasses.headerBtn}
             variant="contained"
             color="primary"
@@ -209,6 +235,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
               onChange={handleChange(id)}
               onDelete={handleDeleteBlock(id)}
               onClone={handleClone(id)}
+              context={context}
               initialState={{
                 showEditForm: Date.now() - meta.changed < 2000,
               }}

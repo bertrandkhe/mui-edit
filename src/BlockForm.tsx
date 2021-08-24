@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import clsx from 'clsx';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import EditIcon from '@material-ui/icons/Edit';
@@ -19,7 +19,7 @@ import {
   Block,
   BlockType,
 } from './types';
-import { useEditorContext } from './EditorContextProvider';
+import { EditorContext, useEditorContext } from './EditorContextProvider';
 
 interface BlockFormInitialState {
   showEditForm?: boolean,
@@ -35,6 +35,7 @@ export interface BlockFormProps {
   onChange(block: Block): void,
   onClone(withData: boolean): void,
   onDelete(): void,
+  context: EditorContext,
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -89,6 +90,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     onDelete,
     onClone,
     initialState = {},
+    context,
   } = props;
   const {
     data,
@@ -105,8 +107,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     moreAnchorEl: null,
     ...initialState,
   });
-  const editorContext = useEditorContext();
-  const { container } = editorContext;
+  const { container } = context;
   const localClasses = useStyles();
 
   const toggleShowEditForm = () => {
@@ -170,6 +171,10 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     onChange({
       ...block,
       data: newData,
+      meta: {
+        ...block.meta,
+        changed: Date.now(),
+      },
     });
   };
 
@@ -177,6 +182,10 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     onChange({
       ...block,
       settings: newSettings,
+      meta: {
+        ...block.meta,
+        changed: Date.now(),
+      },
     });
   };
 
@@ -318,4 +327,14 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
   );
 };
 
-export default BlockForm;
+export default memo(BlockForm, (prevProps, props) => {
+  const { block: prevBlock, initialState: prevState } = prevProps;
+  const { block, initialState: state } = props;
+  if (block.meta.changed !== prevBlock.meta.changed) {
+    return false;
+  }
+  if (prevState?.showEditForm !== state?.showEditForm) {
+    return false;
+  }
+  return true;
+});

@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { useState, useRef, MouseEventHandler } from 'react';
+import React, {
+  useState, useRef, MouseEventHandler, useMemo,
+} from 'react';
 import clsx from 'clsx';
 import { makeStyles, Theme, ThemeProvider } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -15,7 +17,7 @@ import Preview from './Preview';
 import Sidebar from './Sidebar';
 import defaultTheme from './theme';
 import Iframe from './Iframe';
-import { EditorContextProvider } from './EditorContextProvider';
+import { EditorContext, EditorContextProvider } from './EditorContextProvider';
 
 export interface EditorProps {
   data?: Block[],
@@ -118,8 +120,10 @@ const useStyles = makeStyles((theme) => ({
   },
   sidebarWrapper: {
     height: '100%',
+    maxHeight: '100vh',
     overflowY: 'auto',
     overflowX: 'visible',
+    maxWidth: 365,
     width: 365,
     top: 0,
     zIndex: 2,
@@ -166,13 +170,25 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   const sidebarWrapperRef = useRef<HTMLDivElement|null>(null);
   const localClasses = useStyles({ maxWidth });
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
-
-  function getData(): Block[] {
-    if (isControlled) {
-      return propsData as Block[];
-    }
-    return data;
-  }
+  const editorContext = useMemo<Partial<EditorContext>>(() => {
+    return {
+      ...context,
+      container,
+      previewIframeRef,
+      mode: disableEditor ? 'view' : 'edit',
+    };
+  }, [context, container, disableEditor]);
+  const currentPreviewTheme = useMemo(() => {
+    return {
+      ...previewTheme,
+      props: {
+        ...previewTheme.props,
+        MuiUseMediaQuery: {
+          matchMedia: previewIframeRef.current?.contentWindow?.matchMedia,
+        },
+      },
+    };
+  }, [previewTheme]);
 
   function handleDataChange(updatedData: Block[]): void {
     if (!isControlled) {
@@ -187,8 +203,10 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     return null;
   }
 
+  const currentData = isControlled ? propsData as Block[] : data;
+
   const mergedSidebarProps = {
-    data: getData(),
+    data: currentData,
     onBack,
     setData: handleDataChange,
     blockTypes: sortedBlockTypes,
@@ -208,7 +226,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     return (
       <Preview
         blockTypes={sortedBlockTypes}
-        data={getData()}
+        data={currentData}
         setData={handleDataChange}
       />
     );
@@ -239,6 +257,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
         }
         if (sidebarWrapperRef.current) {
           sidebarWrapperRef.current.style.width = `${sidebarWidth}px`;
+          sidebarWrapperRef.current.style.maxWidth = `${sidebarWidth}px`;
         }
       });
     };
@@ -250,14 +269,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   };
 
   return (
-    <EditorContextProvider
-      context={{
-        ...context,
-        container,
-        previewIframeRef,
-        mode: disableEditor ? 'view' : 'edit',
-      }}
-    >
+    <EditorContextProvider context={editorContext}>
       <div className={clsx([localClasses.root])}>
         <ThemeProvider theme={editorTheme}>
           <div className={localClasses.main}>
@@ -303,21 +315,11 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
                   }
                 }}
               >
-                <ThemeProvider
-                  theme={{
-                    ...previewTheme,
-                    props: {
-                      ...previewTheme.props,
-                      MuiUseMediaQuery: {
-                        matchMedia: previewIframeRef.current?.contentWindow?.matchMedia,
-                      },
-                    },
-                  }}
-                >
+                <ThemeProvider theme={currentPreviewTheme}>
                   <CssBaseline />
                   <Preview
                     blockTypes={sortedBlockTypes}
-                    data={getData()}
+                    data={currentData}
                     setData={handleDataChange}
                   />
                 </ThemeProvider>

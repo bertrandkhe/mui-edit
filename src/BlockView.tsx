@@ -1,20 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState, useEffect, useRef, memo,
+} from 'react';
 import type { Block, BlockType } from './types';
-import { useEditorContext } from './EditorContextProvider';
+import { EditorContext } from './EditorContextProvider';
 
 type BlockViewProps = {
   block: Block,
   blockTypes: BlockType[],
   onChange?(block: Block): void,
+  context: EditorContext,
 };
 
 const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
-  const { block, blockTypes, onChange } = props;
+  const {
+    block,
+    blockTypes,
+    onChange,
+    context,
+  } = props;
   const blockType = blockTypes.find((bt) => bt.id === block.type);
   const changed = useRef(block.meta.changed);
   const loadTimeoutId = useRef<number>(0);
   const [initialState, setInitialState] = useState(block.initialState);
-  const context = useEditorContext();
 
   useEffect(() => {
     let active = true;
@@ -48,6 +55,10 @@ const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
       onChange({
         ...block,
         data: newData,
+        meta: {
+          ...block.meta,
+          changed: Date.now(),
+        },
       });
     }
   };
@@ -57,6 +68,10 @@ const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
       onChange({
         ...block,
         settings: newSettings,
+        meta: {
+          ...block.meta,
+          changed: Date.now(),
+        },
       });
     }
   };
@@ -83,4 +98,8 @@ const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
   );
 };
 
-export default BlockView;
+export default memo(BlockView, (prevProps, props) => {
+  const { block: prevBlock } = prevProps;
+  const { block } = props;
+  return block.meta.changed === prevBlock.meta.changed;
+});

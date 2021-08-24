@@ -2,6 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import type { Block, BlockType } from './types';
 import BlockView from './BlockView';
+import { useEditorContext } from './EditorContextProvider';
 
 export interface PreviewProps {
   blockTypes: BlockType[]
@@ -18,19 +19,15 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
     setData,
   } = props;
 
+  const context = useEditorContext();
+
   const handleChange = (id: string) => (newBlock: Block) => {
     if (setData) {
       setData(data.map((block) => {
         if (block.id !== id) {
           return block;
         }
-        return {
-          ...newBlock,
-          meta: {
-            ...newBlock.meta,
-            changed: Date.now(),
-          },
-        };
+        return newBlock;
       }));
     }
   };
@@ -44,6 +41,7 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
             blockTypes={blockTypes}
             onChange={handleChange(block.id)}
             key={block.id}
+            context={context}
           />
         );
       })}
