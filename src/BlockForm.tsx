@@ -14,12 +14,12 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { styled } from '@material-ui/core/styles';
 import {
   Block,
   BlockType,
 } from './types';
-import { EditorContext, useEditorContext } from './EditorContextProvider';
+import { EditorContext } from './EditorContextProvider';
 
 interface BlockFormInitialState {
   showEditForm?: boolean,
@@ -38,24 +38,38 @@ export interface BlockFormProps {
   context: EditorContext,
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    borderBottom: `1px solid ${theme.palette.grey[100]}`,
-    padding: theme.spacing(1.5),
+const PREFIX = 'BlockForm';
+const classes = {
+  root: `${PREFIX}-root`,
+  headerActions: `${PREFIX}-headerActions`,
+  labelDragIcon: `${PREFIX}-labelDragIcon`,
+  label: `${PREFIX}-label`,
+  form: `${PREFIX}-form`,
+  actions: `${PREFIX}-actions`,
+  listItemIcon: `${PREFIX}-listItemIcon`,
+  deleteActions: `${PREFIX}-deleteActions`,
+  cancelBtn: `${PREFIX}-cancelBtn`,
+  iconBtn: `${PREFIX}-iconBtn`,
+};
+
+const Root = styled('div')((
+  {
+    theme,
   },
-  header: {
-  },
-  headerActions: {
+) => ({
+  borderBottom: `1px solid ${theme.palette.grey[100]}`,
+  padding: theme.spacing(1.5),
+  [`& .${classes.headerActions}`]: {
     display: 'flex',
   },
-  form: {
+  [`& .${classes.form}`]: {
     marginTop: theme.spacing(2),
   },
-  labelDragIcon: {
+  [`& .${classes.labelDragIcon}`]: {
     marginRight: theme.spacing(0.25),
     marginLeft: theme.spacing(-0.5),
   },
-  label: {
+  [`& .${classes.label}`]: {
     justifyContent: 'flex-start',
     padding: 0,
     maxWidth: 170,
@@ -64,20 +78,20 @@ const useStyles = makeStyles((theme) => ({
       display: 'block',
     },
   },
-  actions: {
+  [`& .${classes.actions}`]: {
     marginLeft: 'auto',
   },
-  iconBtn: {
+  [`& .${classes.iconBtn}`]: {
     minWidth: 0,
   },
-  listItemIcon: {
+  [`& .${classes.listItemIcon}`]: {
     width: 32,
     minWidth: 32,
   },
-  deleteActions: {
+  [`& .${classes.deleteActions}`]: {
     display: 'flex',
   },
-  cancelBtn: {
+  [`& .${classes.cancelBtn}`]: {
     marginRight: theme.spacing(1),
   },
 }));
@@ -108,7 +122,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     ...initialState,
   });
   const { container } = context;
-  const localClasses = useStyles();
 
   const toggleShowEditForm = () => {
     setState({
@@ -190,23 +203,23 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
   };
 
   return (
-    <div key={id} data-id={id} className={clsx(['sortable-item', localClasses.root])}>
-      <div className={localClasses.header}>
-        <div className={localClasses.headerActions}>
-          <DragIndicatorIcon className={clsx(['sortable-handle', localClasses.labelDragIcon])} />
-          <Typography className={localClasses.label} variant="button">
+    <Root key={id} data-id={id} className={clsx(['sortable-item'])}>
+      <div>
+        <div className={classes.headerActions}>
+          <DragIndicatorIcon className={clsx(['sortable-handle', classes.labelDragIcon])} />
+          <Typography className={classes.label} variant="button">
             {blockType.blockLabel(data)}
           </Typography>
-          <div className={localClasses.actions}>
+          <div className={classes.actions}>
             {state.showEditForm && (
-              <Button onClick={toggleShowEditForm} className={localClasses.iconBtn}>
+              <Button onClick={toggleShowEditForm} className={classes.iconBtn}>
                 <RemoveIcon
                   fontSize="small"
                 />
               </Button>
             )}
             {!state.showEditForm && (
-              <Button onClick={toggleShowEditForm} className={localClasses.iconBtn}>
+              <Button onClick={toggleShowEditForm} className={classes.iconBtn}>
                 <EditIcon
                   fontSize="small"
                 />
@@ -214,7 +227,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             )}
             {state.showSettingsForm
             && (
-              <Button onClick={toggleShowSettingsForm} className={localClasses.iconBtn}>
+              <Button onClick={toggleShowSettingsForm} className={classes.iconBtn}>
                 <RemoveIcon
                   fontSize="small"
                 />
@@ -224,14 +237,14 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             && (
               <Button
                 onClick={toggleShowSettingsForm}
-                className={localClasses.iconBtn}
+                className={classes.iconBtn}
                 disabled={!blockType.hasSettings}
               >
                 <SettingsIcon fontSize="small" />
               </Button>
             )}
             <Button
-              className={localClasses.iconBtn}
+              className={classes.iconBtn}
               onClick={handleClickMoreBtn}
             >
               <MoreVertIcon fontSize="small" />
@@ -239,10 +252,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
             <Menu
               open={Boolean(state.moreAnchorEl)}
               anchorEl={state.moreAnchorEl}
-              // anchorOrigin={{
-              //   vertical: 'bottom',
-              //   horizontal: 'right',
-              // }}
               transformOrigin={{
                 vertical: -48,
                 horizontal: 'left',
@@ -251,7 +260,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
               container={container?.ownerDocument.body}
             >
               <MenuItem onClick={handleCloneBlock()}>
-                <ListItemIcon className={localClasses.listItemIcon}>
+                <ListItemIcon className={classes.listItemIcon}>
                   <FileCopyIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>
@@ -259,7 +268,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
                 </ListItemText>
               </MenuItem>
               <MenuItem onClick={handleDeleteBlock}>
-                <ListItemIcon className={localClasses.listItemIcon}>
+                <ListItemIcon className={classes.listItemIcon}>
                   <DeleteIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>
@@ -272,7 +281,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
       </div>
       {state.showEditForm && blockType.editForm
       && (
-        <div className={localClasses.form}>
+        <div className={classes.form}>
           {React.createElement(blockType.editForm, {
             id,
             type,
@@ -286,7 +295,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
       )}
       {blockType.hasSettings && blockType.settingsForm && state.showSettingsForm
       && (
-        <div className={localClasses.form}>
+        <div className={classes.form}>
           {React.createElement(blockType.settingsForm, {
             id,
             type,
@@ -299,15 +308,15 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
       )}
       {state.showDeleteForm
       && (
-        <div className={clsx([localClasses.form])}>
+        <div className={clsx([classes.form])}>
           <Box mb={2}>
             Are you sure you want to delete this block?
           </Box>
-          <div className={localClasses.deleteActions}>
+          <div className={classes.deleteActions}>
             <Button
               variant="outlined"
               onClick={handleDeleteCancel}
-              className={localClasses.cancelBtn}
+              className={classes.cancelBtn}
             >
               Cancel
             </Button>
@@ -323,7 +332,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
 
         </div>
       )}
-    </div>
+    </Root>
   );
 };
 

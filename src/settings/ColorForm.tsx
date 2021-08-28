@@ -1,11 +1,27 @@
 import React, { ChangeEvent, useRef, useState } from 'react';
+import { styled } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import { debounce } from '@material-ui/core/utils';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import * as CSS from 'csstype';
 import { useEditorContext } from '../EditorContextProvider';
+
+const PREFIX = 'ColorForm';
+
+const classes = {
+  label: `${PREFIX}-label`,
+};
+
+const Root = styled('details')((
+  {
+    theme,
+  },
+) => ({
+  [`& .${classes.label}`]: {
+    marginLeft: theme.spacing(1),
+  },
+}));
 
 export interface ColorPropsSettings {
   color?: CSS.Property.Color
@@ -19,18 +35,12 @@ export interface ColorFormProps {
   open?: Readonly<boolean>
 }
 
-const useStyles = makeStyles((theme) => ({
-  label: {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
 const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
   const {
     id, settings, onChange, open,
   } = props;
   const editorContext = useEditorContext();
-  const classes = useStyles();
+
   const colorElRef = useRef<HTMLInputElement|null>(null);
   const bgColorElRef = useRef<HTMLInputElement|null>(null);
   const [htmlId] = useState(id || editorContext.generateId());
@@ -44,7 +54,7 @@ const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
   const bgColorInputId = `backgroundColor-input-${htmlId}`;
 
   return (
-    <details open={open}>
+    <Root open={open}>
       <summary>Color</summary>
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -100,7 +110,7 @@ const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
           </Box>
         </Grid>
       </Grid>
-    </details>
+    </Root>
   );
 };
 

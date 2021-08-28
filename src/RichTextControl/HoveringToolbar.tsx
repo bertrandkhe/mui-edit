@@ -1,14 +1,20 @@
 /* eslint-disable */
 import React, { useEffect, useRef, useState } from 'react';
+import { styled } from '@material-ui/core/styles';
 import { Editor, Range } from 'slate';
 import { useSlate, ReactEditor } from 'slate-react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
 import { usePreviewWindow } from '../EditorContextProvider';
 
-const useStyles = makeStyles(() => ({
-  root: {
+const PREFIX = 'HoveringToolbar';
+
+const classes = {
+  root: `${PREFIX}-root`
+};
+
+const Root = styled('div')(() => ({
+  [`&.${classes.root}`]: {
     position: 'absolute',
     opacity: 0,
     transition: '.2s opacity',
@@ -25,7 +31,7 @@ const useStyles = makeStyles(() => ({
       left:  0,
       transform: 'translateY(-100%)',
     },
-  },
+  }
 }));
 
 type HoveringToolbarProps = {
@@ -44,7 +50,7 @@ const HoveringToolbar: React.FunctionComponent<HoveringToolbarProps> = (props) =
   const [state, setState] = useState<typeof initialState>(initialState);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const editor = useSlate();
-  const classes = useStyles();
+
   const window = usePreviewWindow();
 
   useEffect(() => {
@@ -82,7 +88,7 @@ const HoveringToolbar: React.FunctionComponent<HoveringToolbarProps> = (props) =
   }
 
   return (
-    <div
+    <Root
       className={clsx(classes.root, { active: state.active })}
       ref={rootRef}
       // style={{
@@ -91,7 +97,7 @@ const HoveringToolbar: React.FunctionComponent<HoveringToolbarProps> = (props) =
       // }}
     >
       {children}
-    </div>
+    </Root>
   );
 };
 

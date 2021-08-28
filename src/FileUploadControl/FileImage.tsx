@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { styled } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import DeleteIcon from '@material-ui/icons/Delete';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -11,47 +11,75 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import { FileItem } from './index';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const PREFIX = 'FileImage';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  content: `${PREFIX}-content`,
+  col: `${PREFIX}-col`,
+  cover: `${PREFIX}-cover`,
+  actions: `${PREFIX}-actions`,
+  actionsBtn: `${PREFIX}-actionsBtn`,
+  actionsRight: `${PREFIX}-actionsRight`,
+  dragAction: `${PREFIX}-dragAction`,
+  deleteActions: `${PREFIX}-deleteActions`,
+  cancelAction: `${PREFIX}-cancelAction`,
+};
+
+const StyledCard = styled(Card)((
+  {
+    theme,
+  },
+) => ({
+  [`& .${classes.root}`]: {
     display: 'flex',
     flexWrap: 'wrap',
     width: '100%',
   },
-  content: {
+
+  [`& .${classes.content}`]: {
     flex: 1,
     padding: theme.spacing(1),
-    minHeight: 106 - theme.spacing(2),
+    minHeight: `calc(106px - ${theme.spacing(2)})`,
     display: 'flex',
     flexDirection: 'column',
   },
-  col: {
+
+  [`& .${classes.col}`]: {
     marginRight: theme.spacing(2),
   },
-  cover: {
+
+  [`& .${classes.cover}`]: {
     width: 106,
   },
-  actions: {
+
+  [`& .${classes.actions}`]: {
     width: '100%',
     borderBottom: '1px solid #eee',
     alignItems: 'center',
     padding: theme.spacing(0.25),
   },
-  actionsBtn: {
+
+  [`& .${classes.actionsBtn}`]: {
     minWidth: 0,
     padding: theme.spacing(0.25),
     lineHeight: 0,
   },
-  actionsRight: {
+
+  [`& .${classes.actionsRight}`]: {
     marginLeft: 'auto !important',
   },
-  dragAction: {
+
+  [`& .${classes.dragAction}`]: {
     cursor: 'grab',
   },
-  deleteActions: {
+
+  [`& .${classes.deleteActions}`]: {
     display: 'flex',
     marginTop: 'auto',
   },
-  cancelAction: {
+
+  [`& .${classes.cancelAction}`]: {
     marginRight: theme.spacing(1),
   },
 }));
@@ -67,10 +95,10 @@ const FileImage = (
   const {
     file, onChange, onDelete, disableHandle,
   } = props;
-  const classes = useStyles();
+
   const [isDeleting, setDeleting] = useState(false);
   return (
-    <Card
+    <StyledCard
       className={clsx(['file file-image'])}
       classes={{
         root: classes.root,
@@ -142,7 +170,7 @@ const FileImage = (
           title={file.title}
         />
       </div>
-    </Card>
+    </StyledCard>
   );
 };
 

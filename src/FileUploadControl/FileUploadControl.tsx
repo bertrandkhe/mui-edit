@@ -1,29 +1,45 @@
 import React, {
   ChangeEvent, useState, useEffect, useRef,
 } from 'react';
+import { styled } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import DragHandle from '@material-ui/icons/DragHandle';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { FileItem } from './index';
 import FileImage from './FileImage';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const PREFIX = 'FileUploadControl';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  summary: `${PREFIX}-summary`,
+  uploadActions: `${PREFIX}-uploadActions`,
+  uploadBtn: `${PREFIX}-uploadBtn`,
+};
+
+const Root = styled('details')((
+  {
+    theme,
+  },
+) => ({
+  [`&.${classes.root}`]: {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
   },
-  summary: {
+
+  [`& .${classes.summary}`]: {
     marginBottom: theme.spacing(1),
   },
-  uploadActions: {
+
+  [`& .${classes.uploadActions}`]: {
     marginTop: theme.spacing(2),
     display: 'flex',
     alignItems: 'center',
   },
-  uploadBtn: {
+
+  [`& .${classes.uploadBtn}`]: {
     marginRight: theme.spacing(1),
   },
 }));
@@ -48,7 +64,7 @@ const FileUploadControl = (
     label = 'Files',
     open = true,
   } = props;
-  const classes = useStyles();
+
   const [queue, setQueue] = useState<File[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const fileListEl = useRef<HTMLDivElement>(null);
@@ -119,7 +135,7 @@ const FileUploadControl = (
   };
 
   return (
-    <details className={classes.root} open={open}>
+    <Root className={classes.root} open={open}>
       <Typography component="summary" variant="body2" className={classes.summary}>{label}</Typography>
       <div ref={fileListEl}>
         <Grid container spacing={2}>
@@ -177,7 +193,7 @@ const FileUploadControl = (
           )}
         </div>
       )}
-    </details>
+    </Root>
   );
 };
 
