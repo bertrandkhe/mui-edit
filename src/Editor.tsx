@@ -79,6 +79,17 @@ const Root = styled('div')((
     overflowY: 'auto',
     maxWidth: '100%',
     width: '100%',
+    height: '100%',
+    '&.sm': {
+      maxWidth: 390,
+      height: 844,
+      marginTop: 30,
+    },
+    '&.md': {
+      maxWidth: 1080,
+      height: 820,
+      marginTop: 30,
+    },
   },
 
   [`& .${classes.previewHeight}`]: {
@@ -94,7 +105,7 @@ const Root = styled('div')((
     height: '100%',
     maxHeight: '100vh',
     overflowY: 'auto',
-    overflowX: 'visible',
+    overflowX: 'hidden',
     maxWidth: 365,
     width: 365,
     top: 0,
@@ -302,7 +313,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
             <div className={clsx([classes.previewHeight])}>
               <Iframe
                 title="preview"
-                className={classes.previewIframe}
+                className={clsx(classes.previewIframe, maxWidth)}
                 ref={(iframeEl) => {
                   if (iframeEl) {
                     previewIframeRef.current = iframeEl;

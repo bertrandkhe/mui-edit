@@ -72,7 +72,7 @@ const SpacingForm: React.FunctionComponent<SpacingFormProps> = (props) => {
           return (
             <Grid item xs={6} key={direction}>
               <FormControl fullWidth>
-                <InputLabel htmlFor={htmlId}>{direction}</InputLabel>
+                <InputLabel variant="standard" htmlFor={htmlId}>{direction}</InputLabel>
                 <NativeSelect
                   inputProps={{
                     defaultValue: settings[prop as keyof SpacingFormPropsSettings],

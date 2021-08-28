@@ -54,7 +54,7 @@ const ContainerForm: React.FunctionComponent<ContainerFormProps> = (props) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <InputLabel htmlFor={htmlId}>Max width</InputLabel>
+            <InputLabel variant="standard" htmlFor={htmlId}>Max width</InputLabel>
             <NativeSelect
               inputProps={{
                 defaultValue: settings.containerMaxWidth || 'lg',

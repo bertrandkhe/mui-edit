@@ -28,7 +28,7 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
   const dataRef = useRef<Block[]>(data);
   const context = useEditorContext();
   const emotionCacheRef = useRef<EmotionCache>(createCache({
-    key: 'preview',
+    key: 'mui-edit-preview',
     prepend: true,
     container: (context.previewIframeRef as MutableRefObject<HTMLIFrameElement|null>)?.current?.contentDocument?.head
       || window.document.head,

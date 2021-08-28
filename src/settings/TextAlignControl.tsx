@@ -28,7 +28,7 @@ const TextAlignControl = (props: TextAlignControlProps): ReactElement => {
   };
   return (
     <FormControl fullWidth>
-      <InputLabel htmlFor={htmlId}>{label}</InputLabel>
+      <InputLabel variant="standard" htmlFor={htmlId}>{label}</InputLabel>
       <NativeSelect
         inputProps={{
           defaultValue,

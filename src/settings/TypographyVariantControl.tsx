@@ -45,7 +45,7 @@ const TypographyVariantControl = (props: TypographyVariantControlProps): ReactEl
   };
   return (
     <FormControl fullWidth>
-      <InputLabel htmlFor={htmlId}>{label}</InputLabel>
+      <InputLabel variant="standard" htmlFor={htmlId}>{label}</InputLabel>
       <NativeSelect
         inputProps={{
           defaultValue,

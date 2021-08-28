@@ -13,13 +13,13 @@ const classes = {
 };
 
 const Root = styled('span')({
-  [`& .${classes.bold}`]: {
+  [`&.${classes.bold}`]: {
     fontWeight: 600,
   },
-  [`& .${classes.italic}`]: {
+  [`&.${classes.italic}`]: {
     fontStyle: 'italic',
   },
-  [`& .${classes.underlined}`]: {
+  [`&.${classes.underlined}`]: {
     textDecoration: 'underline',
   },
 });

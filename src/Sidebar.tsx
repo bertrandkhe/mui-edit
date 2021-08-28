@@ -43,14 +43,14 @@ const Root = styled('div')((
     backgroundColor: 'white',
     transitionDuration: '.2s',
     transitionProperty: 'transform',
-    overflowX: 'visible',
+    overflowX: 'hidden',
     position: 'absolute',
     top: 0,
     left: 0,
     zIndex: 1,
 
     '&.open': {
-      transform: 'translateX(0)',
+      transform: 'translateX(0%)',
     },
 
     '& .sortable-item .sortable-handle': {
@@ -76,6 +76,7 @@ const Root = styled('div')((
     borderBottom: `1px solid ${theme.palette.grey[100]}`,
     display: 'flex',
     alignItems: 'center',
+    height: 56,
   },
 
   [`& .${classes.body}`]: {

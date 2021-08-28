@@ -253,7 +253,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
               open={Boolean(state.moreAnchorEl)}
               anchorEl={state.moreAnchorEl}
               transformOrigin={{
-                vertical: -48,
+                vertical: 0,
                 horizontal: 'left',
               }}
               onClose={handleCloseMoreMenu}
