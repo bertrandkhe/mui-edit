@@ -1,7 +1,7 @@
 import React, {
   useRef,
   useEffect,
-  useState,
+  useState, useCallback,
 } from 'react';
 import Sortable from 'sortablejs';
 import { v4 as uuidv4 } from 'uuid';
@@ -102,6 +102,11 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   const context = useEditorContext();
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
+  const dataRef = useRef<Block[]>(data);
+
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -132,7 +137,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
           const newData = sortable
             .toArray()
             .map((id: string) => (
-              data.find(
+              dataRef.current.find(
                 (block): boolean => block.id === id,
               ))) as Block[];
           setData(newData);
@@ -146,7 +151,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
         sortable.destroy();
       }
     };
-  }, [data, setData]);
+  }, [setData]);
 
   const handleBack = () => {
     setClosing(true);
@@ -162,23 +167,23 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
 
   const handleAddBlock = (blockType: BlockType) => {
     setData([
-      ...data,
+      ...dataRef.current,
       createBlock(blockType),
     ]);
   };
 
   const handleDeleteBlock = (id: string) => () => {
-    setData(data.filter((block) => block.id !== id));
+    setData(dataRef.current.filter((block) => block.id !== id));
   };
 
   const handleClone = (id: string) => (withData = true) => {
-    const block = data.find((b) => b.id === id) as Block;
+    const block = dataRef.current.find((b) => b.id === id) as Block;
     const blockType = blockTypes.find((bt) => bt.id === block.type);
     if (!blockType) {
       return;
     }
     setData([
-      ...data,
+      ...dataRef.current,
       {
         ...block,
         id: uuidv4(),
@@ -192,9 +197,9 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     ]);
   };
 
-  const handleChange = (id: string) => (newBlock: Block) => {
-    setData(data.map((block) => {
-      if (block.id !== id) {
+  const handleChange = (newBlock: Block) => {
+    setData(dataRef.current.map((block) => {
+      if (block.id !== newBlock.id) {
         return block;
       }
       return newBlock;
@@ -232,7 +237,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
               key={block.id}
               blockType={blockType}
               block={block}
-              onChange={handleChange(id)}
+              onChange={handleChange}
               onDelete={handleDeleteBlock(id)}
               onClone={handleClone(id)}
               context={context}

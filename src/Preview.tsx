@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import type { Block, BlockType } from './types';
 import BlockView from './BlockView';
@@ -18,17 +18,22 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
     className,
     setData,
   } = props;
-
+  const dataRef = useRef<Block[]>(data);
   const context = useEditorContext();
+
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
 
   const handleChange = (id: string) => (newBlock: Block) => {
     if (setData) {
-      setData(data.map((block) => {
+      const newData = dataRef.current.map((block) => {
         if (block.id !== id) {
           return block;
         }
         return newBlock;
-      }));
+      });
+      setData(newData);
     }
   };
 
