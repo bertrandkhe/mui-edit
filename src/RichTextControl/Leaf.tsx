@@ -1,17 +1,25 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
+import { styled } from '@material-ui/core/styles';
 import { RenderLeafProps } from 'slate-react';
-import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-const useStyles = makeStyles({
-  bold: {
+const PREFIX = 'Leaf';
+
+const classes = {
+  bold: `${PREFIX}-bold`,
+  italic: `${PREFIX}-italic`,
+  underlined: `${PREFIX}-underlined`,
+};
+
+const Root = styled('span')({
+  [`&.${classes.bold}`]: {
     fontWeight: 600,
   },
-  italic: {
+  [`&.${classes.italic}`]: {
     fontStyle: 'italic',
   },
-  underlined: {
+  [`&.${classes.underlined}`]: {
     textDecoration: 'underline',
   },
 });
@@ -20,15 +28,13 @@ const Leaf: React.FunctionComponent<RenderLeafProps> = (props) => {
   const {
     leaf, children, attributes,
   } = props;
-  const classes = useStyles();
+
   const className = clsx({
     [classes.bold]: leaf.bold,
     [classes.italic]: leaf.italic,
     [classes.underlined]: leaf.underlined,
   });
-  return (
-    <span className={className} {...attributes}>{children}</span>
-  );
+  return <Root className={className} {...attributes}>{children}</Root>;
 };
 
 export default Leaf;

@@ -1,37 +1,37 @@
 import React, {
   useRef,
   useEffect,
-  useState, useCallback,
+  useState,
 } from 'react';
+import { styled } from '@material-ui/core/styles';
 import Sortable from 'sortablejs';
 import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
-import yellow from '@material-ui/core/colors/yellow';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
+import { yellow } from '@material-ui/core/colors';
 import { BlockType, Block } from './types';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
 import { createBlock } from './utils/block';
 import { useEditorContext } from './EditorContextProvider';
 
-export interface SidebarClasses {
-  root?: string,
-}
+const PREFIX = 'Sidebar';
 
-export interface SidebarProps {
-  classes?: SidebarClasses,
-  data: Block[],
-  blockTypes: BlockType[],
-  title: string,
-  open: boolean,
-  cardinality: number,
-  setData(data: Block[]): void,
-  onBack?(): void,
-}
+const classes = {
+  root: `${PREFIX}-root`,
+  headerBtn: `${PREFIX}-headerBtn`,
+  title: `${PREFIX}-title`,
+  header: `${PREFIX}-header`,
+  body: `${PREFIX}-body`,
+  footer: `${PREFIX}-footer`,
+};
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const Root = styled('div')((
+  {
+    theme,
+  },
+) => ({
+  [`&.${classes.root}`]: {
     minHeight: '100%',
     maxHeight: '100%',
     width: '100%',
@@ -43,14 +43,14 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'white',
     transitionDuration: '.2s',
     transitionProperty: 'transform',
-    overflowX: 'visible',
+    overflowX: 'hidden',
     position: 'absolute',
     top: 0,
     left: 0,
     zIndex: 1,
 
     '&.open': {
-      transform: 'translateX(0)',
+      transform: 'translateX(0%)',
     },
 
     '& .sortable-item .sortable-handle': {
@@ -61,24 +61,30 @@ const useStyles = makeStyles((theme) => ({
       background: yellow[100],
     },
   },
-  headerBtn: {
+
+  [`& .${classes.headerBtn}`]: {
     height: '100%',
     borderRadius: 0,
     boxShadow: 'none',
   },
-  title: {
+
+  [`& .${classes.title}`]: {
     padding: theme.spacing(2),
   },
-  header: {
+
+  [`& .${classes.header}`]: {
     borderBottom: `1px solid ${theme.palette.grey[100]}`,
     display: 'flex',
     alignItems: 'center',
+    height: 56,
   },
-  body: {
+
+  [`& .${classes.body}`]: {
     height: 'calc(100% - 92px)',
     overflowY: 'auto',
   },
-  footer: {
+
+  [`& .${classes.footer}`]: {
     marginTop: 'auto',
     display: 'flex',
     borderTop: '1px solid #eee',
@@ -86,9 +92,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export interface SidebarProps {
+  data: Block[],
+  blockTypes: BlockType[],
+  title: string,
+  open: boolean,
+  cardinality: number,
+  setData(data: Block[]): void,
+  onBack?(): void,
+}
+
 const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   const {
-    classes = {},
     data,
     blockTypes,
     setData,
@@ -98,7 +113,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     cardinality,
   } = props;
   const blocksWrapperRef = useRef<HTMLDivElement>(null);
-  const localClasses = useStyles();
+
   const context = useEditorContext();
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -207,21 +222,21 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   };
 
   return (
-    <div className={clsx(localClasses.root, classes.root, { open: !closing && open && mounted })}>
-      <div className={localClasses.header}>
+    <Root className={clsx(classes.root, { open: !closing && open && mounted })}>
+      <div className={classes.header}>
         {onBack && (
           <Button
             onClick={handleBack}
-            className={localClasses.headerBtn}
+            className={classes.headerBtn}
             variant="contained"
             color="primary"
           >
             Back
           </Button>
         )}
-        <div className={localClasses.title}>{title}</div>
+        <div className={classes.title}>{title}</div>
       </div>
-      <div ref={blocksWrapperRef} className={localClasses.body}>
+      <div ref={blocksWrapperRef} className={classes.body}>
         {data.map((block) => {
           const {
             type,
@@ -248,7 +263,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
           );
         })}
       </div>
-      <footer className={localClasses.footer}>
+      <footer className={classes.footer}>
         <AddBlockButton
           data={data}
           blockTypes={blockTypes}
@@ -256,7 +271,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
           disabled={cardinality >= 0 && data.length >= cardinality}
         />
       </footer>
-    </div>
+    </Root>
   );
 };
 

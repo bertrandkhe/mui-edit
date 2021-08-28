@@ -3,10 +3,10 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import Typography from '@material-ui/core/Typography';
-import { Variant } from '@material-ui/core/styles/createTypography';
+import { TypographyVariant } from '@material-ui/core/styles';
 
 type Option = {
-  value: Variant
+  value: TypographyVariant
   label: string
 };
 
@@ -14,9 +14,9 @@ export interface TypographyVariantControlProps {
   id: string
   name: string
   label: string
-  onChange(variant: Variant): void
+  onChange(variant: TypographyVariant): void
   options?: Option[]
-  defaultValue?: Variant
+  defaultValue?: TypographyVariant
 }
 
 const TypographyVariantControl = (props: TypographyVariantControlProps): ReactElement => {
@@ -41,11 +41,11 @@ const TypographyVariantControl = (props: TypographyVariantControlProps): ReactEl
   } = props;
   const htmlId = `${name}-select-${id}`;
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onChange(e.currentTarget.value as Variant);
+    onChange(e.currentTarget.value as TypographyVariant);
   };
   return (
     <FormControl fullWidth>
-      <InputLabel htmlFor={htmlId}>{label}</InputLabel>
+      <InputLabel variant="standard" htmlFor={htmlId}>{label}</InputLabel>
       <NativeSelect
         inputProps={{
           defaultValue,

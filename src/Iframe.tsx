@@ -2,8 +2,6 @@ import React, {
   useState, useEffect, ForwardedRef, useMemo,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { StylesProvider, jssPreset } from '@material-ui/core/styles';
-import { create, Jss } from 'jss';
 
 const Iframe = React.forwardRef((props: {
   children: React.ReactNode,
@@ -18,7 +16,6 @@ const Iframe = React.forwardRef((props: {
     onBodyMount,
   } = props;
   const [contentRef, setContentRef] = useState<HTMLIFrameElement | null>(null);
-  const [jss, setJss] = useState<Jss | null>(null);
   const iframeDoc = useMemo(() => contentRef?.contentWindow?.document, [contentRef]);
 
   useEffect(() => {
@@ -28,10 +25,6 @@ const Iframe = React.forwardRef((props: {
     const previewTitle = iframeDoc.createElement('title');
     previewTitle.innerText = 'Preview';
     iframeDoc.head.appendChild(previewTitle);
-    setJss(create({
-      plugins: jssPreset().plugins,
-      insertionPoint: previewTitle,
-    }));
   }, [iframeDoc]);
 
   useEffect(() => {
@@ -70,12 +63,8 @@ const Iframe = React.forwardRef((props: {
         }
       }}
     >
-      {jss && iframeDoc?.body && createPortal(
-        (
-          <StylesProvider jss={jss}>
-            {children}
-          </StylesProvider>
-        ),
+      {iframeDoc?.body && createPortal(
+        children,
         iframeDoc.body,
       )}
     </iframe>

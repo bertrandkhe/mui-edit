@@ -1,5 +1,5 @@
 import * as CSS from 'csstype';
-import { Variant } from '@material-ui/core/styles/createTypography';
+import { TypographyVariant } from '@material-ui/core/styles';
 import type { Descendant } from 'slate';
 import SectionView from './SectionView';
 import SectionSettingsForm from './SectionSettingsForm';
@@ -18,7 +18,7 @@ export interface SectionSettings extends
   SpacingFormPropsSettings,
   ColorPropsSettings,
   ContainerFormPropsSettings {
-  titleVariant: Variant
+  titleVariant: TypographyVariant
   textAlign: CSS.Property.TextAlign
 }
 

@@ -1,25 +1,35 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@material-ui/core/styles';
 
-type ToolbarProps = {
-  children: React.ReactNode,
+const PREFIX = 'Toolbar';
+
+const classes = {
+  root: `${PREFIX}-root`,
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const Root = styled('aside')((
+  {
+    theme,
+  },
+) => ({
+  [`&.${classes.root}`]: {
     display: 'flex',
     borderBottom: '2px solid #eee',
     marginBottom: theme.spacing(1),
   },
 }));
 
+type ToolbarProps = {
+  children: React.ReactNode,
+};
+
 const Toolbar: React.FunctionComponent<ToolbarProps> = (props) => {
   const { children } = props;
-  const classes = useStyles();
+
   return (
-    <aside className={classes.root}>
+    <Root className={classes.root}>
       {children}
-    </aside>
+    </Root>
   );
 };
 

@@ -1,18 +1,23 @@
 import React from 'react';
+import { styled } from '@material-ui/core/styles';
 import { useSlate } from 'slate-react';
 import clsx from 'clsx';
 import { Editor } from 'slate';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Formats } from './RichTextControl';
 
-type MarkButtonProps = {
-  format: Formats,
-  children: React.ReactNode,
+const PREFIX = 'MarkButton';
+
+const classes = {
+  root: `${PREFIX}-root`,
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const StyledButton = styled(Button)((
+  {
+    theme,
+  },
+) => ({
+  [`&.${classes.root}`]: {
     background: 'white',
     boxShadow: 'none',
     border: 'none',
@@ -26,6 +31,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+
+type MarkButtonProps = {
+  format: Formats,
+  children: React.ReactNode,
+};
 
 const isMarkActive = (editor: Editor, format: Formats) => {
   const marks = Editor.marks(editor);
@@ -44,9 +54,9 @@ const toggleMark = (editor: Editor, format: Formats) => {
 const MarkButton: React.FunctionComponent<MarkButtonProps> = (props) => {
   const { format, children } = props;
   const editor = useSlate();
-  const classes = useStyles();
+
   return (
-    <Button
+    <StyledButton
       type="button"
       className={clsx(classes.root, { active: isMarkActive(editor, format) })}
       onClick={(e) => {
@@ -55,7 +65,7 @@ const MarkButton: React.FunctionComponent<MarkButtonProps> = (props) => {
       }}
     >
       {children}
-    </Button>
+    </StyledButton>
   );
 };
 

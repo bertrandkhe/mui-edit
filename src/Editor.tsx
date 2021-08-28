@@ -4,9 +4,10 @@ import React, {
   useState, useRef, MouseEventHandler, useMemo,
 } from 'react';
 import clsx from 'clsx';
-import { makeStyles, Theme, ThemeProvider } from '@material-ui/core/styles';
+import {
+  Theme, ThemeProvider, styled,
+} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import TabletIcon from '@material-ui/icons/Tablet';
 import LaptopIcon from '@material-ui/icons/Laptop';
@@ -18,6 +19,113 @@ import Sidebar from './Sidebar';
 import defaultTheme from './theme';
 import Iframe from './Iframe';
 import { EditorContext, EditorContextProvider } from './EditorContextProvider';
+
+declare module '@material-ui/core/useMediaQuery' {
+  interface Options {
+    defaultMatches?: boolean;
+    noSsr?: boolean;
+    ssrMatchMedia?: (query: string) => { matches: boolean };
+    matchMedia?: typeof window.matchMedia,
+  }
+}
+
+const PREFIX = 'Editor';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  main: `${PREFIX}-main`,
+  header: `${PREFIX}-header`,
+  headerInner: `${PREFIX}-headerInner`,
+  previewIframe: `${PREFIX}-previewIframe`,
+  previewHeight: `${PREFIX}-previewHeight`,
+  centerActions: `${PREFIX}-centerActions`,
+  sidebarWrapper: `${PREFIX}-sidebarWrapper`,
+  dragBar: `${PREFIX}-dragBar`,
+};
+
+const Root = styled('div')((
+  {
+    theme,
+  },
+) => ({
+  height: '100%',
+  width: '100%',
+  position: 'relative',
+  display: 'flex',
+
+  [`& .${classes.main}`]: {
+    flexGrow: 1,
+    zIndex: 0,
+  },
+
+  [`& .${classes.header}`]: {
+    background: 'white',
+    borderBottom: '1px solid #eee',
+    width: '100%',
+    height: headerHeight,
+  },
+
+  [`& .${classes.headerInner}`]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  [`& .${classes.previewIframe}`]: {
+    boxShadow: '0 9px 10px rgba(0,0,0,0.5)',
+    display: 'block',
+    margin: 'auto',
+    border: 'none',
+    overflowY: 'auto',
+    maxWidth: '100%',
+    width: '100%',
+    height: '100%',
+    '&.sm': {
+      maxWidth: 390,
+      height: 844,
+      marginTop: 30,
+    },
+    '&.md': {
+      maxWidth: 1080,
+      height: 820,
+      marginTop: 30,
+    },
+  },
+
+  [`& .${classes.previewHeight}`]: {
+    height: `calc(100% - ${headerHeight}px)`,
+  },
+
+  [`& .${classes.centerActions}`]: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+
+  [`& .${classes.sidebarWrapper}`]: {
+    height: '100%',
+    maxHeight: '100vh',
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    maxWidth: 365,
+    width: 365,
+    top: 0,
+    zIndex: 2,
+    position: 'relative',
+  },
+
+  [`& .${classes.dragBar}`]: {
+    position: 'absolute',
+    width: 10,
+    height: '100%',
+    top: 0,
+    left: 0,
+    userSelect: 'none',
+    zIndex: 2,
+    '&:hover': {
+      cursor: 'col-resize',
+    },
+  },
+}));
 
 export interface EditorProps {
   data?: Block[],
@@ -39,109 +147,7 @@ export interface EditorProps {
   cardinality?: number,
 }
 
-const maxHeight = (props: { maxWidth: 'sm' | 'md' | false }) => {
-  const { maxWidth } = props;
-  switch (maxWidth) {
-    case 'sm':
-      return 790;
-
-    case 'md':
-      return 768;
-
-    default:
-      return '100%';
-  }
-};
-
 const headerHeight = 37;
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: '100%',
-    width: '100%',
-    position: 'relative',
-    display: 'flex',
-  },
-  main: {
-    flexGrow: 1,
-    zIndex: 0,
-  },
-  header: {
-    background: 'white',
-    borderBottom: '1px solid #eee',
-    width: '100%',
-    height: headerHeight,
-  },
-  headerInner: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  previewIframe: {
-    boxShadow: '0 9px 10px rgba(0,0,0,0.5)',
-    display: 'block',
-    margin: 'auto',
-    border: 'none',
-    marginTop: (props: { maxWidth: 'sm' | 'md' | false }) => {
-      const { maxWidth } = props;
-      switch (maxWidth) {
-        case 'sm':
-        case 'md':
-          return theme.spacing(3);
-
-        default:
-          return 0;
-      }
-    },
-    height: maxHeight,
-    maxHeight,
-    overflowY: 'auto',
-    maxWidth: '100%',
-    width: (props: { maxWidth: 'sm' | 'md' | false }) => {
-      const { maxWidth } = props;
-      switch (maxWidth) {
-        case 'sm':
-          return 480;
-
-        case 'md':
-          return theme.breakpoints.values[maxWidth];
-
-        default:
-          return '100%';
-      }
-    },
-  },
-  previewHeight: {
-    height: `calc(100% - ${headerHeight}px)`,
-  },
-  centerActions: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  sidebarWrapper: {
-    height: '100%',
-    maxHeight: '100vh',
-    overflowY: 'auto',
-    overflowX: 'visible',
-    maxWidth: 365,
-    width: 365,
-    top: 0,
-    zIndex: 2,
-    position: 'relative',
-  },
-  dragBar: {
-    position: 'absolute',
-    width: 10,
-    height: '100%',
-    top: 0,
-    left: 0,
-    userSelect: 'none',
-    zIndex: 2,
-    '&:hover': {
-      cursor: 'col-resize',
-    },
-  },
-}));
 
 const Editor = (props: EditorProps): React.ReactElement | null => {
   const {
@@ -168,7 +174,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
   const previewIframeRef = useRef<HTMLIFrameElement|null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement|null>(null);
-  const localClasses = useStyles({ maxWidth });
+
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
   const editorContext = useMemo<Partial<EditorContext>>(() => {
     return {
@@ -178,13 +184,15 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
       mode: disableEditor ? 'view' : 'edit',
     };
   }, [context, container, disableEditor]);
-  const currentPreviewTheme = useMemo(() => {
+  const currentPreviewTheme = useMemo<Theme>(() => {
     return {
       ...previewTheme,
-      props: {
-        ...previewTheme.props,
+      components: {
+        ...previewTheme.components,
         MuiUseMediaQuery: {
-          matchMedia: previewIframeRef.current?.contentWindow?.matchMedia,
+          defaultProps: {
+            matchMedia: previewIframeRef.current?.contentWindow?.matchMedia,
+          },
         },
       },
     };
@@ -270,12 +278,12 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
 
   return (
     <EditorContextProvider context={editorContext}>
-      <div className={clsx([localClasses.root])}>
+      <Root>
         <ThemeProvider theme={editorTheme}>
-          <div className={localClasses.main}>
-            <header className={localClasses.header}>
-              <div className={clsx([localClasses.headerInner])}>
-                <div className={localClasses.centerActions}>
+          <div className={classes.main}>
+            <header className={classes.header}>
+              <div className={clsx([classes.headerInner])}>
+                <div className={classes.centerActions}>
                   <Button onClick={() => setMaxWidth('sm')}>
                     <PhoneIphoneIcon />
                   </Button>
@@ -302,10 +310,10 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
                 )}
               </div>
             </header>
-            <div className={clsx([localClasses.previewHeight])}>
+            <div className={clsx([classes.previewHeight])}>
               <Iframe
                 title="preview"
-                className={localClasses.previewIframe}
+                className={clsx(classes.previewIframe, maxWidth)}
                 ref={(iframeEl) => {
                   if (iframeEl) {
                     previewIframeRef.current = iframeEl;
@@ -315,27 +323,25 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
                   }
                 }}
               >
-                <ThemeProvider theme={currentPreviewTheme}>
-                  <CssBaseline />
-                  <Preview
-                    blockTypes={sortedBlockTypes}
-                    data={currentData}
-                    setData={handleDataChange}
-                  />
-                </ThemeProvider>
+                <Preview
+                  blockTypes={sortedBlockTypes}
+                  data={currentData}
+                  setData={handleDataChange}
+                  theme={currentPreviewTheme}
+                />
               </Iframe>
             </div>
           </div>
-          <div className={localClasses.sidebarWrapper} ref={sidebarWrapperRef}>
+          <div className={classes.sidebarWrapper} ref={sidebarWrapperRef}>
             <div
-              className={localClasses.dragBar}
+              className={classes.dragBar}
               onMouseDown={handleDragSidebar}
             />
             {/* eslint-disable-next-line react/jsx-props-no-spreading */}
             <Sidebar {...mergedSidebarProps} />
           </div>
         </ThemeProvider>
-      </div>
+      </Root>
     </EditorContextProvider>
   );
 };
