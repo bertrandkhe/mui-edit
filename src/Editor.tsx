@@ -143,6 +143,7 @@ export interface EditorProps {
   isFullScreen?: boolean,
   editorTheme?: Theme,
   previewTheme?: Theme,
+  previewWrapperComponent?: React.ElementType,
   title?: string,
   cardinality?: number,
 }
@@ -160,6 +161,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     disablePreview = false,
     editorTheme = defaultTheme,
     previewTheme = defaultTheme,
+    previewWrapperComponent,
     onFullScreen,
     onFullScreenExit,
     onPreviewIframeLoad,
@@ -236,6 +238,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
         blockTypes={sortedBlockTypes}
         data={currentData}
         setData={handleDataChange}
+        WrapperComponent={previewWrapperComponent}
       />
     );
   }
@@ -328,6 +331,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
                   data={currentData}
                   setData={handleDataChange}
                   theme={currentPreviewTheme}
+                  WrapperComponent={previewWrapperComponent}
                 />
               </Iframe>
             </div>

@@ -2,6 +2,10 @@ import React, {
   useState, useEffect, ForwardedRef, useMemo,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { CacheProvider } from '@emotion/react';
+import createCache, { EmotionCache } from '@emotion/cache';
+
+const chars = 'abcdefghijklmnopqrstuvwxyz';
 
 const Iframe = React.forwardRef((props: {
   children: React.ReactNode,
@@ -17,6 +21,21 @@ const Iframe = React.forwardRef((props: {
   } = props;
   const [contentRef, setContentRef] = useState<HTMLIFrameElement | null>(null);
   const iframeDoc = useMemo(() => contentRef?.contentWindow?.document, [contentRef]);
+  const emotionCache = useMemo<EmotionCache|null>(() => {
+    if (!iframeDoc) {
+      return null;
+    }
+    let key = 'iframe-';
+    for (let i = 0; i < 10; i += 1) {
+      const randomChar = chars.charAt(Math.floor(Math.random() * chars.length));
+      key = `${key}${randomChar}`;
+    }
+    return createCache({
+      key,
+      prepend: true,
+      container: iframeDoc?.head,
+    });
+  }, [iframeDoc]);
 
   useEffect(() => {
     if (!iframeDoc) {
@@ -63,8 +82,10 @@ const Iframe = React.forwardRef((props: {
         }
       }}
     >
-      {iframeDoc?.body && createPortal(
-        children,
+      {iframeDoc?.body && emotionCache && createPortal(
+        <CacheProvider value={emotionCache}>
+          {children}
+        </CacheProvider>,
         iframeDoc.body,
       )}
     </iframe>
