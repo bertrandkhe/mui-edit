@@ -6,13 +6,13 @@ import React, {
 import clsx from 'clsx';
 import {
   Theme, ThemeProvider, styled,
-} from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
-import TabletIcon from '@material-ui/icons/Tablet';
-import LaptopIcon from '@material-ui/icons/Laptop';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
+} from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
+import TabletIcon from '@mui/icons-material/Tablet';
+import LaptopIcon from '@mui/icons-material/Laptop';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Block, BlockType } from './types';
 import Preview from './Preview';
 import Sidebar from './Sidebar';
@@ -20,7 +20,7 @@ import defaultTheme from './theme';
 import Iframe from './Iframe';
 import { EditorContext, EditorContextProvider } from './EditorContextProvider';
 
-declare module '@material-ui/core/useMediaQuery' {
+declare module '@mui/material/useMediaQuery' {
   interface Options {
     defaultMatches?: boolean;
     noSsr?: boolean;

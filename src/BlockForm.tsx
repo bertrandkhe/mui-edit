@@ -1,20 +1,20 @@
 import React, { useState, memo } from 'react';
 import clsx from 'clsx';
-import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
-import EditIcon from '@material-ui/icons/Edit';
-import RemoveIcon from '@material-ui/icons/Remove';
-import SettingsIcon from '@material-ui/icons/Settings';
-import DeleteIcon from '@material-ui/icons/Delete';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import Button from '@material-ui/core/Button';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import { styled } from '@material-ui/core/styles';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import EditIcon from '@mui/icons-material/Edit';
+import RemoveIcon from '@mui/icons-material/Remove';
+import SettingsIcon from '@mui/icons-material/Settings';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import Button from '@mui/material/Button';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
 import {
   Block,
   BlockType,

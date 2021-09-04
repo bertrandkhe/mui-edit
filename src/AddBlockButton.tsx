@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import AddIcon from '@material-ui/icons/Add';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import AddIcon from '@mui/icons-material/Add';
 import { Block, BlockType } from './types';
 import { useEditorContext } from './EditorContextProvider';
 

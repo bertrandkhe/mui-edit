@@ -1,9 +1,9 @@
 import React from 'react';
-import { styled } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 import { useSlate } from 'slate-react';
 import clsx from 'clsx';
 import { Editor } from 'slate';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import { Formats } from './RichTextControl';
 
 const PREFIX = 'MarkButton';

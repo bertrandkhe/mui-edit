@@ -1,8 +1,8 @@
 import React, { ChangeEvent } from 'react';
-import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import FormControl from '@material-ui/core/FormControl';
+import Grid from '@mui/material/Grid';
+import InputLabel from '@mui/material/InputLabel';
+import NativeSelect from '@mui/material/NativeSelect';
+import FormControl from '@mui/material/FormControl';
 
 type Direction = 'top' | 'right' | 'bottom' | 'left';
 type SpacingType = 'margin' | 'padding';

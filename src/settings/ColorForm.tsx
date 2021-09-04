@@ -1,9 +1,9 @@
 import React, { ChangeEvent, useRef, useState } from 'react';
-import { styled } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import { debounce } from '@material-ui/core/utils';
+import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import { debounce } from '@mui/material/utils';
 import * as CSS from 'csstype';
 import { useEditorContext } from '../EditorContextProvider';
 

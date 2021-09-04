@@ -1,5 +1,5 @@
 import * as CSS from 'csstype';
-import { TypographyVariant } from '@material-ui/core/styles';
+import { TypographyVariant } from '@mui/material/styles';
 import type { Descendant } from 'slate';
 import SectionView from './SectionView';
 import SectionSettingsForm from './SectionSettingsForm';

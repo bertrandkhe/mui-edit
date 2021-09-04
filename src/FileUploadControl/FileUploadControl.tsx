@@ -1,11 +1,11 @@
 import React, {
   ChangeEvent, useState, useEffect, useRef,
 } from 'react';
-import { styled } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import DragHandle from '@material-ui/icons/DragHandle';
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import DragHandle from '@mui/icons-material/DragHandle';
 import { FileItem } from './index';
 import FileImage from './FileImage';
 

@@ -2,8 +2,8 @@ import React, {
   useEffect, useRef,
 } from 'react';
 import clsx from 'clsx';
-import { Theme, ThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { Theme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import type { Block, BlockType } from './types';
 import BlockView from './BlockView';
 import { useEditorContext } from './EditorContextProvider';

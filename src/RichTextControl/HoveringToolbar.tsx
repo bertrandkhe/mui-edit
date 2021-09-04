@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useEffect, useRef, useState } from 'react';
-import { styled } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 import { Editor, Range } from 'slate';
 import { useSlate, ReactEditor } from 'slate-react';
 import { createPortal } from 'react-dom';

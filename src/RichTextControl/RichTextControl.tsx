@@ -7,9 +7,9 @@ import {
   Slate, Editable, withReact, ReactEditor, RenderLeafProps,
 } from 'slate-react';
 import { withHistory } from 'slate-history';
-import IconFormatBold from '@material-ui/icons/FormatBold';
-import IconFormatItalic from '@material-ui/icons/FormatItalic';
-import IconFormatUnderlined from '@material-ui/icons/FormatUnderlined';
+import IconFormatBold from '@mui/icons-material/FormatBold';
+import IconFormatItalic from '@mui/icons-material/FormatItalic';
+import IconFormatUnderlined from '@mui/icons-material/FormatUnderlined';
 
 import Leaf from './Leaf';
 import MarkButton from './MarkButton';

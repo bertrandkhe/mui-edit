@@ -1,9 +1,9 @@
 import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import CssBaseline from '@material-ui/core/CssBaseline';
+import CssBaseline from '@mui/material/CssBaseline';
 import {
   ThemeProvider, StyledEngineProvider, createTheme,
-} from '@material-ui/core/styles';
+} from '@mui/material/styles';
 import Section from './Section';
 import Editor from '../Editor';
 

@@ -1,9 +1,9 @@
 import React, { ChangeEvent, useState } from 'react';
-import FormControl from '@material-ui/core/FormControl';
-import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import TextField from '@material-ui/core/TextField';
+import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
+import InputLabel from '@mui/material/InputLabel';
+import NativeSelect from '@mui/material/NativeSelect';
+import TextField from '@mui/material/TextField';
 import { LinkItem } from '../types';
 import { useEditorContext } from '../EditorContextProvider';
 

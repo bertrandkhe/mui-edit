@@ -3,12 +3,12 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { styled } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 import Sortable from 'sortablejs';
 import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
-import Button from '@material-ui/core/Button';
-import { yellow } from '@material-ui/core/colors';
+import Button from '@mui/material/Button';
+import { yellow } from '@mui/material/colors';
 import { BlockType, Block } from './types';
 import BlockForm from './BlockForm';
 import AddBlockButton from './AddBlockButton';
