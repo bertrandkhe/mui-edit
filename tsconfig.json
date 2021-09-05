@@ -5,8 +5,8 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "strict": true,
-    "lib": ["es2015", "dom"],
-    "module": "commonjs",
+    "lib": ["es2017", "dom"],
+    "module": "es2020",
     "target": "es2017",
     "jsx": "react",
     "allowJs": true,
@@ -16,7 +16,7 @@
     "declaration": true
   },
   "include": [
-    "src/**/*",
+    "src/**/*"
   ],
   "exclude": [
     "webpack.config.js",

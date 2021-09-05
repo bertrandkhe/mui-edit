@@ -4,7 +4,6 @@ import React, {
   useState,
 } from 'react';
 import { styled } from '@mui/material/styles';
-import Sortable from 'sortablejs';
 import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
 import Button from '@mui/material/Button';
@@ -136,31 +135,40 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     if (!blocksWrapperRef.current) {
       return undefined;
     }
-    let sortable: Sortable|null = null;
-    const timeoutId = window.setTimeout(() => {
-      if (!blocksWrapperRef.current) {
-        return;
-      }
-      sortable = new Sortable(blocksWrapperRef.current, {
-        animation: 150,
-        draggable: '.sortable-item',
-        handle: '.sortable-handle',
-        onUpdate: () => {
-          if (!sortable) {
-            return;
-          }
-          const newData = sortable
-            .toArray()
-            .map((id: string) => (
-              dataRef.current.find(
-                (block): boolean => block.id === id,
-              ))) as Block[];
-          setData(newData);
-        },
-      });
-    }, 200);
+    let active = true;
+    let timeoutId = -1;
+    let sortable: import('sortablejs')|null = null;
+    (async () => {
+      const Sortable = (await import('sortablejs')).default;
+      timeoutId = window.setTimeout(() => {
+        if (!blocksWrapperRef.current) {
+          return;
+        }
+        if (!active) {
+          return;
+        }
+        sortable = new Sortable(blocksWrapperRef.current, {
+          animation: 150,
+          draggable: '.sortable-item',
+          handle: '.sortable-handle',
+          onUpdate: () => {
+            if (!sortable || !active) {
+              return;
+            }
+            const newData = sortable
+              .toArray()
+              .map((id: string) => (
+                dataRef.current.find(
+                  (block): boolean => block.id === id,
+                ))) as Block[];
+            setData(newData);
+          },
+        });
+      }, 200);
+    })();
 
     return () => {
+      active = false;
       window.clearTimeout(timeoutId);
       if (sortable) {
         sortable.destroy();
