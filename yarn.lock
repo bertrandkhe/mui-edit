@@ -1161,7 +1161,7 @@
   dependencies:
     "@babel/runtime" "^7.15.4"
 
-"@mui/lab@^5.0":
+"@mui/lab@^5.0.0-alpha.50":
   version "5.0.0-alpha.50"
   resolved "https://registry.npmmirror.com/@mui/lab/download/@mui/lab-5.0.0-alpha.50.tgz#4102698b176eba28ef16ee1fcb6b0677f2fb221b"
   integrity sha1-QQJpixduuijvFu4fy2sGd/L7Ihs=
