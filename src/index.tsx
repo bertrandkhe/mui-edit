@@ -11,13 +11,14 @@ import FileUploadControl from './FileUploadControl';
 import AddBlockButton from './AddBlockButton';
 import LinkControl from './LinkControl';
 import ButtonControl from './ButtonControl';
-import Iframe from './Iframe';
+import Iframe, { useWindow } from './Iframe';
 import { EditorContextProvider, useEditorContext } from './EditorContextProvider';
 
 export * from './types';
 
 export {
   Iframe,
+  useWindow,
   Editor,
   Preview,
   Sidebar,

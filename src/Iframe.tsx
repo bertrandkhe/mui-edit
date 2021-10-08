@@ -1,11 +1,28 @@
 import React, {
-  useState, useEffect, ForwardedRef, useMemo,
+  useState,
+  useEffect,
+  ForwardedRef,
+  useMemo,
+  useContext,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { CacheProvider } from '@emotion/react';
 import createCache, { EmotionCache } from '@emotion/cache';
 
 const chars = 'abcdefghijklmnopqrstuvwxyz';
+
+const WindowContext = React.createContext<Window|undefined>(undefined);
+
+export const useWindow = (): Window|undefined => {
+  const iframeWindow = useContext(WindowContext);
+  if (iframeWindow) {
+    return iframeWindow;
+  }
+  if (typeof window !== 'undefined') {
+    return window;
+  }
+  return undefined;
+};
 
 const Iframe = React.forwardRef((props: {
   children: React.ReactNode,
@@ -84,7 +101,9 @@ const Iframe = React.forwardRef((props: {
     >
       {iframeDoc?.body && emotionCache && createPortal(
         <CacheProvider value={emotionCache}>
-          {children}
+          <WindowContext.Provider value={contentRef?.contentWindow || undefined}>
+            {children}
+          </WindowContext.Provider>
         </CacheProvider>,
         iframeDoc.body,
       )}
