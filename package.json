@@ -1,6 +1,6 @@
 {
   "name": "mui-edit",
-  "version": "0.0.36",
+  "version": "0.0.38",
   "license": "GPL-3.0-or-later",
   "private": false,
   "author": "Bertrand KHE",
@@ -66,8 +66,8 @@
     "@emotion/cache": "^11.4",
     "@emotion/react": "^11.4",
     "@emotion/styled": "^11.3",
-    "@mui/icons-material": "^5.0.0-alpha.50",
-    "@mui/lab": "^5.0",
+    "@mui/icons-material": "^5.0",
+    "@mui/lab": "^5.0.0-alpha.50",
     "@mui/material": "^5.0",
     "clsx": "^1.1.1",
     "react": "^17.0",

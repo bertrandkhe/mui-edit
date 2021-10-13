@@ -7,15 +7,14 @@ import {
 export interface EditFormProps<
   D,
   S,
-  ST = any,
-> extends Partial<Block<D, S, ST>> {
+> extends Partial<Block<D, S>> {
   id: string
   data: D,
   onChange(data: D): void,
   onClose(): void,
 }
 
-export interface SettingsFormProps<D, S, ST = any> extends Partial<Block<D, S, ST>> {
+export interface SettingsFormProps<D, S, ST = any> extends Partial<Block<D, S>> {
   id: string
   data: D,
   settings: S
@@ -26,7 +25,7 @@ export interface ViewProps<
   D,
   S,
   ST = any,
-  > extends Block<D, S, ST> {
+  > extends Block<D, S> {
   contentEditable?: boolean,
   onDataChange?(data: D): void,
   onSettingsChange?(settings: S): void,
@@ -37,25 +36,22 @@ export type EditorContext = Record<string, any>;
 export interface BlockType<
   D = any,
   S = any,
-  ST = any,
 > {
   id: string,
   label: string,
-  hasSettings: boolean,
   defaultData: D,
   defaultSettings: S,
   blockLabel(data: D): string,
-  settingsForm: LoadableComponent<SettingsFormProps<D, S, ST>>
-    | React.FunctionComponent<SettingsFormProps<D, S, ST>>
+  settingsForm: LoadableComponent<SettingsFormProps<D, S>>
+    | React.FunctionComponent<SettingsFormProps<D, S>>
     | null,
-  editForm: LoadableComponent<EditFormProps<D, S, ST>>
-    | React.FunctionComponent<EditFormProps<D, S, ST>>
+  editForm: LoadableComponent<EditFormProps<D, S>>
+    | React.FunctionComponent<EditFormProps<D, S>>
     | null,
-  view: LoadableComponent<ViewProps<D, S, ST>>
-    | React.FunctionComponent<ViewProps<D, S, ST>>
+  view: LoadableComponent<ViewProps<D, S>>
+    | React.FunctionComponent<ViewProps<D, S>>
     | null,
   loader?: React.FunctionComponent|null,
-  getInitialState?(block: Block<D, S, ST>, context: EditorContext): Promise<ST>|ST,
   cardinality?: number,
   disabled?: boolean,
 }

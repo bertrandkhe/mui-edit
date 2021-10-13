@@ -219,7 +219,11 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
               </Button>
             )}
             {!state.showEditForm && (
-              <Button onClick={toggleShowEditForm} className={classes.iconBtn}>
+              <Button
+                onClick={toggleShowEditForm}
+                className={classes.iconBtn}
+                disabled={!blockType.editForm}
+              >
                 <EditIcon
                   fontSize="small"
                 />
@@ -238,7 +242,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
               <Button
                 onClick={toggleShowSettingsForm}
                 className={classes.iconBtn}
-                disabled={!blockType.hasSettings}
+                disabled={!blockType.settingsForm}
               >
                 <SettingsIcon fontSize="small" />
               </Button>
@@ -293,7 +297,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
           })}
         </div>
       )}
-      {blockType.hasSettings && blockType.settingsForm && state.showSettingsForm
+      {blockType.settingsForm && state.showSettingsForm
       && (
         <div className={classes.form}>
           {React.createElement(blockType.settingsForm, {
