@@ -14,7 +14,7 @@ export interface EditFormProps<
   onClose(): void,
 }
 
-export interface SettingsFormProps<D, S, ST = any> extends Partial<Block<D, S>> {
+export interface SettingsFormProps<D, S> extends Partial<Block<D, S>> {
   id: string
   data: D,
   settings: S
@@ -24,7 +24,6 @@ export interface SettingsFormProps<D, S, ST = any> extends Partial<Block<D, S>> 
 export interface ViewProps<
   D,
   S,
-  ST = any,
   > extends Block<D, S> {
   contentEditable?: boolean,
   onDataChange?(data: D): void,
