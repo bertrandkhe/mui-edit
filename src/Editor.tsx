@@ -60,6 +60,9 @@ const Root = styled('div')((
   },
 
   [`& .${classes.main}`]: {
+    minHeight: 'calc(100vh - 200px)',
+    height: '100%',
+    overflow: 'auto',
     flexGrow: 1,
     zIndex: 0,
   },
@@ -89,9 +92,8 @@ const Root = styled('div')((
     overflowY: 'auto',
     maxWidth: '100%',
     width: '100%',
-    height: 'calc(100vh - 100px)',
+    height: '100%',
     [theme.breakpoints.up('lg')]: {
-      height: '100%',
       '&.sm': {
         maxWidth: 390,
         height: 844,
@@ -106,7 +108,10 @@ const Root = styled('div')((
   },
 
   [`& .${classes.previewHeight}`]: {
-    height: `calc(100% - ${headerHeight}px)`,
+    height: '100%',
+    [theme.breakpoints.up('lg')]: {
+      height: `calc(100% - ${headerHeight}px)`,
+    },
   },
 
   [`& .${classes.centerActions}`]: {
@@ -115,7 +120,7 @@ const Root = styled('div')((
   },
 
   [`& .${classes.sidebarWrapper}`]: {
-    minHeight: '56px',
+    minHeight: '97px',
     height: 'auto',
     width: '100%',
     top: 0,
