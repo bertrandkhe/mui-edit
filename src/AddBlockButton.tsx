@@ -68,6 +68,10 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
         anchorEl={menuState.anchorEl}
         onClose={handleCloseMenu}
         container={container?.ownerDocument.body}
+        sx={{
+          maxWidth: 350,
+          maxHeight: 600,
+        }}
       >
         {blockTypes.map((blockType) => {
           const { cardinality = -1 } = blockType;

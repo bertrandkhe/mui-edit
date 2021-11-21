@@ -31,10 +31,7 @@ const Root = styled('div')((
   },
 ) => ({
   [`&.${classes.root}`]: {
-    minHeight: '100%',
-    maxHeight: '100%',
     width: '100%',
-    borderLeft: `1px solid ${theme.palette.grey[100]}`,
     boxShadow: '-1px 0 10px rgba(0,0,0,0.2)',
     transform: 'translateX(100%)',
     display: 'flex',
@@ -43,7 +40,6 @@ const Root = styled('div')((
     transitionDuration: '.2s',
     transitionProperty: 'transform',
     overflowX: 'hidden',
-    position: 'absolute',
     top: 0,
     left: 0,
     zIndex: 1,
@@ -58,6 +54,13 @@ const Root = styled('div')((
     '& .sortable-item.sortable-chosen': {
       cursor: 'grabbing',
       background: yellow[100],
+    },
+
+    [theme.breakpoints.up('lg')]: {
+      minHeight: '100%',
+      maxHeight: '100%',
+      position: 'absolute',
+      borderLeft: `1px solid ${theme.palette.grey[100]}`,
     },
   },
 
@@ -79,8 +82,10 @@ const Root = styled('div')((
   },
 
   [`& .${classes.body}`]: {
-    height: 'calc(100% - 92px)',
-    overflowY: 'auto',
+    [theme.breakpoints.up('lg')]: {
+      height: 'calc(100% - 92px)',
+      overflowY: 'auto',
+    },
   },
 
   [`& .${classes.footer}`]: {

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, {
-  useState, useRef, MouseEventHandler, useMemo,
+  useState, useRef, MouseEventHandler, useMemo, useEffect,
 } from 'react';
 import clsx from 'clsx';
 import {
@@ -13,6 +13,7 @@ import TabletIcon from '@mui/icons-material/Tablet';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import { useMediaQuery } from '@mui/material';
 import { Block, BlockType } from './types';
 import Preview from './Preview';
 import Sidebar from './Sidebar';
@@ -48,10 +49,15 @@ const Root = styled('div')((
     theme,
   },
 ) => ({
-  height: '100%',
   width: '100%',
+  height: '100%',
+  overflow: 'auto',
   position: 'relative',
   display: 'flex',
+  flexDirection: 'column',
+  [theme.breakpoints.up('lg')]: {
+    flexDirection: 'row',
+  },
 
   [`& .${classes.main}`]: {
     flexGrow: 1,
@@ -59,10 +65,14 @@ const Root = styled('div')((
   },
 
   [`& .${classes.header}`]: {
+    display: 'none',
     background: 'white',
     borderBottom: '1px solid #eee',
     width: '100%',
     height: headerHeight,
+    [theme.breakpoints.up('lg')]: {
+      display: 'initial',
+    },
   },
 
   [`& .${classes.headerInner}`]: {
@@ -79,16 +89,19 @@ const Root = styled('div')((
     overflowY: 'auto',
     maxWidth: '100%',
     width: '100%',
-    height: '100%',
-    '&.sm': {
-      maxWidth: 390,
-      height: 844,
-      marginTop: 30,
-    },
-    '&.md': {
-      maxWidth: 1080,
-      height: 820,
-      marginTop: 30,
+    height: 'calc(100vh - 100px)',
+    [theme.breakpoints.up('lg')]: {
+      height: '100%',
+      '&.sm': {
+        maxWidth: 390,
+        height: 844,
+        marginTop: 30,
+      },
+      '&.md': {
+        maxWidth: 1080,
+        height: 820,
+        marginTop: 30,
+      },
     },
   },
 
@@ -102,15 +115,20 @@ const Root = styled('div')((
   },
 
   [`& .${classes.sidebarWrapper}`]: {
-    height: '100%',
-    maxHeight: '100vh',
-    overflowY: 'auto',
-    overflowX: 'hidden',
-    maxWidth: 365,
-    width: 365,
+    minHeight: '56px',
+    height: 'auto',
+    width: '100%',
     top: 0,
     zIndex: 2,
     position: 'relative',
+    [theme.breakpoints.up('lg')]: {
+      maxWidth: 365,
+      width: 365,
+      height: '100%',
+      maxHeight: '100vh',
+      overflowY: 'auto',
+      overflowX: 'hidden',
+    },
   },
 
   [`& .${classes.dragBar}`]: {
@@ -176,6 +194,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
   const previewIframeRef = useRef<HTMLIFrameElement|null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement|null>(null);
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
   const editorContext = useMemo<Partial<EditorContext>>(() => {
@@ -199,6 +218,25 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
       },
     };
   }, [previewTheme]);
+
+  useEffect(() => {
+    if (!isMobile || !sidebarWrapperRef.current) {
+      return undefined;
+    }
+    const prevWidth = sidebarWrapperRef.current.style.width;
+    const prevMaxWidth = sidebarWrapperRef.current.style.maxWidth;
+    sidebarWrapperRef.current.style.width = '100%';
+    sidebarWrapperRef.current.style.maxWidth = '100%';
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      if (!sidebarWrapperRef.current) {
+        return;
+      }
+      sidebarWrapperRef.current.style.width = prevWidth;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      sidebarWrapperRef.current.style.maxWidth = prevMaxWidth;
+    };
+  }, [isMobile]);
 
   function handleDataChange(updatedData: Block[]): void {
     if (!isControlled) {

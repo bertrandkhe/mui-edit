@@ -210,77 +210,79 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
           <Typography className={classes.label} variant="button">
             {blockType.blockLabel(data)}
           </Typography>
-          <div className={classes.actions}>
-            {state.showEditForm && (
-              <Button onClick={toggleShowEditForm} className={classes.iconBtn}>
-                <RemoveIcon
-                  fontSize="small"
-                />
-              </Button>
-            )}
-            {!state.showEditForm && (
+          {!blockType.disabled && (
+            <div className={classes.actions}>
+              {state.showEditForm && (
+                <Button onClick={toggleShowEditForm} className={classes.iconBtn}>
+                  <RemoveIcon
+                    fontSize="small"
+                  />
+                </Button>
+              )}
+              {!state.showEditForm && (
+                <Button
+                  onClick={toggleShowEditForm}
+                  className={classes.iconBtn}
+                  disabled={!blockType.editForm}
+                >
+                  <EditIcon
+                    fontSize="small"
+                  />
+                </Button>
+              )}
+              {state.showSettingsForm
+              && (
+                <Button onClick={toggleShowSettingsForm} className={classes.iconBtn}>
+                  <RemoveIcon
+                    fontSize="small"
+                  />
+                </Button>
+              )}
+              {!state.showSettingsForm
+              && (
+                <Button
+                  onClick={toggleShowSettingsForm}
+                  className={classes.iconBtn}
+                  disabled={!blockType.settingsForm}
+                >
+                  <SettingsIcon fontSize="small" />
+                </Button>
+              )}
               <Button
-                onClick={toggleShowEditForm}
                 className={classes.iconBtn}
-                disabled={!blockType.editForm}
+                onClick={handleClickMoreBtn}
               >
-                <EditIcon
-                  fontSize="small"
-                />
+                <MoreVertIcon fontSize="small" />
               </Button>
-            )}
-            {state.showSettingsForm
-            && (
-              <Button onClick={toggleShowSettingsForm} className={classes.iconBtn}>
-                <RemoveIcon
-                  fontSize="small"
-                />
-              </Button>
-            )}
-            {!state.showSettingsForm
-            && (
-              <Button
-                onClick={toggleShowSettingsForm}
-                className={classes.iconBtn}
-                disabled={!blockType.settingsForm}
+              <Menu
+                open={Boolean(state.moreAnchorEl)}
+                anchorEl={state.moreAnchorEl}
+                transformOrigin={{
+                  vertical: 0,
+                  horizontal: 'left',
+                }}
+                onClose={handleCloseMoreMenu}
+                container={container?.ownerDocument.body}
               >
-                <SettingsIcon fontSize="small" />
-              </Button>
-            )}
-            <Button
-              className={classes.iconBtn}
-              onClick={handleClickMoreBtn}
-            >
-              <MoreVertIcon fontSize="small" />
-            </Button>
-            <Menu
-              open={Boolean(state.moreAnchorEl)}
-              anchorEl={state.moreAnchorEl}
-              transformOrigin={{
-                vertical: 0,
-                horizontal: 'left',
-              }}
-              onClose={handleCloseMoreMenu}
-              container={container?.ownerDocument.body}
-            >
-              <MenuItem onClick={handleCloneBlock()}>
-                <ListItemIcon className={classes.listItemIcon}>
-                  <FileCopyIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>
-                  Clone
-                </ListItemText>
-              </MenuItem>
-              <MenuItem onClick={handleDeleteBlock}>
-                <ListItemIcon className={classes.listItemIcon}>
-                  <DeleteIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>
-                  Delete
-                </ListItemText>
-              </MenuItem>
-            </Menu>
-          </div>
+                <MenuItem onClick={handleCloneBlock()}>
+                  <ListItemIcon className={classes.listItemIcon}>
+                    <FileCopyIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>
+                    Clone
+                  </ListItemText>
+                </MenuItem>
+                <MenuItem onClick={handleDeleteBlock}>
+                  <ListItemIcon className={classes.listItemIcon}>
+                    <DeleteIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>
+                    Delete
+                  </ListItemText>
+                </MenuItem>
+              </Menu>
+            </div>
+          )}
         </div>
       </div>
       {state.showEditForm && blockType.editForm
