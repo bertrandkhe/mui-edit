@@ -19,7 +19,8 @@
       "jsx": "never"
     }],
     "max-len": ["error", { "code": 120 }],
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "react/function-component-definition": "off"
   },
   "env": {
     "browser": true

@@ -53,11 +53,11 @@ module.exports = (env, argv) => {
       new ReactRefreshWebpackPlugin(),
     );
     config.devServer = {
-      contentBase: path.join(__dirname, 'dist'),
+      static: {
+        directory: path.join(__dirname, 'dist'),
+      },
       compress: true,
       port: 9001,
-      hot: true,
-      hotOnly: true,
     };
   }
   return config;
