@@ -4,6 +4,8 @@ export type EditorContext = {
   container?: HTMLElement
   generateId(): string,
   mode: 'edit' | 'view',
+  isEditMode: boolean,
+  isViewMode: boolean,
 } & Record<string, unknown>;
 
 export type EditorContextProviderProps = {
@@ -20,6 +22,8 @@ export const EditorContext = React.createContext<EditorContext>({
     return `id-${currentId}`;
   },
   mode: 'edit',
+  isEditMode: true,
+  isViewMode: false,
 });
 
 export const useEditorContext = (): EditorContext => {
@@ -51,15 +55,23 @@ export const EditorContextProvider: React.FunctionComponent<EditorContextProvide
     idRef.current += 1;
     return `id-${currentId}`;
   };
-
-  const editorContext = { ...context };
-  if (!editorContext.generateId) {
-    editorContext.generateId = generateId;
+  context.generateId = generateId;
+  switch (context.mode) {
+    case 'edit':
+      context.isEditMode = true;
+      context.isViewMode = false;
+      break;
+    case 'view':
+      context.isEditMode = false;
+      context.isViewMode = true;
+      break;
+    default:
+      break;
   }
 
   return (
     <EditorContext.Provider
-      value={editorContext as EditorContext}
+      value={context as EditorContext}
     >
       {children}
     </EditorContext.Provider>
