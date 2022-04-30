@@ -50,7 +50,7 @@ export interface BlockType<
   view: LoadableComponent<ViewProps<D, S>>
     | React.FunctionComponent<ViewProps<D, S>>
     | null,
-  loader?: React.FunctionComponent|null,
   cardinality?: number,
   disabled?: boolean,
+  suspense?: React.SuspenseProps,
 }

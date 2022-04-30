@@ -48,13 +48,21 @@ const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
     }
   };
 
-  return React.createElement(blockType.view, {
+  const viewNode = React.createElement(blockType.view, {
     ...block,
     contentEditable: context.mode === 'edit',
     onDataChange: handleDataChange,
     onSettingsChange: handleSettingsChange,
     key: block.id,
   });
+  if (blockType.suspense) {
+    return (
+      <React.Suspense fallback={blockType.suspense.fallback}>
+        {viewNode}
+      </React.Suspense>
+    );
+  }
+  return viewNode;
 };
 
 export default memo(BlockView, (prevProps, props) => {
