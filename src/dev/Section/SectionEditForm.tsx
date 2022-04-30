@@ -1,10 +1,8 @@
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import React, { ChangeEvent } from 'react';
-import type { Descendant } from 'slate';
 import { EditFormProps } from '../../types';
 import { SectionData, SectionSettings } from './Section';
-import RichTextControl from '../../RichTextControl';
 
 const SectionEditForm: React.FunctionComponent<
   EditFormProps<SectionData, SectionSettings>
@@ -29,14 +27,12 @@ const SectionEditForm: React.FunctionComponent<
           />
         </Grid>
         <Grid item xs={12}>
-          <RichTextControl
+          <TextField
+            required
             value={data.body}
-            onChange={(newBody: Descendant[]) => {
-              onChange({
-                ...data,
-                body: newBody,
-              });
-            }}
+            label="Body"
+            onChange={handleChange('body')}
+            fullWidth
           />
         </Grid>
       </Grid>

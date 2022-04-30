@@ -2,11 +2,9 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import type { Descendant } from 'slate';
 import { ViewProps } from '../../types';
 import { SectionData, SectionSettings } from './Section';
 import EditableComponent from '../../EditableComponent';
-import RichTextControl from '../../RichTextControl';
 
 const SectionView: React.FunctionComponent<
   ViewProps<SectionData, SectionSettings>
@@ -44,19 +42,6 @@ const SectionView: React.FunctionComponent<
         >
           {data.title}
         </EditableComponent>
-        <RichTextControl
-          inline
-          value={data.body}
-          onChange={(newBody: Descendant[]) => {
-            if (!onDataChange) {
-              return;
-            }
-            onDataChange({
-              ...data,
-              body: newBody,
-            });
-          }}
-        />
       </Container>
     </Box>
   );
