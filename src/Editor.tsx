@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, {
-  useState, useRef, MouseEventHandler, useMemo, useEffect,
+  useState, useRef, MouseEventHandler, useMemo, useEffect, useCallback,
 } from 'react';
 import clsx from 'clsx';
 import {
@@ -197,6 +197,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   const isControlled = !!propsData;
   const [data, setData] = useState(initialData);
   const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
+  const mainRef = useRef<HTMLDivElement|null>(null);
   const previewIframeRef = useRef<HTMLIFrameElement|null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement|null>(null);
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
@@ -225,32 +226,36 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   }, [previewTheme]);
 
   useEffect(() => {
-    if (!isMobile || !sidebarWrapperRef.current) {
+    if (!isMobile || !sidebarWrapperRef.current || !mainRef.current) {
       return undefined;
     }
     const prevWidth = sidebarWrapperRef.current.style.width;
     const prevMaxWidth = sidebarWrapperRef.current.style.maxWidth;
+    const prevMinHeight = mainRef.current.style.minHeight;
     sidebarWrapperRef.current.style.width = '100%';
     sidebarWrapperRef.current.style.maxWidth = '100%';
+    mainRef.current.style.minHeight = `${window.innerHeight - 150}px`;
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      if (!sidebarWrapperRef.current) {
+      if (!sidebarWrapperRef.current || !mainRef.current) {
         return;
       }
       sidebarWrapperRef.current.style.width = prevWidth;
       // eslint-disable-next-line react-hooks/exhaustive-deps
       sidebarWrapperRef.current.style.maxWidth = prevMaxWidth;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      mainRef.current.style.minHeight = prevMinHeight;
     };
   }, [isMobile]);
 
-  function handleDataChange(updatedData: Block[]): void {
+  const handleDataChange = useCallback((updatedData: Block[]) => {
     if (!isControlled) {
       setData(updatedData);
     }
     if (onChange) {
       onChange(updatedData);
     }
-  }
+  }, [isControlled, onChange]);
 
   if (disableEditor && disablePreview) {
     return null;
@@ -326,7 +331,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     <EditorContextProvider context={editorContext}>
       <Root>
         <ThemeProvider theme={editorTheme}>
-          <div className={classes.main}>
+          <div ref={mainRef} className={classes.main}>
             <header className={classes.header}>
               <div className={clsx([classes.headerInner])}>
                 <div className={classes.centerActions}>
