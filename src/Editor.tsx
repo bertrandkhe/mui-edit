@@ -1,7 +1,12 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, {
-  useState, useRef, MouseEventHandler, useMemo, useEffect, useCallback,
+  useState,
+  useRef,
+  MouseEventHandler,
+  useMemo,
+  useEffect,
+  useCallback,
 } from 'react';
 import clsx from 'clsx';
 import {
@@ -73,6 +78,8 @@ const Root = styled('div')((
     borderBottom: '1px solid #eee',
     width: '100%',
     height: headerHeight,
+    position: 'sticky',
+    top: 0,
     [theme.breakpoints.up('lg')]: {
       display: 'initial',
     },
@@ -257,11 +264,11 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     }
   }, [isControlled, onChange]);
 
+  const currentData = isControlled ? propsData as Block[] : data;
+
   if (disableEditor && disablePreview) {
     return null;
   }
-
-  const currentData = isControlled ? propsData as Block[] : data;
 
   const mergedSidebarProps = {
     data: currentData,
