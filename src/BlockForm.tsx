@@ -1,6 +1,8 @@
-import React, { useState, memo } from 'react';
+import React, {
+  useState, memo, useRef, useEffect,
+} from 'react';
 import clsx from 'clsx';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import DragHandle from '@mui/icons-material/DragHandle';
 import EditIcon from '@mui/icons-material/Edit';
 import RemoveIcon from '@mui/icons-material/Remove';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -122,6 +124,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     ...initialState,
   });
   const { container } = context;
+  const rootRef = useRef<HTMLDivElement|null>(null);
 
   const toggleShowEditForm = () => {
     setState({
@@ -202,11 +205,31 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     });
   };
 
+  useEffect(() => {
+    if (state.showEditForm || state.showSettingsForm) {
+      setTimeout(() => {
+        if (!rootRef.current) {
+          return;
+        }
+        const firstInput = rootRef.current.querySelector('input, textarea') as HTMLInputElement | null;
+        if (!firstInput) {
+          return;
+        }
+        firstInput.focus();
+      }, 50);
+    }
+  }, [state.showEditForm, state.showSettingsForm]);
+
   return (
-    <Root key={id} data-id={id} className={clsx(['sortable-item'])}>
+    <Root
+      ref={rootRef}
+      key={id}
+      data-id={id}
+      className={clsx(['sortable-item'])}
+    >
       <div>
         <div className={classes.headerActions}>
-          <DragIndicatorIcon className={clsx(['sortable-handle', classes.labelDragIcon])} />
+          <DragHandle className={clsx(['sortable-handle', classes.labelDragIcon])} />
           <Typography className={classes.label} variant="button">
             {blockType.blockLabel(data)}
           </Typography>
@@ -335,7 +358,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
               Delete
             </Button>
           </div>
-
         </div>
       )}
     </Root>
