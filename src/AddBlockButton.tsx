@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+/* eslint-disable */
+import React, { useRef, useState } from 'react';
 import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import AddIcon from '@mui/icons-material/Add';
+import Dialog from '@mui/material/Dialog';
+import Autocomplete from '@mui/material/Autocomplete';
 import { Block, BlockType } from './types';
 import { useEditorContext } from './EditorContextProvider';
-
-type MenuState = {
-  anchorEl: null | HTMLElement
-};
+import { DialogContent } from '@mui/material';
+import TextField from '@mui/material/TextField';
 
 export interface AddBlockButtonProps {
   data: Block[],
@@ -24,71 +23,88 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
     blockTypes,
     disabled,
   } = props;
-  const [menuState, setMenuState] = useState<MenuState>({
-    anchorEl: null,
-  });
+  const [open, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const autocompleteRef = useRef<HTMLDivElement|null>(null);
   const editorContext = useEditorContext();
   const { container } = editorContext;
 
-  const handleCloseMenu = () => {
-    setMenuState({ ...menuState, anchorEl: null });
+  const closeDialog = () => {
+    setOpen(false);
   };
 
-  const handleAddBlock = (blockType: BlockType) => () => {
-    onAddBlock(blockType);
-    handleCloseMenu();
-  };
-
-  const count: Record<string, number> = {};
-
-  data.forEach((b) => {
-    if (!count[b.type]) {
-      count[b.type] = 1;
-    } else {
-      count[b.type] += 1;
+  const openDialog = () => {
+    setOpen(true);
+    if (buttonRef.current) {
+      buttonRef.current.blur();
     }
-  });
+    setTimeout(() => {
+      if (!autocompleteRef.current) {
+        return;
+      }
+      const input = autocompleteRef.current.querySelector('input');
+      if (input) {
+        input.focus();
+      }
+    }, 100);
+  };
 
   return (
     <>
       <Button
+        ref={buttonRef}
+        type="button"
         size="large"
         color="primary"
         startIcon={<AddIcon />}
-        onClick={(e) => setMenuState({
-          ...menuState,
-          anchorEl: e.currentTarget,
-        })}
+        onClick={openDialog}
         disabled={disabled}
       >
         Add block
       </Button>
-      <Menu
-        open={Boolean(menuState.anchorEl)}
-        anchorEl={menuState.anchorEl}
-        onClose={handleCloseMenu}
-        container={container?.ownerDocument.body}
-        sx={{
-          maxWidth: 350,
-          maxHeight: 600,
+      <Dialog
+        PaperProps={{
+          sx: {
+            alignSelf: 'self-start',
+            marginTop: 15,
+          },
         }}
+        open={open}
+        container={container}
+        onClose={closeDialog}
       >
-        {blockTypes.map((blockType) => {
-          const { cardinality = -1 } = blockType;
-          const limitReached = cardinality > 0
-            ? count[blockType.id] >= cardinality
-            : false;
-          return (
-            <MenuItem
-              key={blockType.id}
-              onClick={handleAddBlock(blockType)}
-              disabled={blockType.disabled || limitReached}
-            >
-              {blockType.label}
-            </MenuItem>
-          );
-        })}
-      </Menu>
+        <DialogContent
+          sx={{
+            p: 2,
+          }}
+        >
+          <Autocomplete
+            ref={autocompleteRef}
+            autoHighlight
+            openOnFocus
+            onChange={(e, blockType) => {
+              if (!blockType) {
+                return;
+              }
+
+              closeDialog();
+              onAddBlock(blockType);
+            }}
+            renderInput={(params) => (
+              <TextField
+                sx={{
+                  width: 400,
+                }}
+                focused
+                placeholder="Type to search"
+                label="Add block"
+                {...params}
+              />
+            )}
+            options={blockTypes}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
