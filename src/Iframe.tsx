@@ -3,26 +3,8 @@ import React, {
   useEffect,
   ForwardedRef,
   useMemo,
-  useContext,
 } from 'react';
-import { createPortal } from 'react-dom';
-import { CacheProvider } from '@emotion/react';
-import createCache, { EmotionCache } from '@emotion/cache';
-
-const chars = 'abcdefghijklmnopqrstuvwxyz';
-
-const WindowContext = React.createContext<Window|undefined>(undefined);
-
-export const useWindow = (): Window|undefined => {
-  const iframeWindow = useContext(WindowContext);
-  if (iframeWindow) {
-    return iframeWindow;
-  }
-  if (typeof window !== 'undefined') {
-    return window;
-  }
-  return undefined;
-};
+import IframeContent from './IframeContent';
 
 const Iframe = React.forwardRef((props: {
   children: React.ReactNode,
@@ -38,21 +20,6 @@ const Iframe = React.forwardRef((props: {
   } = props;
   const [contentRef, setContentRef] = useState<HTMLIFrameElement | null>(null);
   const iframeDoc = useMemo(() => contentRef?.contentWindow?.document, [contentRef]);
-  const emotionCache = useMemo<EmotionCache|null>(() => {
-    if (!iframeDoc) {
-      return null;
-    }
-    let key = 'iframe-';
-    for (let i = 0; i < 10; i += 1) {
-      const randomChar = chars.charAt(Math.floor(Math.random() * chars.length));
-      key = `${key}${randomChar}`;
-    }
-    return createCache({
-      key,
-      prepend: true,
-      container: iframeDoc?.head,
-    });
-  }, [iframeDoc]);
 
   useEffect(() => {
     if (!iframeDoc) {
@@ -99,13 +66,10 @@ const Iframe = React.forwardRef((props: {
         }
       }}
     >
-      {iframeDoc?.body && emotionCache && createPortal(
-        <CacheProvider value={emotionCache}>
-          <WindowContext.Provider value={contentRef?.contentWindow || undefined}>
-            {children}
-          </WindowContext.Provider>
-        </CacheProvider>,
-        iframeDoc.body,
+      {contentRef?.contentWindow && (
+        <IframeContent window={contentRef.contentWindow}>
+          {children}
+        </IframeContent>
       )}
     </iframe>
   );
