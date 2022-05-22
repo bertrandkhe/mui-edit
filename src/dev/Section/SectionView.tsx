@@ -4,13 +4,12 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { ViewProps } from '../../types';
 import { SectionData, SectionSettings } from './Section';
-import EditableComponent from '../../EditableComponent';
 
 const SectionView: React.FunctionComponent<
   ViewProps<SectionData, SectionSettings>
 > = (props) => {
   const {
-    data, settings, onDataChange, contentEditable,
+    data, settings,
   } = props;
 
   return (
@@ -27,21 +26,19 @@ const SectionView: React.FunctionComponent<
         disableGutters={settings.containerDisableGutters}
         maxWidth={settings.containerMaxWidth}
       >
-        <EditableComponent
-          contentEditable={contentEditable}
-          component={Typography}
+        <Typography
           variant={settings.titleVariant}
-          onContentChange={(newTitle: string) => {
-            if (onDataChange) {
-              onDataChange({
-                ...data,
-                title: newTitle,
-              });
-            }
-          }}
         >
           {data.title}
-        </EditableComponent>
+        </Typography>
+        <Typography
+          sx={{
+            whiteSpace: 'pre-line',
+          }}
+          variant="body1"
+        >
+          {data.body}
+        </Typography>
       </Container>
     </Box>
   );

@@ -32,6 +32,7 @@ const SectionEditForm: React.FunctionComponent<
             value={data.body}
             label="Body"
             onChange={handleChange('body')}
+            multiline
             fullWidth
           />
         </Grid>
