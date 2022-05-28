@@ -49,6 +49,16 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
     }, 100);
   };
 
+  const count: Record<string, number> = {};
+
+  data.forEach((b) => {
+    if (!count[b.type]) {
+      count[b.type] = 1;
+    } else {
+      count[b.type] += 1;
+    }
+  });
+
   return (
     <>
       <Button
@@ -89,6 +99,13 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
 
               closeDialog();
               onAddBlock(blockType);
+            }}
+            getOptionDisabled={(blockType) => {
+              const { cardinality = -1 } = blockType;
+              const limitReached = cardinality > 0
+                ? count[blockType.id] >= cardinality
+                : false;
+              return blockType.disabled || limitReached;
             }}
             renderInput={(params) => (
               <TextField
