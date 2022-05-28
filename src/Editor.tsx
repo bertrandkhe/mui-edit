@@ -161,7 +161,7 @@ export interface EditorProps {
   data?: Block[],
   initialData?: Block[],
   container?: HTMLElement,
-  context?: Record<string, unknown>,
+  context?: Record<string, unknown> & Partial<EditorContext>,
   blockTypes: BlockType[],
   disableEditor?: Readonly<boolean>,
   disablePreview?: Readonly<boolean>,

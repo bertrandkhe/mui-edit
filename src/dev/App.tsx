@@ -16,6 +16,9 @@ const App = (props: { container: HTMLElement }): React.ReactElement => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Editor
+          context={{
+            isEditMode: true,
+          }}
           container={container}
           initialData={[]}
           blockTypes={[Section]}
