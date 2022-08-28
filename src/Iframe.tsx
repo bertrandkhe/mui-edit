@@ -53,12 +53,16 @@ const IframeContent = (props: { children: React.ReactNode, window: Window }): Re
 export type IframeProps = {
   children: React.ReactNode,
   onBodyMount?(body: HTMLElement): void,
+  scripts?: (URL | string)[],
+  styles?: (URL | string)[],
 } & HTMLAttributes<HTMLIFrameElement>;
 
 const Iframe = React.forwardRef((props: IframeProps, ref: ForwardedRef<HTMLIFrameElement|null>) => {
   const {
     children,
     onBodyMount,
+    scripts = [],
+    styles = [],
     ...otherProps
   } = props;
   const [contentRef, setContentRef] = useState<HTMLIFrameElement | null>(null);
@@ -81,6 +85,27 @@ const Iframe = React.forwardRef((props: IframeProps, ref: ForwardedRef<HTMLIFram
 
   const handleIframeLoad = (node: HTMLIFrameElement) => {
     return () => {
+      const document = node.contentDocument as Document;
+      styles.forEach((url) => {
+        const existingLink = document.head.querySelector(`link[href="${url.toString()}"]`);
+        if (existingLink) {
+          return;
+        }
+        const elem = document.createElement('link');
+        elem.href = url.toString();
+        elem.rel = 'stylesheet';
+        document.head.appendChild(elem);
+      });
+      scripts.forEach((url) => {
+        const existingScript = document.head.querySelector(`script[src="${url.toString()}"]`);
+        if (existingScript) {
+          return;
+        }
+        const elem = document.createElement('script');
+        elem.src = url.toString();
+        elem.async = true;
+        document.head.appendChild(elem);
+      });
       setContentRef(node);
       if (!ref) {
         return;
