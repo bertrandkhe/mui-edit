@@ -20,7 +20,9 @@
     }],
     "max-len": ["error", { "code": 120 }],
     "react/require-default-props": "off",
-    "react/function-component-definition": "off"
+    "react/function-component-definition": "off",
+    "jsx-a11y/iframe-has-title": "off",
+    "react/jsx-props-no-spreading": "off"
   },
   "env": {
     "browser": true

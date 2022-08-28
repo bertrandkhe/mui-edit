@@ -1,17 +1,16 @@
 import * as CSS from 'csstype';
 import { TypographyVariant } from '@mui/material/styles';
-import type { Descendant } from 'slate';
+import { BlockType } from 'mui-edit/types';
+import { SpacingFormPropsSettings } from 'mui-edit/settings/SpacingForm';
+import { ColorPropsSettings } from 'mui-edit/settings/ColorForm';
+import { ContainerFormPropsSettings } from 'mui-edit/settings/ContainerForm';
 import SectionView from './SectionView';
 import SectionSettingsForm from './SectionSettingsForm';
 import SectionEditForm from './SectionEditForm';
-import { BlockType } from '../../types';
-import { SpacingFormPropsSettings } from '../../settings/SpacingForm';
-import { ColorPropsSettings } from '../../settings/ColorForm';
-import { ContainerFormPropsSettings } from '../../settings/ContainerForm';
 
 export type SectionData = {
   title: string
-  body: Descendant[],
+  body: string,
 }
 
 export interface SectionSettings extends
@@ -27,7 +26,7 @@ const Section: BlockType<SectionData, SectionSettings> = {
   label: 'Section',
   defaultData: {
     title: '',
-    body: [],
+    body: '',
   },
   defaultSettings: {
     titleVariant: 'h3',
@@ -35,13 +34,13 @@ const Section: BlockType<SectionData, SectionSettings> = {
     paddingBottom: 5,
     textAlign: 'left',
   },
-  hasSettings: true,
   blockLabel: (data) => {
     return data.title.length > 0 ? data.title : 'Unnamed section';
   },
   view: SectionView,
   settingsForm: SectionSettingsForm,
   editForm: SectionEditForm,
+  cardinality: 20,
 };
 
 export default Section;

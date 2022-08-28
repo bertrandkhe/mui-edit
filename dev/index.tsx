@@ -15,7 +15,7 @@ const index = () => {
   document.body.style.margin = '0px';
   document.body.style.minHeight = '100vh';
   ReactDOM.render(
-    <App container={root} />,
+    <App />,
     root,
   );
 };

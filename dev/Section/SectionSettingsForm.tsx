@@ -1,11 +1,11 @@
 import Grid from '@mui/material/Grid';
 import React from 'react';
-import TextAlignControl from '../../settings/TextAlignControl';
-import TypographyVariantControl from '../../settings/TypographyVariantControl';
-import ContainerForm from '../../settings/ContainerForm';
-import SpacingForm from '../../settings/SpacingForm';
-import ColorForm from '../../settings/ColorForm';
-import { SettingsFormProps } from '../../types';
+import TextAlignControl from 'mui-edit/settings/TextAlignControl';
+import TypographyVariantControl from 'mui-edit/settings/TypographyVariantControl';
+import ContainerForm from 'mui-edit/settings/ContainerForm';
+import SpacingForm from 'mui-edit/settings/SpacingForm';
+import ColorForm from 'mui-edit/settings/ColorForm';
+import { SettingsFormProps } from 'mui-edit/types';
 import { SectionData, SectionSettings } from './Section';
 
 const SectionSettingsForm: React.FunctionComponent<

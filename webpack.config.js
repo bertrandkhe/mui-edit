@@ -18,6 +18,7 @@ const config = {
         test: /\.(js|ts)x?$/,
         include: [
           path.resolve(__dirname, 'src'),
+          path.resolve(__dirname, 'dev'),
         ],
         exclude: /node_modules/,
         use: [
@@ -33,7 +34,9 @@ const config = {
     new ForkTsCheckerWebpackPlugin(),
   ],
   resolve: {
-    alias: {},
+    alias: {
+      'mui-edit': path.resolve(__dirname, 'src/'),
+    },
     extensions: ['.js', '.jsx', '.json', '.wasm', '.ts', '.tsx'],
   },
 };
@@ -43,7 +46,7 @@ module.exports = (env, argv) => {
   if (argv.mode === 'development') {
     config.devtool = 'inline-source-map';
     config.entry = [
-      './src/dev/index.tsx',
+      './dev/index.tsx',
     ];
     config.plugins.push(
       new HtmlWebpackPlugin({

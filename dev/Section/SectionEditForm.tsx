@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import React, { ChangeEvent } from 'react';
-import { EditFormProps } from '../../types';
+import { EditFormProps } from 'mui-edit/types';
 import { SectionData, SectionSettings } from './Section';
 
 const SectionEditForm: React.FunctionComponent<

@@ -25,6 +25,7 @@ import Sidebar from './Sidebar';
 import defaultTheme from './theme';
 import Iframe from './Iframe';
 import { EditorContext, EditorContextProvider } from './EditorContextProvider';
+import { AddBlockButtonProps } from './AddBlockButton';
 
 declare module '@mui/material/useMediaQuery' {
   interface Options {
@@ -176,11 +177,12 @@ export interface EditorProps {
   previewWrapperComponent?: React.ElementType,
   title?: string,
   cardinality?: number,
+  addBlockDisplayFormat?: AddBlockButtonProps['displayFormat'],
 }
 
 const headerHeight = 37;
 
-const Editor = (props: EditorProps): React.ReactElement | null => {
+const Editor: React.FC<EditorProps> = (props) => {
   const {
     data: propsData,
     initialData = [],
@@ -200,6 +202,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     cardinality = -1,
     container,
     title,
+    addBlockDisplayFormat = 'select',
   } = props;
   const isControlled = !!propsData;
   const [data, setData] = useState(initialData);
@@ -208,7 +211,6 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
   const previewIframeRef = useRef<HTMLIFrameElement|null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement|null>(null);
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
-
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
   const editorContext = useMemo<Partial<EditorContext>>(() => {
     return {
@@ -278,6 +280,7 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     title: title || 'Blocks',
     open: true,
     cardinality,
+    addBlockDisplayFormat,
   };
 
   if (disablePreview) {
@@ -313,7 +316,8 @@ const Editor = (props: EditorProps): React.ReactElement | null => {
     const handleMove = (mouseMoveEvent: MouseEvent) => {
       window.cancelAnimationFrame(animationId);
       animationId = window.requestAnimationFrame(() => {
-        let sidebarWidth = window.innerWidth - mouseMoveEvent.clientX;
+        const containerWidth = container ? container.offsetWidth : window.innerWidth;
+        let sidebarWidth = containerWidth - mouseMoveEvent.clientX;
         const sidebarMaxWidth = Math.floor(window.innerWidth * 0.66);
         if (sidebarWidth < 200) {
           sidebarWidth = 200;

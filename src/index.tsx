@@ -11,8 +11,7 @@ import FileUploadControl from './FileUploadControl';
 import AddBlockButton from './AddBlockButton';
 import LinkControl from './LinkControl';
 import ButtonControl from './ButtonControl';
-import Iframe from './Iframe';
-import { useWindow } from './IframeContent';
+import Iframe, { useWindow } from './Iframe';
 import { EditorContextProvider, useEditorContext } from './EditorContextProvider';
 
 export * from './types';

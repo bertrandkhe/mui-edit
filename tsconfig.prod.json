@@ -7,20 +7,16 @@
     "strict": true,
     "lib": ["es2017", "dom"],
     "module": "es2020",
-    "target": "es2017",
+    "target": "es2018",
     "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
-    "baseUrl": ".",
-    "paths": {
-      "mui-edit/*": ["src/*"]
-    },
+    "baseUrl": "./src",
     "esModuleInterop": true,
     "declaration": true
   },
   "include": [
-    "src/**/*",
-    "dev/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "webpack.config.js"

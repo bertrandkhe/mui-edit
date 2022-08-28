@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import { yellow } from '@mui/material/colors';
 import { BlockType, Block } from './types';
 import BlockForm from './BlockForm';
-import AddBlockButton from './AddBlockButton';
+import AddBlockButton, { AddBlockButtonProps } from './AddBlockButton';
 import { createBlock } from './utils/block';
 import { useEditorContext } from './EditorContextProvider';
 
@@ -104,6 +104,7 @@ export interface SidebarProps {
   cardinality: number,
   setData(data: Block[]): void,
   onBack?(): void,
+  addBlockDisplayFormat: AddBlockButtonProps['displayFormat'],
 }
 
 const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
@@ -115,6 +116,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
     title = 'Blocks',
     open = true,
     cardinality,
+    addBlockDisplayFormat,
   } = props;
   const blocksWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -282,6 +284,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
           blockTypes={blockTypes}
           onAddBlock={handleAddBlock}
           disabled={cardinality >= 0 && data.length >= cardinality}
+          displayFormat={addBlockDisplayFormat}
         />
       </footer>
     </Root>

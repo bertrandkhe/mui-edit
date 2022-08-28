@@ -76,7 +76,7 @@
     "clean": "rimraf dist/",
     "copy-files": "copyfiles LICENSE.txt package.json dist/",
     "dev": "webpack serve --progress --mode development",
-    "build": "yarn clean && yarn copy-files && tsc"
+    "build": "yarn clean && yarn copy-files && tsc --project tsconfig.prod.json"
   },
   "resolutions": {
     "@types/react": "^18.0.9",
