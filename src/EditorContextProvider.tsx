@@ -1,8 +1,7 @@
-import React, { RefObject, useContext, useRef } from 'react';
+import React, { RefObject, useContext } from 'react';
 
 export type EditorContext = {
   container?: HTMLElement
-  generateId(): string,
   mode: 'edit' | 'view',
   isEditMode: boolean,
   isViewMode: boolean,
@@ -13,14 +12,7 @@ export type EditorContextProviderProps = {
   children: React.ReactNode,
 };
 
-let idIncr = 0;
-
 export const EditorContext = React.createContext<EditorContext>({
-  generateId(): string {
-    const currentId = idIncr;
-    idIncr += 1;
-    return `id-${currentId}`;
-  },
   mode: 'edit',
   isEditMode: true,
   isViewMode: false,
@@ -48,14 +40,6 @@ export const usePreviewWindow = (): Window|undefined => {
 
 export const EditorContextProvider: React.FunctionComponent<EditorContextProviderProps> = (props) => {
   const { context, children } = props;
-  const idRef = useRef(0);
-
-  const generateId = () => {
-    const currentId = idRef.current;
-    idRef.current += 1;
-    return `id-${currentId}`;
-  };
-  context.generateId = generateId;
   switch (context.mode) {
     case 'edit':
       context.isEditMode = true;

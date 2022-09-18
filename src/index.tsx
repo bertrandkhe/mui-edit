@@ -9,7 +9,6 @@ import TextAlignControl from './settings/TextAlignControl';
 import TypographyVariantControl from './settings/TypographyVariantControl';
 import FileUploadControl from './FileUploadControl';
 import AddBlockButton from './AddBlockButton';
-import LinkControl from './LinkControl';
 import ButtonControl from './ButtonControl';
 import Iframe, { useWindow } from './Iframe';
 import { EditorContextProvider, useEditorContext } from './EditorContextProvider';
@@ -29,7 +28,6 @@ export {
   TypographyVariantControl,
   FileUploadControl,
   AddBlockButton,
-  LinkControl,
   ButtonControl,
   EditorContextProvider,
   useEditorContext,

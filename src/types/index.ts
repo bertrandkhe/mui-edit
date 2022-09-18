@@ -1,5 +1,4 @@
 export { FileItem } from '../FileUploadControl';
-export { LinkItem } from '../LinkControl/LinkControl';
 export { ButtonItem } from '../ButtonControl/ButtonControl';
 export {
   Block,

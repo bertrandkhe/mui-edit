@@ -12,13 +12,13 @@ import clsx from 'clsx';
 import {
   Theme, ThemeProvider, styled,
 } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
 import Button from '@mui/material/Button';
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import TabletIcon from '@mui/icons-material/Tablet';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { useMediaQuery } from '@mui/material';
 import { Block, BlockType } from './types';
 import Preview from './Preview';
 import Sidebar from './Sidebar';
@@ -207,10 +207,10 @@ const Editor: React.FC<EditorProps> = (props) => {
   const isControlled = !!propsData;
   const [data, setData] = useState(initialData);
   const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
-  const mainRef = useRef<HTMLDivElement|null>(null);
-  const previewIframeRef = useRef<HTMLIFrameElement|null>(null);
-  const sidebarWrapperRef = useRef<HTMLDivElement|null>(null);
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
+  const mainRef = useRef<HTMLDivElement | null>(null);
+  const previewIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const sidebarWrapperRef = useRef<HTMLDivElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
   const editorContext = useMemo<Partial<EditorContext>>(() => {
     return {
@@ -233,6 +233,24 @@ const Editor: React.FC<EditorProps> = (props) => {
       },
     };
   }, [previewTheme]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1200px)');
+    const onMediaQueryChange = () => {
+      setIsMobile(!mediaQuery.matches);
+    };
+    onMediaQueryChange();
+    mediaQuery.addEventListener(
+      'change',
+      onMediaQueryChange,
+    );
+    return () => {
+      mediaQuery.removeEventListener(
+        'change',
+        onMediaQueryChange,
+      );
+    };
+  }, []);
 
   useEffect(() => {
     if (!isMobile || !sidebarWrapperRef.current || !mainRef.current) {
@@ -340,8 +358,9 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   return (
     <EditorContextProvider context={editorContext}>
-      <Root>
-        <ThemeProvider theme={editorTheme}>
+      <ThemeProvider theme={editorTheme}>
+        {editorTheme === defaultTheme && <CssBaseline />}
+        <Root>
           <div ref={mainRef} className={classes.main}>
             <header className={classes.header}>
               <div className={clsx([classes.headerInner])}>
@@ -403,8 +422,8 @@ const Editor: React.FC<EditorProps> = (props) => {
             {/* eslint-disable-next-line react/jsx-props-no-spreading */}
             <Sidebar {...mergedSidebarProps} />
           </div>
-        </ThemeProvider>
-      </Root>
+        </Root>
+      </ThemeProvider>
     </EditorContextProvider>
   );
 };

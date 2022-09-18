@@ -1,11 +1,10 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { ChangeEvent, useRef } from 'react';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { debounce } from '@mui/material/utils';
 import * as CSS from 'csstype';
-import { useEditorContext } from '../EditorContextProvider';
 
 const PREFIX = 'ColorForm';
 
@@ -29,7 +28,6 @@ export interface ColorPropsSettings {
 }
 
 export interface ColorFormProps {
-  id?: Readonly<string>
   settings: Readonly<ColorPropsSettings>
   onChange(settings: ColorPropsSettings): void
   open?: Readonly<boolean>
@@ -37,21 +35,17 @@ export interface ColorFormProps {
 
 const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
   const {
-    id, settings, onChange, open,
+    settings, onChange, open,
   } = props;
-  const editorContext = useEditorContext();
 
-  const colorElRef = useRef<HTMLInputElement|null>(null);
-  const bgColorElRef = useRef<HTMLInputElement|null>(null);
-  const [htmlId] = useState(id || editorContext.generateId());
+  const colorElRef = useRef<HTMLInputElement | null>(null);
+  const bgColorElRef = useRef<HTMLInputElement | null>(null);
   const handleChange = (prop: string) => (e: ChangeEvent<HTMLInputElement>) => {
     onChange({
       ...settings,
       [prop || e.target.name]: e.target.value,
     });
   };
-  const colorInputId = `color-input-${htmlId}`;
-  const bgColorInputId = `backgroundColor-input-${htmlId}`;
 
   return (
     <Root open={open}>
@@ -59,11 +53,10 @@ const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Box display="flex" mt={2} alignItems="center">
-            <label htmlFor={colorInputId}>
+            <label>
               <input
                 ref={colorElRef}
                 type="color"
-                id={colorInputId}
                 defaultValue={settings.color || '#fff'}
                 onChange={debounce(handleChange('color'), 300)}
               />
@@ -85,11 +78,10 @@ const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" alignItems="center">
-            <label htmlFor={bgColorInputId}>
+            <label>
               <input
                 ref={bgColorElRef}
                 type="color"
-                id={bgColorInputId}
                 defaultValue={settings.backgroundColor || '#fff'}
                 onChange={debounce(handleChange('backgroundColor'), 300)}
               />

@@ -1,19 +1,19 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { AllHTMLAttributes, ChangeEvent, HTMLAttributes } from 'react';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import NativeSelect from '@mui/material/NativeSelect';
 import TextField from '@mui/material/TextField';
-import { LinkItem } from '../types';
-import { useEditorContext } from '../EditorContextProvider';
 
 export type ButtonItem = {
   variant: 'outlined' | 'contained' | 'text',
-} & LinkItem;
+  url: string,
+  target?: AllHTMLAttributes<HTMLAnchorElement>['target'],
+  label: string,
+};
 
 const ButtonControl = (
   props: {
-    id?: string,
     label: string
     defaultValue: ButtonItem,
     onChange(value: ButtonItem): void,
@@ -21,14 +21,11 @@ const ButtonControl = (
   },
 ): React.ReactElement => {
   const {
-    id,
     label,
     defaultValue,
     onChange,
     open,
   } = props;
-  const context = useEditorContext();
-  const [htmlId] = useState(id || context.generateId());
 
   const handleChange = (prop: keyof ButtonItem) => (
     e: ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>,
@@ -38,8 +35,6 @@ const ButtonControl = (
       [prop]: e.target.value,
     });
   };
-  const targetHtmlId = `btn-target-${htmlId}`;
-  const variantHtmlId = `btn-variant-${htmlId}`;
 
   return (
     <details open={open}>
@@ -66,9 +61,8 @@ const ButtonControl = (
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <InputLabel htmlFor={targetHtmlId}>Target</InputLabel>
+            <InputLabel>Target</InputLabel>
             <NativeSelect
-              id={targetHtmlId}
               defaultValue={defaultValue.target}
               onChange={handleChange('target')}
               fullWidth
@@ -80,13 +74,10 @@ const ButtonControl = (
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <InputLabel htmlFor={variantHtmlId}>Variant</InputLabel>
+            <InputLabel>Variant</InputLabel>
             <NativeSelect
               defaultValue={defaultValue.variant}
               onChange={handleChange('variant')}
-              inputProps={{
-                id: variantHtmlId,
-              }}
               fullWidth
             >
               <option value="text">Text</option>

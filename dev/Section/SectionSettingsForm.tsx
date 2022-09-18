@@ -73,7 +73,6 @@ const SectionSettingsForm: React.FunctionComponent<
         </Grid>
         <Grid item xs={12}>
           <ColorForm
-            id={id}
             settings={settings}
             onChange={onChange}
             open
