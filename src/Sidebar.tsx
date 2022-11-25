@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import clsx from 'clsx';
 import Button from '@mui/material/Button';
 import { yellow } from '@mui/material/colors';
+import Typography from '@mui/material/Typography';
 import { BlockType, Block } from './types';
 import BlockForm from './BlockForm';
 import AddBlockButton, { AddBlockButtonProps } from './AddBlockButton';
@@ -249,7 +250,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
             Back
           </Button>
         )}
-        <div className={classes.title}>{title}</div>
+        <Typography className={classes.title}>{title}</Typography>
       </div>
       <div ref={blocksWrapperRef} className={classes.body}>
         {data.map((block) => {

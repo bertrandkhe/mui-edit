@@ -82,6 +82,8 @@ const Root = styled('div')((
     height: headerHeight,
     position: 'sticky',
     top: 0,
+    lineHeight: 1,
+    fontSize: theme.typography.fontSize,
     [theme.breakpoints.up('lg')]: {
       display: 'initial',
     },

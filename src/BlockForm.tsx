@@ -82,6 +82,8 @@ const Root = styled('div')((
   },
   [`& .${classes.actions}`]: {
     marginLeft: 'auto',
+    lineHeight: 1,
+    fontSize: theme.typography.fontSize,
   },
   [`& .${classes.iconBtn}`]: {
     minWidth: 0,
