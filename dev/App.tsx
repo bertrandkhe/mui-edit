@@ -1,35 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Editor from 'mui-edit/Editor';
-import Iframe from 'mui-edit/Iframe';
+import PreviewPage from 'mui-edit/PreviewPage';
 import Section from './Section';
 
-const App = (): React.ReactElement => {
-  const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null);
+const blockTypes = [Section];
+
+const App = (props: {
+  preview?: boolean,
+}): React.ReactElement => {
+  const { preview } = props;
+  if (preview) {
+    return (
+      <PreviewPage
+        allowedOrigin="http://localhost:9001"
+        blockTypes={blockTypes}
+      />
+    );
+  }
   return (
-    <Iframe
-      style={{
-        width: '80vw',
-        height: '80vh',
-        border: 'none',
-        margin: '10vh auto',
-        display: 'block',
+    <Editor
+      context={{
+        isEditMode: true,
       }}
-      onBodyMount={(body) => {
-        setIframeBody(body);
-      }}
-    >
-      {iframeBody && (
-        <Editor
-          context={{
-            isEditMode: true,
-          }}
-          container={iframeBody}
-          initialData={[]}
-          blockTypes={[Section]}
-        />
-      )}
-    </Iframe>
+      initialData={[]}
+      blockTypes={blockTypes}
+      previewSrc="http://localhost:9001/preview"
+    />
   );
 };
 

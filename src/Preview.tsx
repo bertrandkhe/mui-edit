@@ -2,8 +2,6 @@ import React, {
   useEffect, useRef,
 } from 'react';
 import clsx from 'clsx';
-import { Theme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import type { Block, BlockType } from './types';
 import BlockView from './BlockView';
 import { useEditorContext } from './EditorContextProvider';
@@ -13,7 +11,6 @@ export interface PreviewProps {
   data: Block[]
   className?: string,
   setData?(data: Block[]): void,
-  theme?: Theme,
   WrapperComponent?: React.ElementType,
 }
 
@@ -23,7 +20,6 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
     data,
     className,
     setData,
-    theme,
     WrapperComponent = 'div',
   } = props;
   const dataRef = useRef<Block[]>(data);
@@ -44,27 +40,6 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
       setData(newData);
     }
   };
-
-  if (theme) {
-    return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <WrapperComponent className={clsx([className])}>
-          {data.map((block) => {
-            return (
-              <BlockView
-                block={block}
-                blockTypes={blockTypes}
-                onChange={handleChange(block.id)}
-                key={block.id}
-                context={context}
-              />
-            );
-          })}
-        </WrapperComponent>
-      </ThemeProvider>
-    );
-  }
 
   return (
     <WrapperComponent className={clsx([className])}>

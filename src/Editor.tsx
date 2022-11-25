@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable */
 import React, {
   useState,
   useRef,
@@ -117,6 +118,7 @@ const Root = styled('div')((
 
   [`& .${classes.previewHeight}`]: {
     height: '100%',
+    overflow: 'hidden',
     [theme.breakpoints.up('lg')]: {
       height: `calc(100% - ${headerHeight}px)`,
     },
@@ -173,11 +175,11 @@ export interface EditorProps {
   onPreviewIframeLoad?(iframe: HTMLIFrameElement): void,
   isFullScreen?: boolean,
   editorTheme?: Theme,
-  previewTheme?: Theme,
   previewWrapperComponent?: React.ElementType,
   title?: string,
   cardinality?: number,
   addBlockDisplayFormat?: AddBlockButtonProps['displayFormat'],
+  previewSrc?: string,
 }
 
 const headerHeight = 37;
@@ -192,7 +194,6 @@ const Editor: React.FC<EditorProps> = (props) => {
     disableEditor = false,
     disablePreview = false,
     editorTheme = defaultTheme,
-    previewTheme = defaultTheme,
     previewWrapperComponent,
     onFullScreen,
     onFullScreenExit,
@@ -203,10 +204,12 @@ const Editor: React.FC<EditorProps> = (props) => {
     container,
     title,
     addBlockDisplayFormat = 'select',
+    previewSrc,
   } = props;
   const isControlled = !!propsData;
   const [data, setData] = useState(initialData);
   const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
+  const [previewIframeEl, setPreviewIframeEl] = useState<HTMLIFrameElement | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
   const previewIframeRef = useRef<HTMLIFrameElement | null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -220,19 +223,8 @@ const Editor: React.FC<EditorProps> = (props) => {
       mode: disableEditor ? 'view' : 'edit',
     };
   }, [context, container, disableEditor]);
-  const currentPreviewTheme = useMemo<Theme>(() => {
-    return {
-      ...previewTheme,
-      components: {
-        ...previewTheme.components,
-        MuiUseMediaQuery: {
-          defaultProps: {
-            matchMedia: previewIframeRef.current?.contentWindow?.matchMedia,
-          },
-        },
-      },
-    };
-  }, [previewTheme]);
+
+
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 1200px)');
@@ -285,6 +277,41 @@ const Editor: React.FC<EditorProps> = (props) => {
   }, [isControlled, onChange]);
 
   const currentData = isControlled ? propsData as Block[] : data;
+
+  const previewUrl = useMemo(() => {
+    if (!previewSrc) {
+      return null;
+    }
+    return new URL(previewSrc);
+  }, [previewSrc]);
+
+  useEffect(() => {
+    if (!previewUrl || !previewIframeEl) {
+      return;
+    }
+    const iframeWindow = previewIframeEl.contentWindow;
+    if (!iframeWindow) {
+      return;
+    }
+    const sendData = () => {
+      iframeWindow.postMessage({
+        type: 'data',
+        payload: isControlled ? propsData : data,
+      }, previewUrl.origin);
+    };
+    sendData();
+    const listener = (event: MessageEvent) => {
+      if (event.origin === previewUrl.origin) {
+        if (event.data && event.data.type === 'ready') {
+          sendData();
+        }
+      }
+    };
+    window.addEventListener('message', listener);
+    return () => {
+      window.removeEventListener('message', listener);
+    };
+  }, [previewUrl, previewIframeEl, data, propsData, isControlled]);
 
   if (disableEditor && disablePreview) {
     return null;
@@ -392,26 +419,47 @@ const Editor: React.FC<EditorProps> = (props) => {
               </div>
             </header>
             <div className={clsx([classes.previewHeight])}>
-              <Iframe
-                title="preview"
-                className={clsx(classes.previewIframe, maxWidth)}
-                ref={(iframeEl) => {
-                  if (iframeEl) {
-                    previewIframeRef.current = iframeEl;
-                    if (onPreviewIframeLoad) {
-                      onPreviewIframeLoad(iframeEl);
+              {!previewSrc && (
+                <Iframe
+                  title="preview"
+                  className={clsx(classes.previewIframe, maxWidth)}
+                  ref={(iframeEl) => {
+                    if (iframeEl) {
+                      previewIframeRef.current = iframeEl;
+                      if (onPreviewIframeLoad) {
+                        onPreviewIframeLoad(iframeEl);
+                      }
                     }
-                  }
-                }}
-              >
-                <Preview
-                  blockTypes={sortedBlockTypes}
-                  data={currentData}
-                  setData={handleDataChange}
-                  theme={currentPreviewTheme}
-                  WrapperComponent={previewWrapperComponent}
+                  }}
+                >
+                  <Preview
+                    blockTypes={sortedBlockTypes}
+                    data={currentData}
+                    setData={handleDataChange}
+                    WrapperComponent={previewWrapperComponent}
+                  />
+                </Iframe>
+              )}
+              {previewSrc && (
+                <iframe
+                  ref={(node) => {
+                    if (!node || !node.contentDocument) {
+                      return;
+                    }
+                    if (node.contentDocument.readyState === 'complete') {
+                      setPreviewIframeEl(node);
+                    } else {
+                      node.addEventListener('load', () => setPreviewIframeEl(node));
+                    }
+                  }}
+                  src={previewSrc}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    border: 'none',
+                  }}
                 />
-              </Iframe>
+              )}
             </div>
           </div>
           <div className={classes.sidebarWrapper} ref={sidebarWrapperRef}>

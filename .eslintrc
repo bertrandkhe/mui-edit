@@ -25,7 +25,9 @@
     "jsx-a11y/label-has-associated-control": "off",
     "react/jsx-props-no-spreading": "off",
     "import/no-extraneous-dependencies": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "no-console": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   },
   "env": {
     "browser": true

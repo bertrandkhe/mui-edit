@@ -5,6 +5,13 @@ import App from './App';
 const index = () => {
   const root = document.createElement('div');
   document.body.appendChild(root);
+  if (window.location.pathname === '/preview') {
+    ReactDOM.render(
+      <App preview />,
+      root,
+    );
+    return;
+  }
   root.style.border = '1px solid #eee';
   root.style.height = '100vh';
   root.style.minHeight = '100vh';
