@@ -1,4 +1,5 @@
 import React, {
+  HTMLAttributes,
   useEffect, useRef,
 } from 'react';
 import clsx from 'clsx';
@@ -6,21 +7,25 @@ import type { Block, BlockType } from './types';
 import BlockView from './BlockView';
 import { useEditorContext } from './EditorContextProvider';
 
-export interface PreviewProps {
+export type PreviewProps<Wrapper extends React.ElementType> = {
   blockTypes: BlockType[]
   data: Block[]
   className?: string,
   setData?(data: Block[]): void,
-  WrapperComponent?: React.ElementType,
+  WrapperComponent?: Wrapper,
+  wrapperProps?: Wrapper extends React.ElementType<infer WrapperProps> ? WrapperProps : (
+    Wrapper extends Element ? HTMLAttributes<Wrapper> : undefined
+  ),
 }
 
-const Preview: React.FunctionComponent<PreviewProps> = (props) => {
+const Preview = <Wrapper extends React.ElementType>(props: PreviewProps<Wrapper>) => {
   const {
     blockTypes,
     data,
     className,
     setData,
     WrapperComponent = 'div',
+    wrapperProps = {},
   } = props;
   const dataRef = useRef<Block[]>(data);
   const context = useEditorContext();
@@ -42,7 +47,7 @@ const Preview: React.FunctionComponent<PreviewProps> = (props) => {
   };
 
   return (
-    <WrapperComponent className={clsx([className])}>
+    <WrapperComponent className={clsx([className])} {...wrapperProps}>
       {data.map((block) => {
         return (
           <BlockView

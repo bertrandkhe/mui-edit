@@ -1,51 +1,78 @@
 import React, { useEffect, useState } from 'react';
-import EditorContextProvider from './EditorContextProvider';
+import EditorContextProvider, { EditorContext } from './EditorContextProvider';
 import Preview, { PreviewProps } from './Preview';
 
-type Props = {
-  allowedOrigin: string,
-} & Omit<PreviewProps, 'data'>;
+type Props<Wrapper extends React.ElementType> = {
+  allowedOrigins: string[],
+  onContextData?(data: Partial<EditorContext>): void,
+} & Omit<PreviewProps<Wrapper>, 'data'>;
 
-const PreviewPage: React.FC<Props> = (props) => {
+export const PREVIEW_READY = 'PREVIEW_READY';
+export const PREVIEW_DATA = 'PREVIEW_DATA';
+export const PREVIEW_CONTEXT = 'PREVIEW_CONTEXT';
+
+const PreviewPage = <Wrapper extends React.ElementType>(props: Props<Wrapper>) => {
   const {
-    allowedOrigin, blockTypes, WrapperComponent, className,
+    allowedOrigins,
+    blockTypes,
+    WrapperComponent,
+    className,
+    onContextData,
   } = props;
-  const [data, setData] = useState<PreviewProps['data']>([]);
+  const [data, setData] = useState<PreviewProps<Wrapper>['data']>([]);
+  const [contextData, setContextData] = useState<Partial<EditorContext>>({
+    mode: 'edit',
+  });
 
   useEffect(() => {
+    const safeAllowedOrigins = allowedOrigins.map((origin) => (new URL(origin)).origin);
     // Crash if the origin is not valid.
-    const allowedUrl = new URL(allowedOrigin);
     const listener = (event: MessageEvent) => {
-      if (event.origin !== allowedUrl.origin) {
+      if (!safeAllowedOrigins.includes(event.origin)) {
         console.warn(
-          `Received message from ${event.origin} but only messages from ${allowedUrl.origin} are allowed.`,
+          `Received message from ${event.origin} but only messages from ${safeAllowedOrigins.join(', ')} are allowed.`,
         );
         return;
       }
-      if (event.data && event.data.type === 'data') {
-        setData(event.data.payload);
+      if (event.data && event.data.type) {
+        const { type } = event.data;
+        switch (type) {
+          case PREVIEW_DATA:
+            setData(event.data.payload);
+            break;
+          case PREVIEW_CONTEXT: {
+            const newContextData = {
+              ...event.data.payload,
+              mode: 'edit',
+            };
+            setContextData(newContextData);
+            if (onContextData) {
+              onContextData(newContextData);
+            }
+            break;
+          }
+          default:
+            // Ignore unsupportted event
+            break;
+        }
       }
     };
     window.addEventListener('message', listener);
     return () => {
       window.removeEventListener('message', listener);
     };
-  }, [allowedOrigin]);
+  }, [allowedOrigins, onContextData]);
 
   useEffect(() => {
-    if (window.top) {
-      window.top.postMessage({
-        type: 'ready',
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: PREVIEW_READY,
       }, '*');
     }
   }, []);
 
   return (
-    <EditorContextProvider
-      context={{
-        mode: 'edit',
-      }}
-    >
+    <EditorContextProvider context={contextData}>
       <Preview
         blockTypes={blockTypes}
         data={data}

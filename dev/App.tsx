@@ -13,7 +13,7 @@ const App = (props: {
   if (preview) {
     return (
       <PreviewPage
-        allowedOrigin="http://localhost:9001"
+        allowedOrigins={['http://localhost:9001']}
         blockTypes={blockTypes}
       />
     );

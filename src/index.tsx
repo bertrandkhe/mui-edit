@@ -13,6 +13,8 @@ import AddBlockButton from './AddBlockButton';
 import ButtonControl from './ButtonControl';
 import Iframe, { useWindow } from './Iframe';
 import { EditorContextProvider, useEditorContext } from './EditorContextProvider';
+import EditorIframe from './EditorIframe';
+import PreviewIframe from './PreviewIframe';
 
 export * from './types';
 
@@ -20,7 +22,10 @@ export {
   Iframe,
   useWindow,
   Editor,
+  EditorIframe,
   Preview,
+  PreviewPage,
+  PreviewIframe,
   Sidebar,
   ColorForm,
   ContainerForm,
@@ -33,7 +38,6 @@ export {
   EditorContextProvider,
   useEditorContext,
   BlockView,
-  PreviewPage,
 };
 
 export default Editor;

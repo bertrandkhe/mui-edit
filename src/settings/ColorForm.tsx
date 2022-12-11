@@ -17,7 +17,7 @@ const Root = styled('details')((
     theme,
   },
 ) => ({
-  [`& .${classes.label}`]: {
+  [`.${classes.label}`]: {
     marginLeft: theme.spacing(1),
   },
 }));
@@ -53,7 +53,7 @@ const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Box display="flex" mt={2} alignItems="center">
-            <label>
+            <Box component="label" display="flex" alignItems="center">
               <input
                 ref={colorElRef}
                 type="color"
@@ -61,7 +61,7 @@ const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
                 onChange={debounce(handleChange('color'), 300)}
               />
               <span className={classes.label}>Text color</span>
-            </label>
+            </Box>
             <Box ml="auto">
               <Button
                 onClick={() => {
@@ -78,7 +78,7 @@ const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" alignItems="center">
-            <label>
+            <Box component="label" display="flex" alignItems="center">
               <input
                 ref={bgColorElRef}
                 type="color"
@@ -86,7 +86,7 @@ const ColorForm: React.FunctionComponent<ColorFormProps> = (props) => {
                 onChange={debounce(handleChange('backgroundColor'), 300)}
               />
               <span className={classes.label}>Background color</span>
-            </label>
+            </Box>
             <Box ml="auto">
               <Button
                 onClick={() => {

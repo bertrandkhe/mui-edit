@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable */
 import React, {
   useState,
   useRef,
@@ -27,6 +26,8 @@ import defaultTheme from './theme';
 import Iframe from './Iframe';
 import { EditorContext, EditorContextProvider } from './EditorContextProvider';
 import { AddBlockButtonProps } from './AddBlockButton';
+import PreviewIframe, { PreviewInstance } from './PreviewIframe';
+import { EDITOR_CONTEXT_DATA, EDITOR_DATA, EDITOR_READY } from './EditorIframe';
 
 declare module '@mui/material/useMediaQuery' {
   interface Options {
@@ -56,6 +57,10 @@ const Root = styled('div')((
     theme,
   },
 ) => ({
+  '*': {
+    fontSize: theme.typography.fontSize,
+  },
+
   width: '100%',
   height: '100%',
   overflow: 'auto',
@@ -182,6 +187,8 @@ export interface EditorProps {
   cardinality?: number,
   addBlockDisplayFormat?: AddBlockButtonProps['displayFormat'],
   previewSrc?: string,
+  allowedOrigins?: string[],
+  onContextData?(data: EditorProps['context']): void,
 }
 
 const headerHeight = 37;
@@ -207,11 +214,13 @@ const Editor: React.FC<EditorProps> = (props) => {
     title,
     addBlockDisplayFormat = 'select',
     previewSrc,
+    allowedOrigins,
+    onContextData,
   } = props;
   const isControlled = !!propsData;
   const [data, setData] = useState(initialData);
   const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
-  const [previewIframeEl, setPreviewIframeEl] = useState<HTMLIFrameElement | null>(null);
+  const [preview, setPreview] = useState<PreviewInstance | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
   const previewIframeRef = useRef<HTMLIFrameElement | null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -225,8 +234,6 @@ const Editor: React.FC<EditorProps> = (props) => {
       mode: disableEditor ? 'view' : 'edit',
     };
   }, [context, container, disableEditor]);
-
-
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 1200px)');
@@ -280,32 +287,46 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const currentData = isControlled ? propsData as Block[] : data;
 
-  const previewUrl = useMemo(() => {
-    if (!previewSrc) {
-      return null;
-    }
-    return new URL(previewSrc);
-  }, [previewSrc]);
-
+  // Setup iframe communication between parent window, editor and preview iframe
   useEffect(() => {
-    if (!previewUrl || !previewIframeEl) {
-      return;
+    if (
+      !window.parent
+      || !allowedOrigins
+      || allowedOrigins.length === 0
+      || (previewSrc && !preview)
+    ) {
+      return undefined;
     }
-    const iframeWindow = previewIframeEl.contentWindow;
-    if (!iframeWindow) {
-      return;
-    }
-    const sendData = () => {
-      iframeWindow.postMessage({
-        type: 'data',
-        payload: isControlled ? propsData : data,
-      }, previewUrl.origin);
-    };
-    sendData();
-    const listener = (event: MessageEvent) => {
-      if (event.origin === previewUrl.origin) {
-        if (event.data && event.data.type === 'ready') {
-          sendData();
+    const safeAllowedOrigins = allowedOrigins.map((origin) => (new URL(origin).origin));
+    window.parent.postMessage({
+      type: EDITOR_READY,
+    }, '*');
+    const listener = (event: MessageEvent<{
+      type?: string,
+      payload?: any,
+    }>) => {
+      if (!safeAllowedOrigins.includes(origin)) {
+        console.warn(
+          `Received message from ${event.origin} but only messages from ${safeAllowedOrigins.join(', ')} are allowed.`,
+        );
+        return;
+      }
+      if (event.data && event.data.type) {
+        const { type, payload } = event.data;
+        switch (type) {
+          case EDITOR_DATA:
+            handleDataChange(payload);
+            break;
+
+          case EDITOR_CONTEXT_DATA:
+            preview?.setContextData(payload);
+            if (onContextData) {
+              onContextData(payload);
+            }
+            break;
+
+          default:
+            break;
         }
       }
     };
@@ -313,7 +334,20 @@ const Editor: React.FC<EditorProps> = (props) => {
     return () => {
       window.removeEventListener('message', listener);
     };
-  }, [previewUrl, previewIframeEl, data, propsData, isControlled]);
+  }, [allowedOrigins, preview, previewSrc, onContextData, handleDataChange]);
+
+  // Forward data change to preview iframe and to top window.
+  useEffect(() => {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: EDITOR_DATA,
+        payload: currentData,
+      }, '*');
+    }
+    if (preview) {
+      preview.setData(currentData);
+    }
+  }, [preview, currentData]);
 
   if (disableEditor && disablePreview) {
     return null;
@@ -443,22 +477,12 @@ const Editor: React.FC<EditorProps> = (props) => {
                 </Iframe>
               )}
               {previewSrc && (
-                <iframe
-                  ref={(node) => {
-                    if (!node || !node.contentDocument) {
-                      return;
-                    }
-                    if (node.contentDocument.readyState === 'complete') {
-                      setPreviewIframeEl(node);
-                    } else {
-                      node.addEventListener('load', () => setPreviewIframeEl(node));
-                    }
-                  }}
+                <PreviewIframe
                   src={previewSrc}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    border: 'none',
+                  className={clsx(classes.previewIframe, maxWidth)}
+                  onLoad={(previewInstance) => {
+                    previewIframeRef.current = previewInstance.element;
+                    setPreview(previewInstance);
                   }}
                 />
               )}
