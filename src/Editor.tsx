@@ -27,7 +27,7 @@ import Iframe from './Iframe';
 import { EditorContext, EditorContextProvider } from './EditorContextProvider';
 import { AddBlockButtonProps } from './AddBlockButton';
 import PreviewIframe, { PreviewInstance } from './PreviewIframe';
-import { EDITOR_CONTEXT_DATA, EDITOR_DATA, EDITOR_READY } from './EditorIframe';
+import { EDITOR_DATA, EDITOR_READY } from './EditorIframe';
 
 declare module '@mui/material/useMediaQuery' {
   interface Options {
@@ -188,7 +188,7 @@ export interface EditorProps {
   addBlockDisplayFormat?: AddBlockButtonProps['displayFormat'],
   previewSrc?: string,
   allowedOrigins?: string[],
-  onContextData?(data: EditorProps['context']): void,
+  onAction?(action: { type: string, payload: any }): void,
 }
 
 const headerHeight = 37;
@@ -215,7 +215,7 @@ const Editor: React.FC<EditorProps> = (props) => {
     addBlockDisplayFormat = 'select',
     previewSrc,
     allowedOrigins,
-    onContextData,
+    onAction,
   } = props;
   const isControlled = !!propsData;
   const [data, setData] = useState(initialData);
@@ -253,6 +253,7 @@ const Editor: React.FC<EditorProps> = (props) => {
     };
   }, []);
 
+  // Handle switch between desktop and mobile editor
   useEffect(() => {
     if (!isMobile || !sidebarWrapperRef.current || !mainRef.current) {
       return undefined;
@@ -318,15 +319,14 @@ const Editor: React.FC<EditorProps> = (props) => {
             handleDataChange(payload);
             break;
 
-          case EDITOR_CONTEXT_DATA:
-            preview?.setContextData(payload);
-            if (onContextData) {
-              onContextData(payload);
-            }
-            break;
-
           default:
             break;
+        }
+        if (onAction) {
+          onAction({
+            type,
+            payload,
+          });
         }
       }
     };
@@ -334,7 +334,7 @@ const Editor: React.FC<EditorProps> = (props) => {
     return () => {
       window.removeEventListener('message', listener);
     };
-  }, [allowedOrigins, preview, previewSrc, onContextData, handleDataChange]);
+  }, [allowedOrigins, preview, previewSrc, onAction, handleDataChange]);
 
   // Forward data change to preview iframe and to top window.
   useEffect(() => {
@@ -376,7 +376,6 @@ const Editor: React.FC<EditorProps> = (props) => {
       <Preview
         blockTypes={sortedBlockTypes}
         data={currentData}
-        setData={handleDataChange}
         WrapperComponent={previewWrapperComponent}
       />
     );
@@ -471,7 +470,7 @@ const Editor: React.FC<EditorProps> = (props) => {
                   <Preview
                     blockTypes={sortedBlockTypes}
                     data={currentData}
-                    setData={handleDataChange}
+                    onChange={handleDataChange}
                     WrapperComponent={previewWrapperComponent}
                   />
                 </Iframe>

@@ -1,7 +1,7 @@
 import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Editor from 'mui-edit/Editor';
-import PreviewPage from 'mui-edit/PreviewPage';
+import Preview from 'mui-edit/Preview';
 import Section from './Section';
 
 const blockTypes = [Section];
@@ -12,7 +12,7 @@ const App = (props: {
   const { preview } = props;
   if (preview) {
     return (
-      <PreviewPage
+      <Preview
         allowedOrigins={['http://localhost:9001']}
         blockTypes={blockTypes}
       />
@@ -23,7 +23,6 @@ const App = (props: {
       context={{
         isEditMode: true,
       }}
-      initialData={[]}
       blockTypes={blockTypes}
       previewSrc="http://localhost:9001/preview"
     />

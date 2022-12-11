@@ -1,6 +1,5 @@
 import Editor from './Editor';
 import Preview from './Preview';
-import PreviewPage from './PreviewPage';
 import Sidebar from './Sidebar';
 import BlockView from './BlockView';
 import ColorForm from './settings/ColorForm';
@@ -24,7 +23,6 @@ export {
   Editor,
   EditorIframe,
   Preview,
-  PreviewPage,
   PreviewIframe,
   Sidebar,
   ColorForm,

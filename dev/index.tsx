@@ -1,14 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 
 const index = () => {
   const root = document.createElement('div');
   document.body.appendChild(root);
+  const reactRoot = createRoot(root);
   if (window.location.pathname === '/preview') {
-    ReactDOM.render(
+    reactRoot.render(
       <App preview />,
-      root,
     );
     return;
   }
@@ -21,9 +21,8 @@ const index = () => {
   root.style.position = 'relative';
   document.body.style.margin = '0px';
   document.body.style.minHeight = '100vh';
-  ReactDOM.render(
+  reactRoot.render(
     <App />,
-    root,
   );
 };
 

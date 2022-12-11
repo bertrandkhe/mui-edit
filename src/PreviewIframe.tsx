@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { PREVIEW_CONTEXT, PREVIEW_DATA, PREVIEW_READY } from './PreviewPage';
 import { Block } from './types';
+
+export const PREVIEW_DATA = 'PREVIEW_DATA';
+export const PREVIEW_READY = 'PREVIEW_READY';
 
 export type PreviewInstance = {
   element: HTMLIFrameElement | null,
   setData(data: Block[]): void,
-  setContextData(data: Record<string, any>): void,
+  dispatch(action: { type: string, payload: any }): void,
 };
 
 type Props = {
@@ -29,29 +31,22 @@ const PreviewIframe: React.FC<Props> = (props) => {
     if (!iframeWindow) {
       return undefined;
     }
-    const sendData = (data: Block[]) => {
-      iframeWindow.postMessage({
+    const dispatch: PreviewInstance['dispatch'] = (action) => {
+      iframeWindow.postMessage(action, previewUrl.origin);
+    };
+    const setData = (data: Block[]) => {
+      dispatch({
         type: PREVIEW_DATA,
         payload: data,
-      }, previewUrl.origin);
-    };
-    const sendContextData = (data: Record<string, any>) => {
-      iframeWindow.postMessage({
-        type: PREVIEW_CONTEXT,
-        payload: data,
-      }, previewUrl.origin);
+      });
     };
     const listener = (event: MessageEvent) => {
       if (event.origin === previewUrl.origin) {
         if (event.data && event.data.type === PREVIEW_READY) {
           onLoad({
             element: previewIframeEl,
-            setData(data) {
-              sendData(data);
-            },
-            setContextData(data) {
-              sendContextData(data);
-            },
+            setData,
+            dispatch,
           });
         }
       }

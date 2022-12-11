@@ -1,14 +1,15 @@
-import React, { useMemo, useState, useEffect, HTMLAttributes } from 'react';
+import React, {
+  useMemo, useState, useEffect, HTMLAttributes,
+} from 'react';
 import { Block } from './types';
 
 export const EDITOR_READY = 'EDITOR_READY';
 export const EDITOR_DATA = 'EDITOR_DATA';
-export const EDITOR_CONTEXT_DATA = 'EDITOR_CONTEXT_DATA';
 
 export type EditorInstance = {
   element: HTMLIFrameElement | null,
   setData(data: Block[]): void,
-  setContextData(data: Record<string, any>): void,
+  dispatch(action: { type: string, payload: any }): void,
 };
 
 type Props = Omit<HTMLAttributes<HTMLIFrameElement>, 'onLoad' | 'src' | 'className'> & {
@@ -19,10 +20,10 @@ type Props = Omit<HTMLAttributes<HTMLIFrameElement>, 'onLoad' | 'src' | 'classNa
 };
 
 const EditorIframe: React.FC<Props> = (props) => {
-  const { 
-    src, 
-    onLoad, 
-    className, 
+  const {
+    src,
+    onLoad,
+    className,
     onChange,
     ...otherProps
   } = props;
@@ -30,7 +31,6 @@ const EditorIframe: React.FC<Props> = (props) => {
     return new URL(src);
   }, [src]);
   const [editorIframeEl, setEditorIframeEl] = useState<HTMLIFrameElement | null>(null);
-
   useEffect(() => {
     if (!editorIframeEl) {
       return undefined;
@@ -39,19 +39,15 @@ const EditorIframe: React.FC<Props> = (props) => {
     if (!iframeWindow) {
       return undefined;
     }
+    const dispatch: EditorInstance['dispatch'] = (action) => {
+      iframeWindow.postMessage(action, editorUrl.origin);
+    };
     const sendData = (data: Block[]) => {
-      iframeWindow.postMessage({
+      dispatch({
         type: EDITOR_DATA,
         payload: data,
-      }, editorUrl.origin);
+      });
     };
-    const sendContextData = (data: Record<string, any>) => {
-      iframeWindow.postMessage({
-        type: EDITOR_CONTEXT_DATA,
-        payload: data,
-      }, editorUrl.origin);
-    };
-
     const listener = (event: MessageEvent<{
       type?: string,
       payload?: any,
@@ -67,14 +63,14 @@ const EditorIframe: React.FC<Props> = (props) => {
             setData(data) {
               sendData(data);
             },
-            setContextData(data) {
-              sendContextData(data);
-            },
+            dispatch,
           });
           break;
-        
         case EDITOR_DATA:
           onChange(payload);
+          break;
+        default:
+          // Ignore unsupported events.
           break;
       }
     };
@@ -83,7 +79,6 @@ const EditorIframe: React.FC<Props> = (props) => {
       window.removeEventListener('message', listener);
     };
   }, [editorIframeEl, onLoad, editorUrl, onChange]);
-
   return (
     <iframe
       {...otherProps}
@@ -102,5 +97,4 @@ const EditorIframe: React.FC<Props> = (props) => {
     />
   );
 };
-
 export default EditorIframe;
