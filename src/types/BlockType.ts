@@ -40,7 +40,7 @@ export interface BlockType<
   label: string,
   defaultData: D,
   defaultSettings: S,
-  blockLabel(data: D): string,
+  blockLabel(data: D): React.ReactNode,
   settingsForm: LoadableComponent<SettingsFormProps<D, S>>
     | React.FunctionComponent<SettingsFormProps<D, S>>
     | null,

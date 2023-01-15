@@ -111,8 +111,8 @@ const Root = styled('div')((
     height: '100%',
     [theme.breakpoints.up('lg')]: {
       '&.sm': {
-        maxWidth: 390,
-        height: 844,
+        maxWidth: 375,
+        height: 667,
         marginTop: 30,
       },
       '&.md': {
@@ -189,6 +189,8 @@ export interface EditorProps {
   previewSrc?: string,
   allowedOrigins?: string[],
   onAction?(action: { type: string, payload: any }): void,
+  onPreviewInstanceLoad?(preview: PreviewInstance): void,
+  defaultWidth?: 'sm' | 'md' | 'lg'
 }
 
 const headerHeight = 37;
@@ -207,6 +209,7 @@ const Editor: React.FC<EditorProps> = (props) => {
     onFullScreen,
     onFullScreenExit,
     onPreviewIframeLoad,
+    onPreviewInstanceLoad,
     isFullScreen = false,
     context = {},
     cardinality = -1,
@@ -216,10 +219,11 @@ const Editor: React.FC<EditorProps> = (props) => {
     previewSrc,
     allowedOrigins,
     onAction,
+    defaultWidth = 'lg',
   } = props;
   const isControlled = !!propsData;
   const [data, setData] = useState(initialData);
-  const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | false>(false);
+  const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | 'lg'>(defaultWidth);
   const [preview, setPreview] = useState<PreviewInstance | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
   const previewIframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -314,12 +318,16 @@ const Editor: React.FC<EditorProps> = (props) => {
       }
       if (event.data && event.data.type) {
         const { type, payload } = event.data;
+        if (!type.startsWith('EDITOR/')) {
+          return;
+        }
         switch (type) {
           case EDITOR_DATA:
             handleDataChange(payload);
             break;
 
           default:
+            preview?.dispatch({ type, payload });
             break;
         }
         if (onAction) {
@@ -433,7 +441,7 @@ const Editor: React.FC<EditorProps> = (props) => {
                   <Button onClick={() => setMaxWidth('md')}>
                     <TabletIcon />
                   </Button>
-                  <Button onClick={() => setMaxWidth(false)}>
+                  <Button onClick={() => setMaxWidth('lg')}>
                     <LaptopIcon />
                   </Button>
                 </div>
@@ -482,6 +490,9 @@ const Editor: React.FC<EditorProps> = (props) => {
                   onLoad={(previewInstance) => {
                     previewIframeRef.current = previewInstance.element;
                     setPreview(previewInstance);
+                    if (onPreviewInstanceLoad) {
+                      onPreviewInstanceLoad(previewInstance);
+                    }
                   }}
                 />
               )}

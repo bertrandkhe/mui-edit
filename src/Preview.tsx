@@ -69,6 +69,9 @@ const Preview = <Wrapper extends React.ElementType, Data>(props: PreviewProps<Wr
       }
       if (event.data && event.data.type) {
         const { type, payload } = event.data;
+        if (!type.startsWith('EDITOR')) {
+          return;
+        }
         switch (type) {
           case PREVIEW_DATA:
             setData(event.data.payload);

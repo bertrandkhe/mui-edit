@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Block } from './types';
 
-export const PREVIEW_DATA = 'PREVIEW_DATA';
-export const PREVIEW_READY = 'PREVIEW_READY';
+export const PREVIEW_DATA = 'EDITOR/PREVIEW_DATA';
+export const PREVIEW_READY = 'EDITOR/PREVIEW_READY';
 
 export type PreviewInstance = {
   element: HTMLIFrameElement | null,
@@ -32,7 +32,10 @@ const PreviewIframe: React.FC<Props> = (props) => {
       return undefined;
     }
     const dispatch: PreviewInstance['dispatch'] = (action) => {
-      iframeWindow.postMessage(action, previewUrl.origin);
+      iframeWindow.postMessage({
+        ...action,
+        type: action.type.startsWith('EDITOR/') ? action.type : `EDITOR/${action.type}`,
+      }, previewUrl.origin);
     };
     const setData = (data: Block[]) => {
       dispatch({
@@ -40,14 +43,17 @@ const PreviewIframe: React.FC<Props> = (props) => {
         payload: data,
       });
     };
-    const listener = (event: MessageEvent) => {
+    const listener = (event: MessageEvent<{ type: string, payload: any }>) => {
       if (event.origin === previewUrl.origin) {
-        if (event.data && event.data.type === PREVIEW_READY) {
-          onLoad({
-            element: previewIframeEl,
-            setData,
-            dispatch,
-          });
+        if (event.data && event.data.type) {
+          const { type } = event.data;
+          if (type === PREVIEW_READY) {
+            onLoad({
+              element: previewIframeEl,
+              setData,
+              dispatch,
+            });
+          }
         }
       }
     };
