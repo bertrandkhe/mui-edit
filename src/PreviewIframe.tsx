@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Block } from './types';
 
-export const PREVIEW_DATA = 'EDITOR/PREVIEW_DATA';
-export const PREVIEW_READY = 'EDITOR/PREVIEW_READY';
+export const PREVIEW_DATA = 'editor/previewData';
+export const PREVIEW_READY = 'editor/previewReady';
 
 export type PreviewInstance = {
   element: HTMLIFrameElement | null,
@@ -34,7 +34,7 @@ const PreviewIframe: React.FC<Props> = (props) => {
     const dispatch: PreviewInstance['dispatch'] = (action) => {
       iframeWindow.postMessage({
         ...action,
-        type: action.type.startsWith('EDITOR/') ? action.type : `EDITOR/${action.type}`,
+        type: action.type.startsWith('editor/') ? action.type : `editor/${action.type}`,
       }, previewUrl.origin);
     };
     const setData = (data: Block[]) => {

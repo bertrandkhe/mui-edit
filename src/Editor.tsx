@@ -318,7 +318,7 @@ const Editor: React.FC<EditorProps> = (props) => {
       }
       if (event.data && event.data.type) {
         const { type, payload } = event.data;
-        if (!type.startsWith('EDITOR/')) {
+        if (!type.startsWith('editor/')) {
           return;
         }
         switch (type) {

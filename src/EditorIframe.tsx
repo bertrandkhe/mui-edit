@@ -3,8 +3,8 @@ import React, {
 } from 'react';
 import { Block } from './types';
 
-export const EDITOR_READY = 'EDITOR/EDITOR_READY';
-export const EDITOR_DATA = 'EDITOR/EDITOR_DATA';
+export const EDITOR_READY = 'editor/editorReady';
+export const EDITOR_DATA = 'editor/editorData';
 
 export type EditorInstance = {
   element: HTMLIFrameElement | null,
@@ -42,7 +42,7 @@ const EditorIframe: React.FC<Props> = (props) => {
     const dispatch: EditorInstance['dispatch'] = (action) => {
       iframeWindow.postMessage({
         ...action,
-        type: action.type.startsWith('EDITOR/') ? action.type : `EDITOR/${action.type}`,
+        type: action.type.startsWith('editor/') ? action.type : `editor/${action.type}`,
       }, editorUrl.origin);
     };
     const sendData = (data: Block[]) => {
