@@ -1,12 +1,10 @@
 import React, { memo } from 'react';
 import type { Block, BlockType } from './types';
-import { EditorContext } from './EditorContextProvider';
 
 type BlockViewProps = {
   block: Block,
   blockTypes: BlockType[],
   onChange?(block: Block): void,
-  context: EditorContext,
 };
 
 const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
@@ -14,7 +12,6 @@ const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
     block,
     blockTypes,
     onChange,
-    context,
   } = props;
   const blockType = blockTypes.find((bt) => bt.id === block.type);
 
@@ -50,7 +47,6 @@ const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
 
   const viewNode = React.createElement(blockType.view, {
     ...block,
-    contentEditable: context.mode === 'edit',
     onDataChange: handleDataChange,
     onSettingsChange: handleSettingsChange,
     key: block.id,

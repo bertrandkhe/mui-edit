@@ -21,7 +21,6 @@ import {
   Block,
   BlockType,
 } from './types';
-import { EditorContext } from './EditorContextProvider';
 
 interface BlockFormInitialState {
   showEditForm?: boolean,
@@ -37,7 +36,6 @@ export interface BlockFormProps {
   onChange(block: Block): void,
   onClone(withData: boolean): void,
   onDelete(): void,
-  context: EditorContext,
 }
 
 const PREFIX = 'BlockForm';
@@ -108,7 +106,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     onDelete,
     onClone,
     initialState = {},
-    context,
   } = props;
   const {
     data,
@@ -125,7 +122,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     moreAnchorEl: null,
     ...initialState,
   });
-  const { container } = context;
   const rootRef = useRef<HTMLDivElement|null>(null);
 
   const toggleShowEditForm = () => {
@@ -287,7 +283,6 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
                   horizontal: 'left',
                 }}
                 onClose={handleCloseMoreMenu}
-                container={container?.ownerDocument.body}
               >
                 <MenuItem onClick={handleCloneBlock()}>
                   <ListItemIcon className={classes.listItemIcon}>

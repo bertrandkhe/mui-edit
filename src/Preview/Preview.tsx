@@ -3,9 +3,8 @@ import React, {
   useEffect, useRef, useState,
 } from 'react';
 import clsx from 'clsx';
-import type { Block, BlockType } from './types';
-import BlockView from './BlockView';
-import { useEditorContext } from './EditorContextProvider';
+import type { Block, BlockType } from '../types';
+import BlockView from '../BlockView';
 import { PREVIEW_DATA, PREVIEW_READY } from './PreviewIframe';
 
 export type PreviewProps<Wrapper extends React.ElementType, Data> = {
@@ -35,7 +34,6 @@ const Preview = <Wrapper extends React.ElementType, Data>(props: PreviewProps<Wr
   const [data, setData] = useState(dataProp);
   const dataRef = useRef<Block[]>(data);
   dataRef.current = data;
-  const context = useEditorContext();
 
   const handleChange = (id: string) => (newBlock: Block) => {
     if (onChange) {
@@ -111,7 +109,6 @@ const Preview = <Wrapper extends React.ElementType, Data>(props: PreviewProps<Wr
             blockTypes={blockTypes}
             onChange={handleChange(block.id)}
             key={block.id}
-            context={context}
           />
         );
       })}

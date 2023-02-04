@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Block } from './types';
+import { Block } from '../types';
 
 export const PREVIEW_DATA = 'editor/previewData';
 export const PREVIEW_READY = 'editor/previewReady';
@@ -16,7 +16,7 @@ type Props = {
   onLoad(preview: PreviewInstance): void,
 };
 
-const PreviewIframe: React.FC<Props> = (props) => {
+export const PreviewIframe: React.FC<Props> = (props) => {
   const { src, onLoad, className } = props;
   const previewUrl = useMemo(() => {
     return new URL(src);

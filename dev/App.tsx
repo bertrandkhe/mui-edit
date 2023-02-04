@@ -20,9 +20,6 @@ const App = (props: {
   }
   return (
     <Editor
-      context={{
-        isEditMode: true,
-      }}
       defaultWidth="sm"
       blockTypes={blockTypes}
       previewSrc="http://localhost:9001/preview"

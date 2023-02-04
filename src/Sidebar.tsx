@@ -13,7 +13,6 @@ import { BlockType, Block } from './types';
 import BlockForm from './BlockForm';
 import AddBlockButton, { AddBlockButtonProps } from './AddBlockButton';
 import { createBlock } from './utils/block';
-import { useEditorContext } from './EditorContextProvider';
 
 const PREFIX = 'Sidebar';
 
@@ -121,7 +120,6 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   } = props;
   const blocksWrapperRef = useRef<HTMLDivElement>(null);
 
-  const context = useEditorContext();
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
   const dataRef = useRef<Block[]>(data);
@@ -271,7 +269,6 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
               onChange={handleChange}
               onDelete={handleDeleteBlock(id)}
               onClone={handleClone(id)}
-              context={context}
               initialState={{
                 showEditForm: Date.now() - meta.changed < 2000,
               }}

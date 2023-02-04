@@ -1,5 +1,5 @@
 import Editor from './Editor';
-import Preview from './Preview';
+import Preview from './Preview/Preview';
 import Sidebar from './Sidebar';
 import BlockView from './BlockView';
 import ColorForm from './settings/ColorForm';
@@ -11,9 +11,8 @@ import FileUploadControl from './FileUploadControl';
 import AddBlockButton from './AddBlockButton';
 import ButtonControl from './ButtonControl';
 import Iframe, { useWindow } from './Iframe';
-import { EditorContextProvider, useEditorContext } from './EditorContextProvider';
 import EditorIframe from './EditorIframe';
-import PreviewIframe from './PreviewIframe';
+import PreviewIframe from './Preview/PreviewIframe';
 
 export * from './types';
 
@@ -33,8 +32,6 @@ export {
   FileUploadControl,
   AddBlockButton,
   ButtonControl,
-  EditorContextProvider,
-  useEditorContext,
   BlockView,
 };
 

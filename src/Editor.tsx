@@ -4,30 +4,22 @@ import React, {
   useState,
   useRef,
   MouseEventHandler,
-  useMemo,
   useEffect,
   useCallback,
 } from 'react';
-import clsx from 'clsx';
 import {
   Theme, ThemeProvider, styled,
 } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
-import Button from '@mui/material/Button';
-import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
-import TabletIcon from '@mui/icons-material/Tablet';
-import LaptopIcon from '@mui/icons-material/Laptop';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { Block, BlockType } from './types';
-import Preview from './Preview';
 import Sidebar from './Sidebar';
 import defaultTheme from './theme';
-import Iframe from './Iframe';
-import { EditorContext, EditorContextProvider } from './EditorContextProvider';
 import { AddBlockButtonProps } from './AddBlockButton';
-import PreviewIframe, { PreviewInstance } from './PreviewIframe';
+import { PreviewInstance } from './Preview/PreviewIframe';
 import { EDITOR_DATA, EDITOR_READY } from './EditorIframe';
+import Header from './Header';
+import { useEditorStore, usePreviewStore } from './store';
+import EditorPreview from './EditorPreview';
 
 declare module '@mui/material/useMediaQuery' {
   interface Options {
@@ -43,11 +35,6 @@ const PREFIX = 'Editor';
 const classes = {
   root: `${PREFIX}-root`,
   main: `${PREFIX}-main`,
-  header: `${PREFIX}-header`,
-  headerInner: `${PREFIX}-headerInner`,
-  previewIframe: `${PREFIX}-previewIframe`,
-  previewHeight: `${PREFIX}-previewHeight`,
-  centerActions: `${PREFIX}-centerActions`,
   sidebarWrapper: `${PREFIX}-sidebarWrapper`,
   dragBar: `${PREFIX}-dragBar`,
 };
@@ -77,63 +64,6 @@ const Root = styled('div')((
     overflow: 'auto',
     flexGrow: 1,
     zIndex: 0,
-  },
-
-  [`& .${classes.header}`]: {
-    display: 'none',
-    background: 'white',
-    borderBottom: '1px solid #eee',
-    width: '100%',
-    height: headerHeight,
-    position: 'sticky',
-    top: 0,
-    lineHeight: 1,
-    fontSize: theme.typography.fontSize,
-    [theme.breakpoints.up('lg')]: {
-      display: 'initial',
-    },
-  },
-
-  [`& .${classes.headerInner}`]: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  [`& .${classes.previewIframe}`]: {
-    boxShadow: '0 9px 10px rgba(0,0,0,0.5)',
-    display: 'block',
-    margin: 'auto',
-    border: 'none',
-    overflowY: 'auto',
-    maxWidth: '100%',
-    width: '100%',
-    height: '100%',
-    [theme.breakpoints.up('lg')]: {
-      '&.sm': {
-        maxWidth: 375,
-        height: 667,
-        marginTop: 30,
-      },
-      '&.md': {
-        maxWidth: 1080,
-        height: 820,
-        marginTop: 30,
-      },
-    },
-  },
-
-  [`& .${classes.previewHeight}`]: {
-    height: '100%',
-    overflow: 'hidden',
-    [theme.breakpoints.up('lg')]: {
-      height: `calc(100% - ${headerHeight}px)`,
-    },
-  },
-
-  [`& .${classes.centerActions}`]: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
   },
 
   [`& .${classes.sidebarWrapper}`]: {
@@ -170,10 +100,7 @@ const Root = styled('div')((
 export interface EditorProps {
   data?: Block[],
   initialData?: Block[],
-  container?: HTMLElement,
-  context?: Record<string, unknown> & Partial<EditorContext>,
   blockTypes: BlockType[],
-  disableEditor?: Readonly<boolean>,
   disablePreview?: Readonly<boolean>,
   onBack?(): void,
   onChange?(data: Block[]): void,
@@ -186,14 +113,12 @@ export interface EditorProps {
   title?: string,
   cardinality?: number,
   addBlockDisplayFormat?: AddBlockButtonProps['displayFormat'],
-  previewSrc?: string,
+  previewSrc: string,
   allowedOrigins?: string[],
   onAction?(action: { type: string, payload: any }): void,
   onPreviewInstanceLoad?(preview: PreviewInstance): void,
   defaultWidth?: 'sm' | 'md' | 'lg'
 }
-
-const headerHeight = 37;
 
 const Editor: React.FC<EditorProps> = (props) => {
   const {
@@ -202,18 +127,13 @@ const Editor: React.FC<EditorProps> = (props) => {
     onChange,
     onBack,
     blockTypes = [],
-    disableEditor = false,
     disablePreview = false,
     editorTheme = defaultTheme,
-    previewWrapperComponent,
     onFullScreen,
     onFullScreenExit,
-    onPreviewIframeLoad,
     onPreviewInstanceLoad,
     isFullScreen = false,
-    context = {},
     cardinality = -1,
-    container,
     title,
     addBlockDisplayFormat = 'select',
     previewSrc,
@@ -222,22 +142,36 @@ const Editor: React.FC<EditorProps> = (props) => {
     defaultWidth = 'lg',
   } = props;
   const isControlled = !!propsData;
-  const [data, setData] = useState(initialData);
-  const [maxWidth, setMaxWidth] = useState<'sm' | 'md' | 'lg'>(defaultWidth);
+  const initialDataRef = useRef(initialData);
   const [preview, setPreview] = useState<PreviewInstance | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
-  const previewIframeRef = useRef<HTMLIFrameElement | null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
-  const editorContext = useMemo<Partial<EditorContext>>(() => {
-    return {
-      ...context,
-      container,
-      previewIframeRef,
-      mode: disableEditor ? 'view' : 'edit',
-    };
-  }, [context, container, disableEditor]);
+
+  const setPreviewWidth = usePreviewStore((state) => state.setWidth);
+  useEffect(() => {
+    setPreviewWidth(defaultWidth);
+  }, [defaultWidth, setPreviewWidth]);
+
+  const setEditorState = useEditorStore((state) => state.setState);
+  useEffect(() => {
+    setEditorState({
+      isFullScreen,
+      enterFullScreen: onFullScreen,
+      exitFullScreen: onFullScreenExit,
+    });
+  }, [setEditorState, isFullScreen, onFullScreen, onFullScreenExit]);
+
+  const setEditorData = useEditorStore((state) => state.setData);
+  useEffect(() => {
+    setEditorData(initialDataRef.current);
+  }, []);
+
+  const setPreviewSrc = usePreviewStore((state) => state.setIframeSrc);
+  useEffect(() => {
+    setPreviewSrc(previewSrc);
+  }, [previewSrc]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 1200px)');
@@ -283,14 +217,15 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const handleDataChange = useCallback((updatedData: Block[]) => {
     if (!isControlled) {
-      setData(updatedData);
+      setEditorData(updatedData);
     }
     if (onChange) {
       onChange(updatedData);
     }
-  }, [isControlled, onChange]);
+  }, [isControlled, onChange, setEditorData]);
 
-  const currentData = isControlled ? propsData as Block[] : data;
+  const editorData = useEditorStore((state) => state.data)
+  const currentData = isControlled ? propsData as Block[] : editorData;
 
   // Setup iframe communication between parent window, editor and preview iframe
   useEffect(() => {
@@ -298,7 +233,7 @@ const Editor: React.FC<EditorProps> = (props) => {
       !window.parent
       || !allowedOrigins
       || allowedOrigins.length === 0
-      || (previewSrc && !preview)
+      || !preview
     ) {
       return undefined;
     }
@@ -357,10 +292,6 @@ const Editor: React.FC<EditorProps> = (props) => {
     }
   }, [preview, currentData]);
 
-  if (disableEditor && disablePreview) {
-    return null;
-  }
-
   const mergedSidebarProps = {
     data: currentData,
     onBack,
@@ -379,16 +310,6 @@ const Editor: React.FC<EditorProps> = (props) => {
     );
   }
 
-  if (disableEditor) {
-    return (
-      <Preview
-        blockTypes={sortedBlockTypes}
-        data={currentData}
-        WrapperComponent={previewWrapperComponent}
-      />
-    );
-  }
-
   const handleDragSidebar: MouseEventHandler<HTMLDivElement> = (e) => {
     const dragBarEl = e.target as HTMLDivElement;
     const stopDrag = () => {
@@ -404,8 +325,7 @@ const Editor: React.FC<EditorProps> = (props) => {
     const handleMove = (mouseMoveEvent: MouseEvent) => {
       window.cancelAnimationFrame(animationId);
       animationId = window.requestAnimationFrame(() => {
-        const containerWidth = container ? container.offsetWidth : window.innerWidth;
-        let sidebarWidth = containerWidth - mouseMoveEvent.clientX;
+        let sidebarWidth = window.innerWidth - mouseMoveEvent.clientX;
         const sidebarMaxWidth = Math.floor(window.innerWidth * 0.66);
         if (sidebarWidth < 200) {
           sidebarWidth = 200;
@@ -426,89 +346,37 @@ const Editor: React.FC<EditorProps> = (props) => {
     dragBarEl.addEventListener('mousemove', handleMove);
   };
 
+  console.log('render');
+
   return (
-    <EditorContextProvider context={editorContext}>
-      <ThemeProvider theme={editorTheme}>
-        {editorTheme === defaultTheme && <CssBaseline />}
-        <Root>
-          <div ref={mainRef} className={classes.main}>
-            <header className={classes.header}>
-              <div className={clsx([classes.headerInner])}>
-                <div className={classes.centerActions}>
-                  <Button onClick={() => setMaxWidth('sm')}>
-                    <PhoneIphoneIcon />
-                  </Button>
-                  <Button onClick={() => setMaxWidth('md')}>
-                    <TabletIcon />
-                  </Button>
-                  <Button onClick={() => setMaxWidth('lg')}>
-                    <LaptopIcon />
-                  </Button>
-                </div>
-                {onFullScreen && (
-                  <div>
-                    {isFullScreen && (
-                      <Button onClick={onFullScreenExit}>
-                        <FullscreenExitIcon />
-                      </Button>
-                    )}
-                    {!isFullScreen && (
-                      <Button onClick={onFullScreen}>
-                        <FullscreenIcon />
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </div>
-            </header>
-            <div className={clsx([classes.previewHeight])}>
-              {!previewSrc && (
-                <Iframe
-                  title="preview"
-                  className={clsx(classes.previewIframe, maxWidth)}
-                  ref={(iframeEl) => {
-                    if (iframeEl) {
-                      previewIframeRef.current = iframeEl;
-                      if (onPreviewIframeLoad) {
-                        onPreviewIframeLoad(iframeEl);
-                      }
-                    }
-                  }}
-                >
-                  <Preview
-                    blockTypes={sortedBlockTypes}
-                    data={currentData}
-                    onChange={handleDataChange}
-                    WrapperComponent={previewWrapperComponent}
-                  />
-                </Iframe>
-              )}
-              {previewSrc && (
-                <PreviewIframe
-                  src={previewSrc}
-                  className={clsx(classes.previewIframe, maxWidth)}
-                  onLoad={(previewInstance) => {
-                    previewIframeRef.current = previewInstance.element;
-                    setPreview(previewInstance);
-                    if (onPreviewInstanceLoad) {
-                      onPreviewInstanceLoad(previewInstance);
-                    }
-                  }}
-                />
-              )}
-            </div>
-          </div>
-          <div className={classes.sidebarWrapper} ref={sidebarWrapperRef}>
-            <div
-              className={classes.dragBar}
-              onMouseDown={handleDragSidebar}
-            />
-            {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-            <Sidebar {...mergedSidebarProps} />
-          </div>
-        </Root>
-      </ThemeProvider>
-    </EditorContextProvider>
+    <ThemeProvider theme={editorTheme}>
+      {editorTheme === defaultTheme && <CssBaseline />}
+      <Root>
+        <div ref={mainRef} className={classes.main}>
+          <Header
+            isFullScreen={isFullScreen}
+            onExitFullScreen={onFullScreenExit}
+            onFullScreen={onFullScreen}
+          />
+          <EditorPreview
+            onPreviewInstanceLoad={(instance) => {
+              setPreview(instance);
+              if (onPreviewInstanceLoad) {
+                onPreviewInstanceLoad(instance);
+              }
+            }}
+          />
+        </div>
+        <div className={classes.sidebarWrapper} ref={sidebarWrapperRef}>
+          <div
+            className={classes.dragBar}
+            onMouseDown={handleDragSidebar}
+          />
+          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+          <Sidebar {...mergedSidebarProps} />
+        </div>
+      </Root>
+    </ThemeProvider>
   );
 };
 

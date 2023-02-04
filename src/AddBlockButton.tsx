@@ -8,7 +8,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { DialogContent } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { Block, BlockType } from './types';
-import { useEditorContext } from './EditorContextProvider';
 
 export interface AddBlockButtonProps {
   data: Block[],
@@ -29,8 +28,6 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const autocompleteRef = useRef<HTMLDivElement|null>(null);
-  const editorContext = useEditorContext();
-  const { container } = editorContext;
 
   const closeDialog = () => {
     setOpen(false);
@@ -94,7 +91,6 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
             },
           }}
           open={open}
-          container={container}
           onClose={closeDialog}
         >
           <DialogContent
@@ -139,7 +135,6 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
       {displayFormat === 'select' && (
         <Menu
           open={open}
-          container={container}
           anchorEl={buttonRef.current}
           onClose={() => {
             closeDialog();
