@@ -15,10 +15,6 @@ const Section: BlockType<CarouselData, SectionSettings> = {
     body: '',
   },
   defaultSettings: {
-    titleVariant: 'h3',
-    paddingTop: 5,
-    paddingBottom: 5,
-    textAlign: 'left',
   },
   blockLabel: (data) => {
     return data.title.length > 0 ? data.title : 'Unnamed section';

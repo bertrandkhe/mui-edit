@@ -2,6 +2,7 @@ import React, {
   useRef,
   useEffect,
   useState,
+  useCallback,
 } from 'react';
 import { styled } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,6 +14,7 @@ import { BlockType, Block } from './types';
 import BlockForm from './BlockForm';
 import AddBlockButton, { AddBlockButtonProps } from './AddBlockButton';
 import { createBlock } from './utils/block';
+import { useEditorStore } from './store';
 
 const PREFIX = 'Sidebar';
 
@@ -32,6 +34,7 @@ const Root = styled('div')((
 ) => ({
   [`&.${classes.root}`]: {
     width: '100%',
+    background: 'white',
     boxShadow: '-1px 0 10px rgba(0,0,0,0.2)',
     transform: 'translateX(100%)',
     display: 'flex',
@@ -42,7 +45,7 @@ const Root = styled('div')((
     overflowX: 'hidden',
     top: 0,
     left: 0,
-    zIndex: 1,
+    zIndex: 10,
 
     '&.open': {
       transform: 'translateX(0%)',
@@ -97,36 +100,34 @@ const Root = styled('div')((
 }));
 
 export interface SidebarProps {
-  data: Block[],
-  blockTypes: BlockType[],
   title: string,
-  open: boolean,
-  cardinality: number,
-  setData(data: Block[]): void,
+  open?: boolean,
   onBack?(): void,
   addBlockDisplayFormat: AddBlockButtonProps['displayFormat'],
+  onChange?(data: Block[]): void,
 }
 
 const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   const {
-    data,
-    blockTypes,
-    setData,
     onBack,
     title = 'Blocks',
     open = true,
-    cardinality,
     addBlockDisplayFormat,
+    onChange,
   } = props;
   const blocksWrapperRef = useRef<HTMLDivElement>(null);
-
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
-  const dataRef = useRef<Block[]>(data);
+  const data = useEditorStore((state) => state.data);
+  const setData = useEditorStore((state) => state.setData);
+  const cardinality = useEditorStore((state) => state.cardinality);
 
-  useEffect(() => {
-    dataRef.current = data;
-  }, [data]);
+  const updateData = useCallback((fn: ((prevData: Block[]) => Block[])) => {
+    const newData = setData(fn);
+    if (onChange) {
+      onChange(newData);
+    }
+  }, [onChange, setData])
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -158,16 +159,18 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
           draggable: '.sortable-item',
           handle: '.sortable-handle',
           onUpdate: () => {
-            if (!sortable || !active) {
-              return;
-            }
-            const newData = sortable
-              .toArray()
-              .map((id: string) => (
-                dataRef.current.find(
-                  (block): boolean => block.id === id,
-                ))) as Block[];
-            setData(newData);
+            updateData((prevData) => {
+              if (!sortable || !active) {
+                return prevData;
+              }
+              const newData = sortable
+                .toArray()
+                .map((id: string) => (
+                  prevData.find(
+                    (block): boolean => block.id === id,
+                  ))) as Block[];
+              return newData;
+            });
           },
         });
       }, 200);
@@ -180,7 +183,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
         sortable.destroy();
       }
     };
-  }, [setData]);
+  }, [updateData]);
 
   const handleBack = () => {
     setClosing(true);
@@ -195,44 +198,55 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
   };
 
   const handleAddBlock = (blockType: BlockType) => {
-    setData([
-      ...dataRef.current,
-      createBlock(blockType),
-    ]);
+    updateData((prevData) => {
+      return [
+        ...prevData,
+        createBlock(blockType),
+      ];
+    });
   };
 
   const handleDeleteBlock = (id: string) => () => {
-    setData(dataRef.current.filter((block) => block.id !== id));
+    updateData((prevData) => {
+      return prevData.filter((block) => block.id !== id);
+    });
   };
 
+  const blockTypes = useEditorStore((state) => state.blockTypes);
   const handleClone = (id: string) => (withData = true) => {
-    const block = dataRef.current.find((b) => b.id === id) as Block;
-    const blockType = blockTypes.find((bt) => bt.id === block.type);
-    if (!blockType) {
-      return;
-    }
-    setData([
-      ...dataRef.current,
-      {
-        ...block,
-        id: uuidv4(),
-        data: withData ? block.data : blockType.defaultData,
-        meta: {
-          ...block.meta,
-          created: Date.now(),
-          changed: Date.now(),
+    updateData((prevData) => {
+      const block = prevData.find((b) => b.id === id) as Block;
+      const blockType = blockTypes.find((bt) => bt.id === block.type);
+      if (!blockType) {
+        return prevData;
+      }
+      return [
+        ...prevData,
+        {
+          ...block,
+          id: uuidv4(),
+          data: withData ? block.data : blockType.defaultData,
+          meta: {
+            ...block.meta,
+            created: Date.now(),
+            changed: Date.now(),
+          },
         },
-      },
-    ]);
+      ];
+    });
   };
 
-  const handleChange = (newBlock: Block) => {
-    setData(dataRef.current.map((block) => {
-      if (block.id !== newBlock.id) {
-        return block;
-      }
-      return newBlock;
-    }));
+  const handleChange = (id: string) => (newBlockOrFn: Block | ((prevBlock: Block) => Block)) => {
+    updateData((prevData) => {
+      const prevBlock = prevData.find((b) => b.id === id) as Block;
+      const newBlock = typeof newBlockOrFn === 'function' ? newBlockOrFn(prevBlock) : newBlockOrFn;
+      return prevData.map((block) => {
+        if (block.id !== newBlock.id) {
+          return block;
+        }
+        return newBlock;
+      });
+    });
   };
 
   return (
@@ -266,7 +280,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = (props) => {
               key={block.id}
               blockType={blockType}
               block={block}
-              onChange={handleChange}
+              onChange={handleChange(id)}
               onDelete={handleDeleteBlock(id)}
               onClone={handleClone(id)}
               initialState={{

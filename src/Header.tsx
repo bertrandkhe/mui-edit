@@ -8,7 +8,7 @@ import TabletIcon from '@mui/icons-material/Tablet';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { usePreviewStore } from './store';
+import { useEditorStore, usePreviewStore } from './store';
 
 const PREFIX = 'Header';
 
@@ -60,7 +60,7 @@ const Header: React.FC<{
     onFullScreen,
     onExitFullScreen,
   } = props;
-  const setPreviewWidth = usePreviewStore((state) => state.setWidth);
+  const setPreviewWidth = useEditorStore((state) => state.setPreviewWidth);
   return (
     <Root className={classes.root}>
       <div className={classes.headerInner}>

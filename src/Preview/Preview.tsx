@@ -1,15 +1,16 @@
 import React, {
   HTMLAttributes,
-  useEffect, useRef, useState,
+  useEffect,
 } from 'react';
 import clsx from 'clsx';
 import type { Block, BlockType } from '../types';
 import BlockView from '../BlockView';
 import { PREVIEW_DATA, PREVIEW_READY } from './PreviewIframe';
+import { EDITOR_DATA } from 'mui-edit/EditorIframe';
+import { usePreviewStore } from 'mui-edit/store';
 
 export type PreviewProps<Wrapper extends React.ElementType, Data> = {
   blockTypes: BlockType[]
-  data?: Data extends Block[] ? Data : never,
   className?: string,
   WrapperComponent?: Wrapper,
   wrapperProps?: Wrapper extends React.ElementType<infer WrapperProps> ? WrapperProps : (
@@ -17,34 +18,41 @@ export type PreviewProps<Wrapper extends React.ElementType, Data> = {
   ),
   allowedOrigins?: Data extends Block[] ? never : string[],
   onAction?(action: { type: string, payload: any }): void,
-  onChange?(data: Block[]): void,
 };
 
 const Preview = <Wrapper extends React.ElementType, Data>(props: PreviewProps<Wrapper, Data>) => {
   const {
     blockTypes,
-    data: dataProp = [],
     className,
     WrapperComponent = 'div',
     wrapperProps = {},
     allowedOrigins,
     onAction,
-    onChange,
   } = props;
-  const [data, setData] = useState(dataProp);
-  const dataRef = useRef<Block[]>(data);
-  dataRef.current = data;
+  const setMode = usePreviewStore((state) => state.setMode);
+  const setData = usePreviewStore((state) => state.setData);
+  const getData = usePreviewStore((state) => state.getData);
 
-  const handleChange = (id: string) => (newBlock: Block) => {
-    if (onChange) {
-      const newData = dataRef.current.map((block) => {
-        if (block.id !== id) {
-          return block;
-        }
-        return newBlock;
-      });
-      onChange(newData);
+  useEffect(() => {
+    setMode('edit');
+  }, []);
+
+  const onBlockChange = (block: Block) => {
+    if (window.parent === window) {
+      console.log('Do nothing');
+      return;
     }
+    const data = getData();
+    const newData = data.map((b) => {
+      if (b.id === block.id) {
+        return block;
+      }
+      return b;
+    });
+    window.parent.postMessage({
+      type: EDITOR_DATA,
+      payload: newData,
+    }, '*');
   };
 
   // Listen for messages from parent window
@@ -100,6 +108,7 @@ const Preview = <Wrapper extends React.ElementType, Data>(props: PreviewProps<Wr
     }, '*');
   }, [allowedOrigins]);
 
+  const data = usePreviewStore((state) => state.data);
   return (
     <WrapperComponent className={clsx([className])} {...wrapperProps}>
       {data.map((block) => {
@@ -107,8 +116,8 @@ const Preview = <Wrapper extends React.ElementType, Data>(props: PreviewProps<Wr
           <BlockView
             block={block}
             blockTypes={blockTypes}
-            onChange={handleChange(block.id)}
             key={block.id}
+            onChange={onBlockChange}
           />
         );
       })}

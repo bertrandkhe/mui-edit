@@ -1,3 +1,4 @@
+import { EDITOR_DATA } from 'mui-edit/EditorIframe';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Block } from '../types';
 
@@ -13,11 +14,17 @@ export type PreviewInstance = {
 type Props = {
   src: string,
   className?: string,
-  onLoad(preview: PreviewInstance): void,
+  onLoad?(preview: PreviewInstance): void,
+  onChange?(newData: Block[]): void,
 };
 
 export const PreviewIframe: React.FC<Props> = (props) => {
-  const { src, onLoad, className } = props;
+  const {
+    src,
+    onLoad = () => {},
+    onChange = () => {},
+    className,
+  } = props;
   const previewUrl = useMemo(() => {
     return new URL(src);
   }, [src]);
@@ -46,13 +53,16 @@ export const PreviewIframe: React.FC<Props> = (props) => {
     const listener = (event: MessageEvent<{ type: string, payload: any }>) => {
       if (event.origin === previewUrl.origin) {
         if (event.data && event.data.type) {
-          const { type } = event.data;
+          const { type, payload } = event.data;
           if (type === PREVIEW_READY) {
             onLoad({
               element: previewIframeEl,
               setData,
               dispatch,
             });
+          }
+          if (type === EDITOR_DATA) {
+            onChange(payload);
           }
         }
       }

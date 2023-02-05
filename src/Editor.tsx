@@ -5,7 +5,6 @@ import React, {
   useRef,
   MouseEventHandler,
   useEffect,
-  useCallback,
 } from 'react';
 import {
   Theme, ThemeProvider, styled,
@@ -16,10 +15,11 @@ import Sidebar from './Sidebar';
 import defaultTheme from './theme';
 import { AddBlockButtonProps } from './AddBlockButton';
 import { PreviewInstance } from './Preview/PreviewIframe';
-import { EDITOR_DATA, EDITOR_READY } from './EditorIframe';
 import Header from './Header';
-import { useEditorStore, usePreviewStore } from './store';
+import { Provider, useEditorStore, usePreviewStore } from './store';
 import EditorPreview from './EditorPreview';
+import MessageBus from './MessageBus';
+import EditorInit from './EditorInit';
 
 declare module '@mui/material/useMediaQuery' {
   interface Options {
@@ -97,9 +97,8 @@ const Root = styled('div')((
   },
 }));
 
-export interface EditorProps {
-  data?: Block[],
-  initialData?: Block[],
+type EditorBaseProps = {
+  data?: void,
   blockTypes: BlockType[],
   disablePreview?: Readonly<boolean>,
   onBack?(): void,
@@ -113,21 +112,28 @@ export interface EditorProps {
   title?: string,
   cardinality?: number,
   addBlockDisplayFormat?: AddBlockButtonProps['displayFormat'],
-  previewSrc: string,
+  previewSrc?: string,
   allowedOrigins?: string[],
   onAction?(action: { type: string, payload: any }): void,
   onPreviewInstanceLoad?(preview: PreviewInstance): void,
-  defaultWidth?: 'sm' | 'md' | 'lg'
+  previewWidth?: 'sm' | 'md' | 'lg'
+  isNested?: boolean,
 }
+
+type EditorProps = EditorBaseProps | (Omit<EditorBaseProps, 'data' | 'initialData'> & ({
+  initialData?: void,
+  data: Block[],
+} | {
+  data?: void,
+  initialData: Block[],
+}));
 
 const Editor: React.FC<EditorProps> = (props) => {
   const {
-    data: propsData,
-    initialData = [],
+    data,
     onChange,
     onBack,
     blockTypes = [],
-    disablePreview = false,
     editorTheme = defaultTheme,
     onFullScreen,
     onFullScreenExit,
@@ -137,41 +143,16 @@ const Editor: React.FC<EditorProps> = (props) => {
     title,
     addBlockDisplayFormat = 'select',
     previewSrc,
-    allowedOrigins,
+    allowedOrigins = [],
     onAction,
-    defaultWidth = 'lg',
+    previewWidth,
+    isNested,
   } = props;
-  const isControlled = !!propsData;
-  const initialDataRef = useRef(initialData);
-  const [preview, setPreview] = useState<PreviewInstance | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const sortedBlockTypes = blockTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
+  const isNestedEditor = useRef(isNested || !previewSrc).current;
 
-  const setPreviewWidth = usePreviewStore((state) => state.setWidth);
-  useEffect(() => {
-    setPreviewWidth(defaultWidth);
-  }, [defaultWidth, setPreviewWidth]);
-
-  const setEditorState = useEditorStore((state) => state.setState);
-  useEffect(() => {
-    setEditorState({
-      isFullScreen,
-      enterFullScreen: onFullScreen,
-      exitFullScreen: onFullScreenExit,
-    });
-  }, [setEditorState, isFullScreen, onFullScreen, onFullScreenExit]);
-
-  const setEditorData = useEditorStore((state) => state.setData);
-  useEffect(() => {
-    setEditorData(initialDataRef.current);
-  }, []);
-
-  const setPreviewSrc = usePreviewStore((state) => state.setIframeSrc);
-  useEffect(() => {
-    setPreviewSrc(previewSrc);
-  }, [previewSrc]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 1200px)');
@@ -215,98 +196,26 @@ const Editor: React.FC<EditorProps> = (props) => {
     };
   }, [isMobile]);
 
-  const handleDataChange = useCallback((updatedData: Block[]) => {
-    if (!isControlled) {
-      setEditorData(updatedData);
-    }
-    if (onChange) {
-      onChange(updatedData);
-    }
-  }, [isControlled, onChange, setEditorData]);
-
-  const editorData = useEditorStore((state) => state.data)
-  const currentData = isControlled ? propsData as Block[] : editorData;
-
-  // Setup iframe communication between parent window, editor and preview iframe
-  useEffect(() => {
-    if (
-      !window.parent
-      || !allowedOrigins
-      || allowedOrigins.length === 0
-      || !preview
-    ) {
-      return undefined;
-    }
-    const safeAllowedOrigins = allowedOrigins.map((origin) => (new URL(origin).origin));
-    window.parent.postMessage({
-      type: EDITOR_READY,
-    }, '*');
-    const listener = (event: MessageEvent<{
-      type?: string,
-      payload?: any,
-    }>) => {
-      if (!safeAllowedOrigins.includes(origin)) {
-        console.warn(
-          `Received message from ${event.origin} but only messages from ${safeAllowedOrigins.join(', ')} are allowed.`,
-        );
-        return;
-      }
-      if (event.data && event.data.type) {
-        const { type, payload } = event.data;
-        if (!type.startsWith('editor/')) {
-          return;
-        }
-        switch (type) {
-          case EDITOR_DATA:
-            handleDataChange(payload);
-            break;
-
-          default:
-            preview?.dispatch({ type, payload });
-            break;
-        }
-        if (onAction) {
-          onAction({
-            type,
-            payload,
-          });
-        }
-      }
-    };
-    window.addEventListener('message', listener);
-    return () => {
-      window.removeEventListener('message', listener);
-    };
-  }, [allowedOrigins, preview, previewSrc, onAction, handleDataChange]);
-
-  // Forward data change to preview iframe and to top window.
-  useEffect(() => {
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({
-        type: EDITOR_DATA,
-        payload: currentData,
-      }, '*');
-    }
-    if (preview) {
-      preview.setData(currentData);
-    }
-  }, [preview, currentData]);
-
   const mergedSidebarProps = {
-    data: currentData,
     onBack,
-    setData: handleDataChange,
-    blockTypes: sortedBlockTypes,
     title: title || 'Blocks',
-    open: true,
     cardinality,
     addBlockDisplayFormat,
+    onChange,
   };
 
-  if (disablePreview) {
+  if (isNestedEditor) {
     return (
+      <Provider
+        allowedOrigins={allowedOrigins}
+        blockTypes={blockTypes}
+        isFullScreen={false}
+        data={props.data}
+        isNested
+      >
+        <Sidebar {...mergedSidebarProps} />
+      </Provider>
       // eslint-disable-next-line react/jsx-props-no-spreading
-      <Sidebar {...mergedSidebarProps} />
     );
   }
 
@@ -346,36 +255,46 @@ const Editor: React.FC<EditorProps> = (props) => {
     dragBarEl.addEventListener('mousemove', handleMove);
   };
 
-  console.log('render');
 
   return (
     <ThemeProvider theme={editorTheme}>
       {editorTheme === defaultTheme && <CssBaseline />}
-      <Root>
-        <div ref={mainRef} className={classes.main}>
-          <Header
-            isFullScreen={isFullScreen}
-            onExitFullScreen={onFullScreenExit}
-            onFullScreen={onFullScreen}
-          />
-          <EditorPreview
-            onPreviewInstanceLoad={(instance) => {
-              setPreview(instance);
-              if (onPreviewInstanceLoad) {
-                onPreviewInstanceLoad(instance);
-              }
-            }}
-          />
-        </div>
-        <div className={classes.sidebarWrapper} ref={sidebarWrapperRef}>
-          <div
-            className={classes.dragBar}
-            onMouseDown={handleDragSidebar}
-          />
-          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-          <Sidebar {...mergedSidebarProps} />
-        </div>
-      </Root>
+      <Provider
+        allowedOrigins={allowedOrigins}
+        blockTypes={blockTypes}
+        data={data}
+        isFullScreen={isFullScreen}
+        previewSrc={previewSrc}
+        previewWidth={previewWidth}
+      >
+        <MessageBus
+          onAction={onAction}
+        />
+        <Root>
+          <div ref={mainRef} className={classes.main}>
+            <Header
+              isFullScreen={isFullScreen}
+              onExitFullScreen={onFullScreenExit}
+              onFullScreen={onFullScreen}
+            />
+            <EditorPreview
+              onPreviewInstanceLoad={(instance) => {
+                if (onPreviewInstanceLoad) {
+                  onPreviewInstanceLoad(instance);
+                }
+              }}
+            />
+          </div>
+          <div className={classes.sidebarWrapper} ref={sidebarWrapperRef}>
+            <div
+              className={classes.dragBar}
+              onMouseDown={handleDragSidebar}
+            />
+            {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+            <Sidebar {...mergedSidebarProps} />
+          </div>
+        </Root>
+      </Provider>
     </ThemeProvider>
   );
 };

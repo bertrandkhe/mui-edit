@@ -33,7 +33,7 @@ export interface BlockFormProps {
   block: Block,
   blockType: BlockType,
   initialState?: BlockFormInitialState,
-  onChange(block: Block): void,
+  onChange(block: Block | ((prevBlock: Block) => Block)): void,
   onClone(withData: boolean): void,
   onDelete(): void,
 }
@@ -181,26 +181,28 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
     });
   };
 
-  const handleDataChange = (newData: typeof block.data) => {
-    onChange({
-      ...block,
-      data: newData,
+  type BlockData = typeof block.data;
+  const handleDataChange = (newDataOrFn: BlockData | ((prevData: BlockData) => BlockData)) => {
+    onChange((prevBlock) => ({
+      ...prevBlock,
+      data: typeof newDataOrFn === 'function' ? newDataOrFn(prevBlock.data) : newDataOrFn,
       meta: {
-        ...block.meta,
+        ...prevBlock.meta,
         changed: Date.now(),
       },
-    });
+    }));
   };
 
-  const handleSettingsChange = (newSettings: typeof block.settings) => {
-    onChange({
-      ...block,
-      settings: newSettings,
+  type BlockSettings = typeof block.settings;
+  const handleSettingsChange = (newSettingsOrFn: BlockSettings | ((prevSettings: BlockSettings) => BlockSettings)) => {
+    onChange((prevBlock) => ({
+      ...prevBlock,
+      settings: typeof newSettingsOrFn === 'function' ? newSettingsOrFn(prevBlock.settings) : newSettingsOrFn,
       meta: {
-        ...block.meta,
+        ...prevBlock.meta,
         changed: Date.now(),
       },
-    });
+    }));
   };
 
   useEffect(() => {

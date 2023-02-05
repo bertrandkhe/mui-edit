@@ -9,25 +9,30 @@ const SectionView: React.FunctionComponent<
   ViewProps<SectionData, SectionSettings>
 > = (props) => {
   const {
-    data, settings,
+    data,
+    onDataChange,
   } = props;
 
   return (
-    <Box
-      bgcolor={settings.backgroundColor}
-      color={settings.color}
-      mt={settings.marginTop || 0}
-      mb={settings.marginBottom || 0}
-      pt={settings.paddingTop || 0}
-      pb={settings.paddingBottom || 0}
-      textAlign={settings.textAlign}
-    >
-      <Container
-        disableGutters={settings.containerDisableGutters}
-        maxWidth={settings.containerMaxWidth}
-      >
+    <Box>
+      <Container>
         <Typography
-          variant={settings.titleVariant}
+          component="h1"
+          variant="h2"
+          whiteSpace="pre"
+          onBlur={(ev) => {
+            const newValue = ev.target.innerHTML;
+            console.log(newValue);
+            if (!newValue || newValue.length === 0) {
+              ev.target.textContent = data.title;
+              return;
+            }
+            onDataChange({
+              ...data,
+              title: newValue,
+            });
+          }}
+          contentEditable
         >
           {data.title}
         </Typography>
@@ -39,6 +44,27 @@ const SectionView: React.FunctionComponent<
         >
           {data.body}
         </Typography>
+        {data.cards.length > 0 && (
+          <Box
+            mt={2}
+            display="inline-flex"
+            width="100%"
+            overflow="auto"
+          >
+            {data.cards.map((card) => {
+              return (
+                <Box width={250} p={2}>
+                  <Typography variant="h3">
+                    {card.data.title}
+                  </Typography>
+                  <Typography mt={1}>
+                    {card.data.body}
+                  </Typography>
+                </Box>
+              );
+            })}
+          </Box>
+        )}
       </Container>
     </Box>
   );

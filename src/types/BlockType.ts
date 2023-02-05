@@ -10,7 +10,7 @@ export interface EditFormProps<
 > extends Partial<Block<D, S>> {
   id: string
   data: D,
-  onChange(data: D): void,
+  onChange(dataOrFn: D | ((prevData: D) => D)): void,
   onClose(): void,
 }
 
@@ -18,7 +18,7 @@ export interface SettingsFormProps<D, S> extends Partial<Block<D, S>> {
   id: string
   data: D,
   settings: S
-  onChange(settings: S): void,
+  onChange(settingsOrFn: S | ((prevSettings: S) => S)): void,
 }
 
 export interface ViewProps<
@@ -26,11 +26,9 @@ export interface ViewProps<
   S,
   > extends Block<D, S> {
   contentEditable?: boolean,
-  onDataChange?(data: D): void,
-  onSettingsChange?(settings: S): void,
+  onDataChange(data: D): void,
+  onSettingsChange(settings: S): void,
 }
-
-export type EditorContext = Record<string, any>;
 
 export interface BlockType<
   D = any,
