@@ -14,11 +14,13 @@ export interface AddBlockButtonProps {
   blockTypes: BlockType[],
   onAddBlock(blockType: BlockType): void,
   disabled?: boolean,
-  displayFormat: 'autocomplete' | 'select'
+  displayFormat: 'autocomplete' | 'select',
+  label?: string,
 }
 
 const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => {
   const {
+    label = 'Add block',
     data,
     onAddBlock,
     blockTypes,
@@ -72,6 +74,10 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
         color="primary"
         startIcon={<AddIcon />}
         onClick={() => {
+          if (blockTypes.length === 1) {
+            onAddBlock(blockTypes[0]);
+            return;
+          }
           if (displayFormat === 'autocomplete') {
             openDialog();
             return;
@@ -80,7 +86,7 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
         }}
         disabled={disabled}
       >
-        Add block
+        {label}
       </Button>
       {displayFormat === 'autocomplete' && (
         <Dialog
@@ -123,7 +129,7 @@ const AddBlockButton: React.FunctionComponent<AddBlockButtonProps> = (props) => 
                   }}
                   focused
                   placeholder="Type to search"
-                  label="Add block"
+                  label={label}
                   {...params}
                 />
               )}

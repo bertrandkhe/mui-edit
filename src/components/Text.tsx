@@ -11,6 +11,6 @@ const Text = <C extends React.ComponentType>(props: React.ComponentProps<C> & {
       {children}
     </Component>
   );
-}
+};
 
 export default Text;

@@ -16,10 +16,9 @@ import defaultTheme from './theme';
 import { AddBlockButtonProps } from './AddBlockButton';
 import { PreviewInstance } from './Preview/PreviewIframe';
 import Header from './Header';
-import { Provider, useEditorStore, usePreviewStore } from './store';
+import { Provider } from './store';
 import EditorPreview from './EditorPreview';
 import MessageBus from './MessageBus';
-import EditorInit from './EditorInit';
 
 declare module '@mui/material/useMediaQuery' {
   interface Options {
@@ -100,59 +99,50 @@ const Root = styled('div')((
 type EditorBaseProps = {
   data?: void,
   blockTypes: BlockType[],
-  disablePreview?: Readonly<boolean>,
-  onBack?(): void,
   onChange?(data: Block[]): void,
-  onFullScreen?(): void,
-  onFullScreenExit?(): void,
-  onPreviewIframeLoad?(iframe: HTMLIFrameElement): void,
-  isFullScreen?: boolean,
-  editorTheme?: Theme,
-  previewWrapperComponent?: React.ElementType,
   title?: string,
   cardinality?: number,
   addBlockDisplayFormat?: AddBlockButtonProps['displayFormat'],
-  previewSrc?: string,
-  allowedOrigins?: string[],
-  onAction?(action: { type: string, payload: any }): void,
-  onPreviewInstanceLoad?(preview: PreviewInstance): void,
-  previewWidth?: 'sm' | 'md' | 'lg'
-  isNested?: boolean,
 }
 
-type EditorProps = EditorBaseProps | (Omit<EditorBaseProps, 'data' | 'initialData'> & ({
-  initialData?: void,
-  data: Block[],
-} | {
-  data?: void,
-  initialData: Block[],
-}));
+type FullEditorProps = EditorBaseProps & {
+  format: 'full',
+  editorTheme?: Theme,
+  isFullScreen?: boolean,
+  onFullScreen?(): void,
+  onFullScreenExit?(): void,
+  onPreviewIframeLoad?(iframe: HTMLIFrameElement): void,
+  previewWrapperComponent?: React.ElementType,
+  previewSrc?: string,
+  previewWidth?: 'sm' | 'md' | 'lg'
+  onAction?(action: { type: string, payload: any }): void,
+  onPreviewInstanceLoad?(preview: PreviewInstance): void,
+  allowedOrigins?: string[],
+}
+
+type EditorOnlyProps = EditorBaseProps & {
+  format: 'sidebar',
+  onBack?(): void,
+}
+
+type InlineEditorProps = EditorBaseProps & {
+  format: 'inline',
+};
+
+type EditorProps = FullEditorProps | EditorOnlyProps | InlineEditorProps;
 
 const Editor: React.FC<EditorProps> = (props) => {
   const {
     data,
     onChange,
-    onBack,
     blockTypes = [],
-    editorTheme = defaultTheme,
-    onFullScreen,
-    onFullScreenExit,
-    onPreviewInstanceLoad,
-    isFullScreen = false,
     cardinality = -1,
     title,
     addBlockDisplayFormat = 'select',
-    previewSrc,
-    allowedOrigins = [],
-    onAction,
-    previewWidth,
-    isNested,
   } = props;
   const mainRef = useRef<HTMLDivElement | null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const isNestedEditor = useRef(isNested || !previewSrc).current;
-
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 1200px)');
@@ -197,23 +187,28 @@ const Editor: React.FC<EditorProps> = (props) => {
   }, [isMobile]);
 
   const mergedSidebarProps = {
-    onBack,
     title: title || 'Blocks',
     cardinality,
     addBlockDisplayFormat,
     onChange,
   };
 
-  if (isNestedEditor) {
+  if (props.format === 'inline') {
+    return null;
+  }
+
+  if (props.format === 'sidebar') {
+    const {
+      onBack,
+    } = props;
     return (
       <Provider
-        allowedOrigins={allowedOrigins}
         blockTypes={blockTypes}
         isFullScreen={false}
         data={props.data}
         isNested
       >
-        <Sidebar {...mergedSidebarProps} />
+        <Sidebar onBack={onBack} {...mergedSidebarProps} />
       </Provider>
       // eslint-disable-next-line react/jsx-props-no-spreading
     );
@@ -255,6 +250,17 @@ const Editor: React.FC<EditorProps> = (props) => {
     dragBarEl.addEventListener('mousemove', handleMove);
   };
 
+  const {
+    editorTheme = defaultTheme,
+    onFullScreen,
+    onFullScreenExit,
+    onPreviewInstanceLoad,
+    isFullScreen = false,
+    previewSrc,
+    allowedOrigins = [],
+    onAction,
+    previewWidth,
+  } = props;
 
   return (
     <ThemeProvider theme={editorTheme}>

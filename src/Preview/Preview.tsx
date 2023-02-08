@@ -3,11 +3,11 @@ import React, {
   useEffect,
 } from 'react';
 import clsx from 'clsx';
+import { EDITOR_DATA } from 'mui-edit/EditorIframe';
+import { usePreviewStore } from 'mui-edit/store';
 import type { Block, BlockType } from '../types';
 import BlockView from '../BlockView';
 import { PREVIEW_DATA, PREVIEW_READY } from './PreviewIframe';
-import { EDITOR_DATA } from 'mui-edit/EditorIframe';
-import { usePreviewStore } from 'mui-edit/store';
 
 export type PreviewProps<Wrapper extends React.ElementType, Data> = {
   blockTypes: BlockType[]
@@ -35,11 +35,10 @@ const Preview = <Wrapper extends React.ElementType, Data>(props: PreviewProps<Wr
 
   useEffect(() => {
     setMode('edit');
-  }, []);
+  }, [setMode]);
 
   const onBlockChange = (block: Block) => {
     if (window.parent === window) {
-      console.log('Do nothing');
       return;
     }
     const data = getData();

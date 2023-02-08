@@ -21,8 +21,8 @@ type Props = {
 export const PreviewIframe: React.FC<Props> = (props) => {
   const {
     src,
-    onLoad = () => {},
-    onChange = () => {},
+    onLoad,
+    onChange,
     className,
   } = props;
   const previewUrl = useMemo(() => {
@@ -54,14 +54,14 @@ export const PreviewIframe: React.FC<Props> = (props) => {
       if (event.origin === previewUrl.origin) {
         if (event.data && event.data.type) {
           const { type, payload } = event.data;
-          if (type === PREVIEW_READY) {
+          if (type === PREVIEW_READY && onLoad) {
             onLoad({
               element: previewIframeEl,
               setData,
               dispatch,
             });
           }
-          if (type === EDITOR_DATA) {
+          if (type === EDITOR_DATA && onChange) {
             onChange(payload);
           }
         }
@@ -71,7 +71,7 @@ export const PreviewIframe: React.FC<Props> = (props) => {
     return () => {
       window.removeEventListener('message', listener);
     };
-  }, [previewIframeEl, onLoad, previewUrl]);
+  }, [previewIframeEl, onLoad, previewUrl, onChange]);
 
   return (
     <iframe

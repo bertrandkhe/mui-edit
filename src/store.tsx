@@ -22,7 +22,7 @@ export const usePreviewStore = create<PreviewState>((set, get) => ({
   },
   getData() {
     return get().data;
-  }
+  },
 }));
 
 type EditorState = {
@@ -32,7 +32,12 @@ type EditorState = {
   blockTypes: BlockType[],
   setBlockTypes(newTypes: BlockType[]): void,
   data: Block[],
-  setData(data: Block[] | ((prevData: Block[]) => Block[]), areEqual?: ((prevData: Block[], newData: Block[]) => boolean)): Block[],
+  setData(
+    data: Block[]
+    | (
+      (prevData: Block[]) => Block[]),
+      areEqual?: ((prevData: Block[], newData: Block[]) => boolean)
+    ): Block[],
   allowedOrigins: string[],
   setAllowedOrigins(newOrigins: string[]): void,
   previewSrc: string,
@@ -44,52 +49,70 @@ type EditorState = {
 
 type EditorStore = ReturnType<typeof createEditorStore>;
 
-const createEditorStore = (initialState?: Partial<EditorState>) => createStore<EditorState>((set, get) => ({
-  isFullScreen: false,
-  isNested: false,
-  cardinality: -1,
-  blockTypes: [],
-  setBlockTypes(newTypes) {
-    const prevTypes = get().blockTypes;
-    const prevTypesId = prevTypes.map((t) => t.id).join('/');
-    const sortedNewTypes = newTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
-    const sortedNewTypesId = sortedNewTypes.sort().map((t) => t.id).join('/');
-    if (sortedNewTypesId !== prevTypesId) {
-      set({ blockTypes: sortedNewTypes });
-    }
-  },
-  data: [],
-  onDataChange: null,
-  setData(data, userEqualityFn) {
-    const prevData = get().data;
-    const newData = Array.isArray(data) ? data : data(prevData);
-    const equalityFn = userEqualityFn || ((a: Block[], b: Block[]) => {
-      const aId = a.map((block) => `${block.id}:${block.meta.changed}`).join('/');
-      const bId = b.map((block) => `${block.id}:${block.meta.changed}`).join('/');
-      return aId === bId;
-    });
-    const selected = equalityFn(prevData, newData) ? prevData : newData;
-    set({ data: selected });
-    return selected;
-  },
-  allowedOrigins: [],
-  setAllowedOrigins(newOrigins) {
-    const prevOrigins = get().allowedOrigins;
-    const sortedNewOrigins = newOrigins.sort();
-    if (prevOrigins.join(',') !== sortedNewOrigins.join(',')) {
-      set({ allowedOrigins: sortedNewOrigins });
-    }
-  },
-  previewSrc: '',
-  previewWidth: 'lg',
-  setPreviewWidth(width) {
-    set({ previewWidth: width });
-  },
-  previewInstance: null,
-  setPreviewInstance(instance) {
-    set({ previewInstance: instance });
-  },
-}));
+const createEditorStore = (
+  initialState: Partial<
+    Omit<EditorState, 'setBlockTypes' | 'setData' | 'setAllowedOrigins' | 'setPreviewWidth' | 'setPreviewInstance'>
+  > = {},
+) => {
+  const {
+    isFullScreen = false,
+    isNested = false,
+    cardinality = -1,
+    blockTypes = [],
+    data = [],
+    allowedOrigins = [],
+    previewSrc = '',
+    previewWidth = 'lg',
+    previewInstance = null,
+  } = initialState;
+  return (
+  createStore<EditorState>((set, get) => ({
+    isFullScreen,
+    isNested,
+    cardinality,
+    blockTypes,
+    setBlockTypes(newTypes) {
+      const prevTypes = get().blockTypes;
+      const prevTypesId = prevTypes.map((t) => t.id).join('/');
+      const sortedNewTypes = newTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
+      const sortedNewTypesId = sortedNewTypes.sort().map((t) => t.id).join('/');
+      if (sortedNewTypesId !== prevTypesId) {
+        set({ blockTypes: sortedNewTypes });
+      }
+    },
+    data,
+    onDataChange: null,
+    setData(data, userEqualityFn) {
+      const prevData = get().data;
+      const newData = Array.isArray(data) ? data : data(prevData);
+      const equalityFn = userEqualityFn || ((a: Block[], b: Block[]) => {
+        const aId = a.map((block) => `${block.id}:${block.meta.changed}`).join('/');
+        const bId = b.map((block) => `${block.id}:${block.meta.changed}`).join('/');
+        return aId === bId;
+      });
+      const selected = equalityFn(prevData, newData) ? prevData : newData;
+      set({ data: selected });
+      return selected;
+    },
+    allowedOrigins,
+    setAllowedOrigins(newOrigins) {
+      const prevOrigins = get().allowedOrigins;
+      const sortedNewOrigins = newOrigins.sort();
+      if (prevOrigins.join(',') !== sortedNewOrigins.join(',')) {
+        set({ allowedOrigins: sortedNewOrigins });
+      }
+    },
+    previewSrc,
+    previewWidth,
+    setPreviewWidth(width) {
+      set({ previewWidth: width });
+    },
+    previewInstance,
+    setPreviewInstance(instance) {
+      set({ previewInstance: instance });
+    },
+  })))
+};
 
 const EditorContext = React.createContext<EditorStore | void>(undefined);
 export const Provider: React.FC<{
@@ -101,7 +124,6 @@ export const Provider: React.FC<{
   if (!editorStoreRef.current) {
     editorStoreRef.current = createEditorStore(editorState as EditorState);
   }
-  const editorStore = editorStoreRef.current;
 
   useEffect(() => {
     const {
@@ -110,6 +132,7 @@ export const Provider: React.FC<{
       blockTypes,
       ...other
     } = editorState;
+    const editorStore = editorStoreRef.current as EditorStore;
     const currentState = editorStore.getState();
     if (data) {
       currentState.setData(data);
@@ -125,7 +148,7 @@ export const Provider: React.FC<{
 
   return (
     <EditorContext.Provider value={editorStoreRef.current}>
-      {props.children}
+      {children}
     </EditorContext.Provider>
   );
 };

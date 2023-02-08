@@ -7,7 +7,7 @@ export const EDITOR_READY = 'editor/editorReady';
 export const EDITOR_DATA = 'editor/editorData';
 export const EDITOR_BLOCK_UPDATE = 'editor/blockUpdate';
 export const EDITOR_BLOCK_DELETE = 'editor/blockDelete';
-export const EDITOR_BLOCK_ADD = 'editor/blockAdd'
+export const EDITOR_BLOCK_ADD = 'editor/blockAdd';
 
 export type EditorInstance = {
   element: HTMLIFrameElement | null,

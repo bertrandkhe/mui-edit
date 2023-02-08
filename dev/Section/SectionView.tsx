@@ -22,7 +22,6 @@ const SectionView: React.FunctionComponent<
           whiteSpace="pre"
           onBlur={(ev) => {
             const newValue = ev.target.innerHTML;
-            console.log(newValue);
             if (!newValue || newValue.length === 0) {
               ev.target.textContent = data.title;
               return;

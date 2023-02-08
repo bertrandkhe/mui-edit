@@ -253,7 +253,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
                   />
                 </Button>
               )}
-              {state.showSettingsForm
+              {state.showSettingsForm && blockType.settingsForm
               && (
                 <Button onClick={toggleShowSettingsForm} className={classes.iconBtn}>
                   <RemoveIcon
@@ -261,7 +261,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
                   />
                 </Button>
               )}
-              {!state.showSettingsForm
+              {!state.showSettingsForm && blockType.settingsForm
               && (
                 <Button
                   onClick={toggleShowSettingsForm}

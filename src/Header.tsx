@@ -8,7 +8,7 @@ import TabletIcon from '@mui/icons-material/Tablet';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { useEditorStore, usePreviewStore } from './store';
+import { useEditorStore } from './store';
 
 const PREFIX = 'Header';
 
@@ -91,7 +91,7 @@ const Header: React.FC<{
         )}
       </div>
     </Root>
-  )
+  );
 };
 
 export default Header;

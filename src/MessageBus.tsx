@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { EDITOR_DATA, EDITOR_READY } from './EditorIframe';
-import { PreviewInstance } from './Preview/PreviewIframe';
 import { useEditorStore } from './store';
 
 const MessageBus: React.FC<{

@@ -11,6 +11,8 @@
     "import/no-unresolved": "off",
     "arrow-body-style": "off",
     "react/prop-types": "off",
+    "react/destructuring-assignment": "off",
+    "@typescript-eslint/no-empty-function": "off",
     "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
     "import/extensions": ["error", {
       "ts": "never",

@@ -20,6 +20,7 @@ const App = (props: {
   }
   return (
     <Editor
+      format='full'
       previewWidth="sm"
       blockTypes={blockTypes}
       previewSrc="http://localhost:9001/preview"

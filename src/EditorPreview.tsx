@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
-import PreviewIframe, { PreviewInstance } from './Preview/PreviewIframe';
 import { styled } from '@mui/material';
+import PreviewIframe, { PreviewInstance } from './Preview/PreviewIframe';
 import { headerHeight } from './Header';
 import { useEditorStore } from './store';
 
@@ -18,6 +18,12 @@ const Root = styled('div')((
   },
 ) => ({
   height: `calc(100% - ${headerHeight}px)`,
+  boxSizing: 'border-box',
+  [theme.breakpoints.up('lg')]: {
+    '&.sm, &.md': {
+      padding: '30px 0',
+    },
+  },
   [`& .${classes.previewIframe}`]: {
     display: 'block',
     margin: 'auto',
@@ -30,13 +36,11 @@ const Root = styled('div')((
       '&.sm': {
         maxWidth: 375,
         height: 667,
-        marginTop: 30,
         boxShadow: '0 9px 10px rgba(0,0,0,0.5)',
       },
       '&.md': {
         maxWidth: 1080,
         height: 820,
-        marginTop: 30,
         boxShadow: '0 9px 10px rgba(0,0,0,0.5)',
       },
     },
@@ -56,7 +60,7 @@ const EditorPreview: React.FC<{
     return null;
   }
   return (
-    <Root className={clsx(classes.root, className)}>
+    <Root className={clsx(classes.root, previewWidth, className)}>
       <PreviewIframe
         src={previewSrc}
         className={clsx(classes.previewIframe, previewWidth)}

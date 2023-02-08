@@ -1,17 +1,15 @@
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 import { EditFormProps } from 'mui-edit/types';
 import { SectionData, SectionSettings } from './Section';
-import { Button } from '@mui/material';
-import Editor from 'mui-edit/Editor';
 import Card from './Card';
+import BlocksControl from 'mui-edit/controls/BlocksControl';
 
 const SectionEditForm: React.FunctionComponent<
   EditFormProps<SectionData, SectionSettings>
 > = (props) => {
   const { data, onChange } = props;
-  const [editingCards, setEditingCards] = useState(false);
   const handleChange = (prop: string) => (e: ChangeEvent<HTMLInputElement>) => {
     onChange((prevData) => ({
       ...prevData,
@@ -20,21 +18,6 @@ const SectionEditForm: React.FunctionComponent<
   };
   return (
     <form>
-      {editingCards && (
-        <Editor
-          onBack={() => {
-            setEditingCards(false);
-          }}
-          onChange={(newCards) => {
-            onChange((prevData) => ({
-              ...prevData,
-              cards: newCards,
-            }));
-          }}
-          data={data.cards}
-          blockTypes={[Card]}
-        />
-      )}
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
@@ -56,14 +39,18 @@ const SectionEditForm: React.FunctionComponent<
           />
         </Grid>
         <Grid item xs={12}>
-          <Button
-            variant='outlined'
-            onClick={() => {
-              setEditingCards(true);
+          <BlocksControl
+            addBlockLabel='Add card'
+            label="Cards"
+            onChange={(newCards) => {
+              onChange((prevData) => ({
+                ...prevData,
+                cards: newCards,
+              }));
             }}
-          >
-            Edit cards
-          </Button>
+            data={data.cards}
+            blockTypes={[Card]}
+          />
         </Grid>
       </Grid>
     </form>
