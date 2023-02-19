@@ -1,9 +1,9 @@
 import React from 'react';
 import { LoadableComponent } from '@loadable/component';
+import { z } from 'zod';
 import {
   Block,
 } from './Block';
-import { z } from 'zod';
 
 export interface EditFormProps<
   D,

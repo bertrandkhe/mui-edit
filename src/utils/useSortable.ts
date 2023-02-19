@@ -4,7 +4,17 @@ import { useEffect, useRef, useState } from 'react';
 
 type SortableOptions = Omit<
   BaseSortableOptions,
-  'onStart' | 'onEnd' | 'onAdd' | 'onClone' | 'onChoose' | 'onUnchoose' | 'onUpdate' | 'onSort' | 'onRemove' | 'onFilter' | 'onChange'
+  'onStart'
+  | 'onEnd'
+  | 'onAdd'
+  | 'onClone'
+  | 'onChoose'
+  | 'onUnchoose'
+  | 'onUpdate'
+  | 'onSort'
+  | 'onRemove'
+  | 'onFilter'
+  | 'onChange'
 > & {
   onStart?: ((event: SortableEvent, instance: TSortable) => void) | undefined;
   onEnd?: ((event: SortableEvent, instance: TSortable) => void) | undefined;
@@ -29,7 +39,7 @@ const useSortable = (options: SortableOptions) => {
 
   useEffect(() => {
     if (disabled || !container || sortableRef.current) {
-      return;
+      return undefined;
     }
     let newSortable: TSortable | null = null;
     let active = true;
@@ -45,20 +55,22 @@ const useSortable = (options: SortableOptions) => {
       });
       Object.keys(currOptions).forEach((key) => {
         const optionKey = key as keyof SortableOptions;
-        const optionVal = currOptions[key];
+        const optionVal = currOptions[optionKey];
         if (!key.startsWith('on') || key === 'onMove' || !newSortable) {
           return;
         }
         newSortable.option(optionKey, (ev: SortableEvent) => {
           if (!active || disabled) {
             return;
-          } 
-          optionVal(ev, newSortable);
+          }
+          if (typeof optionVal === 'function') {
+            (optionVal as NonNullable<SortableOptions['onAdd']>)(ev, newSortable as TSortable);
+          }
         });
       });
       newSortable.option('disabled', false);
       sortableRef.current = newSortable;
-   })();
+    })();
     return () => {
       active = false;
       if (newSortable) {
@@ -78,6 +90,6 @@ const useSortable = (options: SortableOptions) => {
       return sortableRef.current;
     },
   };
-}
+};
 
-export default useSortable; 
+export default useSortable;

@@ -11,7 +11,7 @@ const Snackbar: React.FC = () => {
         return (
           <MuiSnackbar
             key={m.id}
-            open={true}
+            open
             onClose={() => {
               removeMessage(m.id);
             }}

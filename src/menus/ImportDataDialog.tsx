@@ -1,6 +1,8 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, ModalProps } from '@mui/material';
+import {
+  Box, Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, ModalProps,
+} from '@mui/material';
 import { useEditorStore } from 'mui-edit/store';
-import React, { useRef, useState } from 'react';
+import React from 'react';
 
 const ImportDataDialog: React.FC<DialogProps> = (props) => {
   const { ...dialogProps } = props;
@@ -10,7 +12,7 @@ const ImportDataDialog: React.FC<DialogProps> = (props) => {
     if (dialogProps.onClose) {
       dialogProps.onClose(ev, reason);
     }
-  }
+  };
   const importData = async (data: string) => {
     const result = await editorImportData(data);
     if (result.success) {
@@ -18,7 +20,7 @@ const ImportDataDialog: React.FC<DialogProps> = (props) => {
       addAlertMessages([{
         severity: 'success',
         message: 'Data imported successfully',
-      }])
+      }]);
       return;
     }
     const errMessages: string[] = [];
@@ -54,7 +56,7 @@ const ImportDataDialog: React.FC<DialogProps> = (props) => {
           }}
         >
           <Box
-            name='data'
+            name="data"
             rows={10}
             component="textarea"
             sx={{

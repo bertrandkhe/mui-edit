@@ -2,9 +2,9 @@ import { create, createStore, useStore } from 'zustand';
 import React, { useContext, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
+import { AlertProps, SnackbarProps } from '@mui/material';
 import { PreviewInstance } from './Preview/PreviewIframe';
 import { Block, BlockType } from './types';
-import { AlertProps, SnackbarProps } from '@mui/material';
 
 type PreviewState = {
   mode: 'view' | 'edit',
@@ -100,172 +100,171 @@ const createEditorStore = (
     previewInstance = null,
   } = initialState;
   return (
-  createStore<EditorState>((set, get) => ({
-    isFullScreen,
-    isNested,
-    cardinality,
-    blockTypes,
-    setBlockTypes(newTypes) {
-      const prevTypes = get().blockTypes;
-      const prevTypesId = prevTypes.map((t) => t.id).join('/');
-      const sortedNewTypes = newTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
-      const sortedNewTypesId = sortedNewTypes.sort().map((t) => t.id).join('/');
-      if (sortedNewTypesId !== prevTypesId) {
-        set({ blockTypes: sortedNewTypes });
-      }
-    },
-    data,
-    onDataChange: null,
-    async parseUnsafeData(unsafeData) {
-      let parsedUnsafeData = null;
-      let issues: z.ZodIssue[] = [];
-      if (Array.isArray(unsafeData)) {
-        parsedUnsafeData = unsafeData;
-      } else if (typeof unsafeData === 'string') {
-        if (!unsafeData.toLowerCase().includes('<script>')) {
-          try {
-            parsedUnsafeData = JSON.parse(unsafeData);
-          } catch (err) {
-            issues.push({
-              fatal: true,
-              code: 'custom',
-              message: (err as Error).message,
-              path: [],
-            });
-          }
+    createStore<EditorState>((set, get) => ({
+      isFullScreen,
+      isNested,
+      cardinality,
+      blockTypes,
+      setBlockTypes(newTypes) {
+        const prevTypes = get().blockTypes;
+        const prevTypesId = prevTypes.map((t) => t.id).join('/');
+        const sortedNewTypes = newTypes.sort((a, b) => (a.label < b.label ? -1 : 1));
+        const sortedNewTypesId = sortedNewTypes.sort().map((t) => t.id).join('/');
+        if (sortedNewTypesId !== prevTypesId) {
+          set({ blockTypes: sortedNewTypes });
         }
-      } else {
-        issues.push({
-          fatal: true,
-          code: 'custom',
-          message: 'Data is not valid.',
-          path: [],
+      },
+      data,
+      onDataChange: null,
+      async parseUnsafeData(unsafeData) {
+        let parsedUnsafeData = null;
+        const issues: z.ZodIssue[] = [];
+        if (Array.isArray(unsafeData)) {
+          parsedUnsafeData = unsafeData;
+        } else if (typeof unsafeData === 'string') {
+          if (!unsafeData.toLowerCase().includes('<script>')) {
+            try {
+              parsedUnsafeData = JSON.parse(unsafeData);
+            } catch (err) {
+              issues.push({
+                fatal: true,
+                code: 'custom',
+                message: (err as Error).message,
+                path: [],
+              });
+            }
+          }
+        } else {
+          issues.push({
+            fatal: true,
+            code: 'custom',
+            message: 'Data is not valid.',
+            path: [],
+          });
+        }
+        if (issues.length > 0) {
+          return {
+            success: false,
+            errors: [{
+              issues,
+            }],
+          };
+        }
+        const blockTypesIds = get().blockTypes.map((bt) => bt.id);
+        const docSchema = z.array(z.object({
+          id: z.string(),
+          type: z.string().refine(
+            (type) => blockTypesIds.includes(type),
+            (type) => ({ message: `Block type must be one of: ${blockTypesIds.join(', ')}. Current value: ${type}` }),
+          ),
+          data: z.object({}).passthrough().nullable(),
+          settings: z.object({}).passthrough().nullable(),
+          meta: z.object({
+            created: z.number(),
+            changed: z.number(),
+          }).passthrough(),
+        }));
+        const result = docSchema.safeParse(parsedUnsafeData);
+        if (!result.success) {
+          return {
+            success: false,
+            errors: [result.error],
+          };
+        }
+        const maybeSafeData = result.data;
+        const results = await Promise.all(maybeSafeData.map(async (block, i) => {
+          const blockType = blockTypes.find((bt) => bt.id === block.type) as BlockType;
+          if (blockType.getDataSchema && block.data) {
+            const schema = await blockType.getDataSchema();
+            const blockResult = schema.safeParse(block.data);
+            if (!blockResult.success) {
+              return blockResult;
+            }
+            maybeSafeData[i].data = blockResult.data;
+          }
+          if (blockType.getSettingsSchema && block.settings) {
+            const schema = await blockType.getSettingsSchema();
+            const blockResult = schema.safeParse(block.settings);
+            if (!blockResult.success) {
+              return blockResult;
+            }
+            maybeSafeData[i].settings = blockResult.data;
+          }
+          return undefined;
+        }));
+        const allErrors: z.ZodError[] = [];
+        results.forEach((r) => {
+          if (r && !r.success) {
+            allErrors.push(r.error);
+          }
         });
-      }
-      if (issues.length > 0) {
+        if (allErrors.length === 0) {
+          return {
+            success: true,
+            data: maybeSafeData,
+          };
+        }
         return {
           success: false,
-          errors: [{
-            issues,
-          }],
-        }
-      }
-      const blockTypes = get().blockTypes;
-      const blockTypesIds = blockTypes.map((bt) => bt.id);
-      const schema = z.array(z.object({
-        id: z.string(),
-        type: z.string().refine(
-          (type) => blockTypesIds.includes(type),
-          (type) => ({ message: `Block type must be one of: ${blockTypesIds.join(', ')}. Current value: ${type}` }),
-        ),
-        data: z.object({}).passthrough().nullable(),
-        settings: z.object({}).passthrough().nullable(),
-        meta: z.object({
-          created: z.number(),
-          changed: z.number(),
-        }).passthrough(),
-      }));
-      let result = schema.safeParse(parsedUnsafeData);
-      if (!result.success) {
-        return {
-          success: false,
-          errors: [result.error],
+          errors: allErrors,
         };
-      }
-      const maybeSafeData = result.data;
-      const results = await Promise.all(maybeSafeData.map(async (block, i) => {
-        const blockType = blockTypes.find((bt) => bt.id === block.type) as BlockType;
-        if (blockType.getDataSchema && block.data) {
-          const schema = await blockType.getDataSchema();
-          const blockResult = schema.safeParse(block.data);
-          if (!blockResult.success) {
-            return blockResult;
-          }
-          maybeSafeData[i].data = blockResult.data;
+      },
+      async importData(rawData) {
+        const result = await get().parseUnsafeData(rawData);
+        if (result.success) {
+          get().setData(result.data);
+          return result;
         }
-        if (blockType.getSettingsSchema && block.settings) {
-          const schema = await blockType.getSettingsSchema();
-          const blockResult = schema.safeParse(block.settings);
-          if (!blockResult.success) {
-            return blockResult;
-          }
-          maybeSafeData[i].settings = blockResult.data;
-        }
-      }));
-      const allErrors: z.ZodError[] = [];
-      results.forEach((r) => {
-        if (r && !r.success) {
-          allErrors.push(r.error);
-        }
-      });
-      if (allErrors.length === 0) {
-        return {
-          success: true,
-          data: maybeSafeData,
-        };
-      }
-      return {
-        success: false,
-        errors: allErrors,
-      }
-    },
-    async importData(rawData) {
-      const result = await get().parseUnsafeData(rawData);
-      if (result.success) {
-        get().setData(result.data);
         return result;
-      }
-      return result;
-    },
-    setData(data, userEqualityFn) {
-      const prevData = get().data;
-      const newData = Array.isArray(data) ? data : data(prevData);
-      const equalityFn = userEqualityFn || ((a: Block[], b: Block[]) => {
-        const aId = a.map((block) => `${block.id}:${block.meta.changed}`).join('/');
-        const bId = b.map((block) => `${block.id}:${block.meta.changed}`).join('/');
-        return aId === bId;
-      });
-      const selected = equalityFn(prevData, newData) ? prevData : newData;
-      set({ data: selected });
-      return selected;
-    },
-    allowedOrigins,
-    setAllowedOrigins(newOrigins) {
-      const prevOrigins = get().allowedOrigins;
-      const sortedNewOrigins = newOrigins.sort();
-      if (prevOrigins.join(',') !== sortedNewOrigins.join(',')) {
-        set({ allowedOrigins: sortedNewOrigins });
-      }
-    },
-    previewSrc,
-    previewWidth,
-    setPreviewWidth(width) {
-      set({ previewWidth: width });
-    },
-    previewInstance,
-    setPreviewInstance(instance) {
-      set({ previewInstance: instance });
-    },
-    alertMessages: [],
-    addAlertMessages(messages) {
-      const prevMessages = get().alertMessages;
-      set({
-        alertMessages: [
-          ...prevMessages,
-          ...messages.map((m) => ({
-            ...m,
-            autoHideDuration: m.autoHideDuration || 3000,
-            id: uuidv4(),
-            visible: false,
-          })
-        )]
-      })
-    },
-    removeAlertMessage(id: string) {
-      const prevMessages = get().alertMessages;
-      set({ alertMessages: prevMessages.filter((m) => m.id !== id )});
-    },
-  })))
+      },
+      setData(argData, userEqualityFn) {
+        const prevData = get().data;
+        const newData = Array.isArray(argData) ? argData : argData(prevData);
+        const equalityFn = userEqualityFn || ((a: Block[], b: Block[]) => {
+          const aId = a.map((block) => `${block.id}:${block.meta.changed}`).join('/');
+          const bId = b.map((block) => `${block.id}:${block.meta.changed}`).join('/');
+          return aId === bId;
+        });
+        const selected = equalityFn(prevData, newData) ? prevData : newData;
+        set({ data: selected });
+        return selected;
+      },
+      allowedOrigins,
+      setAllowedOrigins(newOrigins) {
+        const prevOrigins = get().allowedOrigins;
+        const sortedNewOrigins = newOrigins.sort();
+        if (prevOrigins.join(',') !== sortedNewOrigins.join(',')) {
+          set({ allowedOrigins: sortedNewOrigins });
+        }
+      },
+      previewSrc,
+      previewWidth,
+      setPreviewWidth(width) {
+        set({ previewWidth: width });
+      },
+      previewInstance,
+      setPreviewInstance(instance) {
+        set({ previewInstance: instance });
+      },
+      alertMessages: [],
+      addAlertMessages(messages) {
+        const prevMessages = get().alertMessages;
+        set({
+          alertMessages: [
+            ...prevMessages,
+            ...messages.map((m) => ({
+              ...m,
+              autoHideDuration: m.autoHideDuration || 3000,
+              id: uuidv4(),
+              visible: false,
+            }))],
+        });
+      },
+      removeAlertMessage(id: string) {
+        const prevMessages = get().alertMessages;
+        set({ alertMessages: prevMessages.filter((m) => m.id !== id) });
+      },
+    })));
 };
 
 const EditorContext = React.createContext<EditorStore | void>(undefined);

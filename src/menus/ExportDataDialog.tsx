@@ -7,11 +7,11 @@ import {
   DialogContent,
   DialogProps,
   DialogTitle,
-  ModalProps
+  ModalProps,
 } from '@mui/material';
-import { useEditorStore } from '../store';
 import React, { useMemo } from 'react';
 import { grey } from '@mui/material/colors';
+import { useEditorStore } from '../store';
 
 const allMessages = {
   copySuccess: {
@@ -40,7 +40,7 @@ const ExportDataDialog: React.FC<DialogProps> = (props) => {
     if (dialogProps.onClose) {
       dialogProps.onClose(ev, reason);
     }
-  }
+  };
 
   return (
     <Dialog
@@ -94,7 +94,7 @@ const ExportDataDialog: React.FC<DialogProps> = (props) => {
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 };
 
 export default ExportDataDialog;

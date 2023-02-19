@@ -19,7 +19,6 @@ const classes = {
   centerActions: `${PREFIX}-centerActions`,
 };
 
-
 const Root = styled('header')((
   {
     theme,
