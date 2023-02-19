@@ -1,5 +1,5 @@
-import { EDITOR_DATA } from 'mui-edit/EditorIframe';
 import React, { useEffect, useMemo, useState } from 'react';
+import { EDITOR_DATA } from '../EditorIframe';
 import { Block } from '../types';
 
 export const PREVIEW_DATA = 'editor/previewData';

@@ -3,6 +3,7 @@ import { LoadableComponent } from '@loadable/component';
 import {
   Block,
 } from './Block';
+import { z } from 'zod';
 
 export interface EditFormProps<
   D,
@@ -38,6 +39,8 @@ export interface BlockType<
   label: string,
   defaultData: D,
   defaultSettings: S,
+  getDataSchema?(): Promise<z.Schema>,
+  getSettingsSchema?(): Promise<z.Schema>,
   blockLabel(data: D): React.ReactNode,
   settingsForm: LoadableComponent<SettingsFormProps<D, S>>
     | React.FunctionComponent<SettingsFormProps<D, S>>

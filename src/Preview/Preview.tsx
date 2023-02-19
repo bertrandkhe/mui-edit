@@ -3,8 +3,8 @@ import React, {
   useEffect,
 } from 'react';
 import clsx from 'clsx';
-import { EDITOR_DATA } from 'mui-edit/EditorIframe';
-import { usePreviewStore } from 'mui-edit/store';
+import { EDITOR_DATA } from '../EditorIframe';
+import { usePreviewStore } from '../store';
 import type { Block, BlockType } from '../types';
 import BlockView from '../BlockView';
 import { PREVIEW_DATA, PREVIEW_READY } from './PreviewIframe';

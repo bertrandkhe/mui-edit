@@ -1,15 +1,10 @@
 import Editor from './Editor';
-import Preview from './Preview/Preview';
-import EditorIframe from './EditorIframe';
-import { usePreviewStore } from './store';
 
+export { default as Editor } from './Editor';
+export { default as Preview } from './Preview/Preview';
+export { default as EditorIframe } from './EditorIframe';
+export { default as BlocksControl } from './controls/BlocksControl';
+export { usePreviewStore } from './store';
 export * from './types';
-
-export {
-  Editor,
-  EditorIframe,
-  Preview,
-  usePreviewStore,
-};
 
 export default Editor;

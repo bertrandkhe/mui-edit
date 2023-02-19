@@ -19,6 +19,7 @@ import Header from './Header';
 import { Provider } from './store';
 import EditorPreview from './EditorPreview';
 import MessageBus from './MessageBus';
+import Snackbar from './Snackbar';
 
 declare module '@mui/material/useMediaQuery' {
   interface Options {
@@ -49,7 +50,7 @@ const Root = styled('div')((
 
   width: '100%',
   height: '100%',
-  overflow: 'auto',
+  overflow: 'none',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
@@ -58,8 +59,9 @@ const Root = styled('div')((
   },
 
   [`& .${classes.main}`]: {
-    minHeight: 'calc(100vh - 200px)',
-    height: '100%',
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
     overflow: 'auto',
     flexGrow: 1,
     zIndex: 0,
@@ -97,7 +99,7 @@ const Root = styled('div')((
 }));
 
 type EditorBaseProps = {
-  data?: void,
+  data?: Block[],
   blockTypes: BlockType[],
   onChange?(data: Block[]): void,
   title?: string,
@@ -299,6 +301,7 @@ const Editor: React.FC<EditorProps> = (props) => {
             {/* eslint-disable-next-line react/jsx-props-no-spreading */}
             <Sidebar {...mergedSidebarProps} />
           </div>
+          <Snackbar />
         </Root>
       </Provider>
     </ThemeProvider>

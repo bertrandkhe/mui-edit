@@ -1,5 +1,3 @@
-export { FileItem } from '../FileUploadControl';
-export { ButtonItem } from '../ButtonControl/ButtonControl';
 export {
   Block,
   RelationshipItem,

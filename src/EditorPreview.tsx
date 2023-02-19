@@ -2,7 +2,6 @@ import React from 'react';
 import clsx from 'clsx';
 import { styled } from '@mui/material';
 import PreviewIframe, { PreviewInstance } from './Preview/PreviewIframe';
-import { headerHeight } from './Header';
 import { useEditorStore } from './store';
 
 const PREFIX = 'EditorPreview';
@@ -17,8 +16,8 @@ const Root = styled('div')((
     theme,
   },
 ) => ({
-  height: `calc(100% - ${headerHeight}px)`,
   boxSizing: 'border-box',
+  flexGrow: 1,
   [theme.breakpoints.up('lg')]: {
     '&.sm, &.md': {
       padding: '30px 0',

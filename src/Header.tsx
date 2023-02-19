@@ -9,6 +9,7 @@ import LaptopIcon from '@mui/icons-material/Laptop';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import { useEditorStore } from './store';
+import FileMenu from './menus/FileMenu';
 
 const PREFIX = 'Header';
 
@@ -18,7 +19,6 @@ const classes = {
   centerActions: `${PREFIX}-centerActions`,
 };
 
-export const headerHeight = 37;
 
 const Root = styled('header')((
   {
@@ -27,9 +27,8 @@ const Root = styled('header')((
 ) => ({
   display: 'none',
   background: 'white',
-  borderBottom: '1px solid #eee',
+  borderBottom: `1px solid ${theme.palette.grey['300']}`,
   width: '100%',
-  height: headerHeight,
   position: 'sticky',
   top: 0,
   lineHeight: 1,
@@ -42,11 +41,24 @@ const Root = styled('header')((
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+
+    '.MuiButton-root': {
+      borderRadius: 0,
+      minWidth: 0,
+    },
   },
 
   [`& .${classes.centerActions}`]: {
     marginLeft: 'auto',
     marginRight: 'auto',
+
+    '.MuiButton-root': {
+      padding: theme.spacing(1),
+      margin: `0 ${theme.spacing(0.5)}`,
+      '.MuiSvgIcon-root': {
+        fontSize: theme.typography.fontSize * 1.6,
+      },
+    },
   },
 }));
 
@@ -64,6 +76,9 @@ const Header: React.FC<{
   return (
     <Root className={classes.root}>
       <div className={classes.headerInner}>
+        <div>
+          <FileMenu />
+        </div>
         <div className={classes.centerActions}>
           <Button onClick={() => setPreviewWidth('sm')}>
             <PhoneIphoneIcon />

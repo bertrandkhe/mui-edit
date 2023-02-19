@@ -1,7 +1,10 @@
 import { create, createStore, useStore } from 'zustand';
 import React, { useContext, useEffect, useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { z } from 'zod';
 import { PreviewInstance } from './Preview/PreviewIframe';
 import { Block, BlockType } from './types';
+import { AlertProps, SnackbarProps } from '@mui/material';
 
 type PreviewState = {
   mode: 'view' | 'edit',
@@ -38,6 +41,24 @@ type EditorState = {
       (prevData: Block[]) => Block[]),
       areEqual?: ((prevData: Block[], newData: Block[]) => boolean)
     ): Block[],
+  parseUnsafeData(data: unknown[] | string): Promise<{
+    success: true,
+    data: Block[],
+  } | {
+    success: false,
+    errors: {
+      issues: z.ZodIssue[],
+    }[],
+  }>,
+  importData(rawData: string): Promise<{
+    success: true,
+    data: Block[],
+  } | {
+    success: false,
+    errors: {
+      issues: z.ZodIssue[],
+    }[],
+  }>,
   allowedOrigins: string[],
   setAllowedOrigins(newOrigins: string[]): void,
   previewSrc: string,
@@ -45,6 +66,19 @@ type EditorState = {
   setPreviewWidth(width: EditorState['previewWidth']): void,
   previewInstance: PreviewInstance | null,
   setPreviewInstance(instance: PreviewInstance): void,
+  alertMessages: {
+    id: string,
+    severity: AlertProps['severity'],
+    message: string | string[],
+    autoHideDuration: number,
+    visible: boolean,
+  }[],
+  addAlertMessages(messages: {
+    severity: AlertProps['severity'],
+    message: string | string[],
+    autoHideDuration?: SnackbarProps['autoHideDuration'],
+  }[]): void,
+  removeAlertMessage(id: string): void,
 };
 
 type EditorStore = ReturnType<typeof createEditorStore>;
@@ -82,6 +116,107 @@ const createEditorStore = (
     },
     data,
     onDataChange: null,
+    async parseUnsafeData(unsafeData) {
+      let parsedUnsafeData = null;
+      let issues: z.ZodIssue[] = [];
+      if (Array.isArray(unsafeData)) {
+        parsedUnsafeData = unsafeData;
+      } else if (typeof unsafeData === 'string') {
+        if (!unsafeData.toLowerCase().includes('<script>')) {
+          try {
+            parsedUnsafeData = JSON.parse(unsafeData);
+          } catch (err) {
+            issues.push({
+              fatal: true,
+              code: 'custom',
+              message: (err as Error).message,
+              path: [],
+            });
+          }
+        }
+      } else {
+        issues.push({
+          fatal: true,
+          code: 'custom',
+          message: 'Data is not valid.',
+          path: [],
+        });
+      }
+      if (issues.length > 0) {
+        return {
+          success: false,
+          errors: [{
+            issues,
+          }],
+        }
+      }
+      const blockTypes = get().blockTypes;
+      const blockTypesIds = blockTypes.map((bt) => bt.id);
+      const schema = z.array(z.object({
+        id: z.string(),
+        type: z.string().refine(
+          (type) => blockTypesIds.includes(type),
+          (type) => ({ message: `Block type must be one of: ${blockTypesIds.join(', ')}. Current value: ${type}` }),
+        ),
+        data: z.object({}).passthrough().nullable(),
+        settings: z.object({}).passthrough().nullable(),
+        meta: z.object({
+          created: z.number(),
+          changed: z.number(),
+        }).passthrough(),
+      }));
+      let result = schema.safeParse(parsedUnsafeData);
+      if (!result.success) {
+        return {
+          success: false,
+          errors: [result.error],
+        };
+      }
+      const maybeSafeData = result.data;
+      const results = await Promise.all(maybeSafeData.map(async (block, i) => {
+        const blockType = blockTypes.find((bt) => bt.id === block.type) as BlockType;
+        if (blockType.getDataSchema && block.data) {
+          const schema = await blockType.getDataSchema();
+          const blockResult = schema.safeParse(block.data);
+          if (!blockResult.success) {
+            return blockResult;
+          }
+          maybeSafeData[i].data = blockResult.data;
+        }
+        if (blockType.getSettingsSchema && block.settings) {
+          const schema = await blockType.getSettingsSchema();
+          const blockResult = schema.safeParse(block.settings);
+          if (!blockResult.success) {
+            return blockResult;
+          }
+          maybeSafeData[i].settings = blockResult.data;
+        }
+      }));
+      const allErrors: z.ZodError[] = [];
+      results.forEach((r) => {
+        if (r && !r.success) {
+          allErrors.push(r.error);
+        }
+      });
+      if (allErrors.length === 0) {
+        return {
+          success: true,
+          data: maybeSafeData,
+        };
+      }
+      return {
+        success: false,
+        errors: allErrors,
+      }
+    },
+    async importData(rawData) {
+      const result = await get().parseUnsafeData(rawData);
+      if (result.success) {
+        get().setData(result.data);
+        return result;
+      }
+      return result;
+    },
     setData(data, userEqualityFn) {
       const prevData = get().data;
       const newData = Array.isArray(data) ? data : data(prevData);
@@ -110,6 +245,25 @@ const createEditorStore = (
     previewInstance,
     setPreviewInstance(instance) {
       set({ previewInstance: instance });
+    },
+    alertMessages: [],
+    addAlertMessages(messages) {
+      const prevMessages = get().alertMessages;
+      set({
+        alertMessages: [
+          ...prevMessages,
+          ...messages.map((m) => ({
+            ...m,
+            autoHideDuration: m.autoHideDuration || 3000,
+            id: uuidv4(),
+            visible: false,
+          })
+        )]
+      })
+    },
+    removeAlertMessage(id: string) {
+      const prevMessages = get().alertMessages;
+      set({ alertMessages: prevMessages.filter((m) => m.id !== id )});
     },
   })))
 };
