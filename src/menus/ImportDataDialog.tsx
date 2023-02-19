@@ -1,7 +1,7 @@
 import {
   Box, Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, ModalProps,
 } from '@mui/material';
-import { useEditorStore } from 'mui-edit/store';
+import { useEditorStore } from '../store';
 import React from 'react';
 
 const ImportDataDialog: React.FC<DialogProps> = (props) => {
