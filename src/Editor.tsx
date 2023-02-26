@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, {
   useState,
   useRef,
@@ -20,6 +18,7 @@ import { Provider } from './store';
 import EditorPreview from './EditorPreview';
 import MessageBus from './MessageBus';
 import Snackbar from './Snackbar';
+import { StorageAdapter } from './types/StorageAdapter';
 
 declare module '@mui/material/useMediaQuery' {
   interface Options {
@@ -105,6 +104,7 @@ type EditorBaseProps = {
   title?: string,
   cardinality?: number,
   addBlockDisplayFormat?: AddBlockButtonProps['displayFormat'],
+  storageAdapter?: StorageAdapter,
 }
 
 type FullEditorProps = EditorBaseProps & {
@@ -141,6 +141,7 @@ const Editor: React.FC<EditorProps> = (props) => {
     cardinality = -1,
     title,
     addBlockDisplayFormat = 'select',
+    storageAdapter,
   } = props;
   const mainRef = useRef<HTMLDivElement | null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -208,6 +209,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         blockTypes={blockTypes}
         isFullScreen={false}
         data={props.data}
+        storage={storageAdapter}
         isNested
       >
         <Sidebar onBack={onBack} {...mergedSidebarProps} />
@@ -274,6 +276,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         isFullScreen={isFullScreen}
         previewSrc={previewSrc}
         previewWidth={previewWidth}
+        storage={storageAdapter}
       >
         <MessageBus
           onAction={onAction}

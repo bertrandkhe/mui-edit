@@ -1,14 +1,16 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import createStorage from './Storage';
 
-const index = () => {
+const index = async () => {
   const root = document.createElement('div');
+  const storage = await createStorage();
   document.body.appendChild(root);
   const reactRoot = createRoot(root);
   if (window.location.pathname === '/preview') {
     reactRoot.render(
-      <App preview />,
+      <App storage={storage} preview />,
     );
     return;
   }
@@ -22,7 +24,7 @@ const index = () => {
   document.body.style.margin = '0px';
   document.body.style.minHeight = '100vh';
   reactRoot.render(
-    <App />,
+    <App storage={storage} />,
   );
 };
 

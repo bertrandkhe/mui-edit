@@ -5,6 +5,8 @@ import { z } from 'zod';
 import { AlertProps, SnackbarProps } from '@mui/material';
 import { PreviewInstance } from './Preview/PreviewIframe';
 import { Block, BlockType } from './types';
+import { StorageAdapter } from './types/StorageAdapter';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 type PreviewState = {
   mode: 'view' | 'edit',
@@ -79,6 +81,7 @@ type EditorState = {
     autoHideDuration?: SnackbarProps['autoHideDuration'],
   }[]): void,
   removeAlertMessage(id: string): void,
+  storage?: StorageAdapter,
 };
 
 type EditorStore = ReturnType<typeof createEditorStore>;
@@ -98,6 +101,7 @@ const createEditorStore = (
     previewSrc = '',
     previewWidth = 'lg',
     previewInstance = null,
+    storage,
   } = initialState;
   return (
     createStore<EditorState>((set, get) => ({
@@ -264,6 +268,7 @@ const createEditorStore = (
         const prevMessages = get().alertMessages;
         set({ alertMessages: prevMessages.filter((m) => m.id !== id) });
       },
+      storage,
     })));
 };
 
@@ -271,11 +276,16 @@ const EditorContext = React.createContext<EditorStore | void>(undefined);
 export const Provider: React.FC<{
   children: React.ReactNode,
   data?: Block[] | void,
+  queryClient?: QueryClient,
 } & Omit<Partial<EditorState>, 'data'>> = (props) => {
-  const { children, ...editorState } = props;
+  const { children, queryClient: propQueryClient, ...editorState } = props;
   const editorStoreRef = useRef<EditorStore>();
   if (!editorStoreRef.current) {
     editorStoreRef.current = createEditorStore(editorState as EditorState);
+  }
+  const queryClientRef = useRef<QueryClient>()
+  if (!queryClientRef.current) {
+    queryClientRef.current = propQueryClient || new QueryClient();
   }
 
   useEffect(() => {
@@ -301,7 +311,11 @@ export const Provider: React.FC<{
 
   return (
     <EditorContext.Provider value={editorStoreRef.current}>
-      {children}
+      <QueryClientProvider
+        client={queryClientRef.current}
+      >
+        {children}
+      </QueryClientProvider>
     </EditorContext.Provider>
   );
 };
@@ -311,3 +325,7 @@ export const useEditorStore = (<U, >(selector: ((state: EditorState) => U)): U =
   const store = useContext(EditorContext) || rootEditorStore;
   return useStore(store, selector);
 });
+
+export const useStorage = () => {
+  return useEditorStore((state) => state.storage);
+};

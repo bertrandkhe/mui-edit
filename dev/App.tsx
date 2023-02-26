@@ -3,13 +3,15 @@ import React from 'react';
 import Editor from 'mui-edit/Editor';
 import Preview from 'mui-edit/Preview';
 import Section from './Section';
+import { StorageAdapter } from 'mui-edit/types/StorageAdapter';
 
 const blockTypes = [Section];
 
 const App = (props: {
   preview?: boolean,
+  storage: StorageAdapter,
 }): React.ReactElement => {
-  const { preview } = props;
+  const { preview, storage } = props;
   if (preview) {
     return (
       <Preview
@@ -24,6 +26,7 @@ const App = (props: {
       previewWidth="sm"
       blockTypes={blockTypes}
       previewSrc="http://localhost:9001/preview"
+      storageAdapter={storage}
     />
   );
 };

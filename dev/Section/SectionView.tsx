@@ -10,7 +10,6 @@ const SectionView: React.FunctionComponent<
 > = (props) => {
   const {
     data,
-    onDataChange,
   } = props;
 
   return (
@@ -20,18 +19,6 @@ const SectionView: React.FunctionComponent<
           component="h1"
           variant="h2"
           whiteSpace="pre"
-          onBlur={(ev) => {
-            const newValue = ev.target.innerHTML;
-            if (!newValue || newValue.length === 0) {
-              ev.target.textContent = data.title;
-              return;
-            }
-            onDataChange({
-              ...data,
-              title: newValue,
-            });
-          }}
-          contentEditable
         >
           {data.title}
         </Typography>

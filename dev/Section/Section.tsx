@@ -2,8 +2,10 @@ import { BlockType } from 'mui-edit/types';
 import SectionView from './SectionView';
 import SectionEditForm from './SectionEditForm';
 import { CardBlock } from './Card';
+import { MediaItem } from 'mui-edit/controls/MediaLibraryControl';
 
 export type SectionData = {
+  image?: MediaItem | null,
   title: string
   body: string,
   cards: CardBlock[],
@@ -15,6 +17,7 @@ const Section: BlockType<SectionData, SectionSettings> = {
   id: 'section',
   label: 'Section',
   defaultData: {
+    image: null,
     title: '',
     body: '',
     cards: [],
