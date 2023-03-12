@@ -5,8 +5,9 @@ import { z } from 'zod';
 import { AlertProps, SnackbarProps } from '@mui/material';
 import { PreviewInstance } from './Preview/PreviewIframe';
 import { Block, BlockType } from './types';
-import { StorageAdapter } from './types/StorageAdapter';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ObjectStorageAdapter from './types/ObjectStorageAdapter';
+import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
+import { Config, ConfigStorageAdapter } from './types/ConfigStorageAdapter';
 
 type PreviewState = {
   mode: 'view' | 'edit',
@@ -30,7 +31,7 @@ export const usePreviewStore = create<PreviewState>((set, get) => ({
   },
 }));
 
-type EditorState = {
+export type EditorState = {
   isFullScreen: boolean,
   isNested: boolean,
   cardinality: number,
@@ -81,7 +82,10 @@ type EditorState = {
     autoHideDuration?: SnackbarProps['autoHideDuration'],
   }[]): void,
   removeAlertMessage(id: string): void,
-  storage?: StorageAdapter,
+  storage?: {
+    object?: ObjectStorageAdapter,
+    config?: ConfigStorageAdapter,
+  },
 };
 
 type EditorStore = ReturnType<typeof createEditorStore>;
@@ -326,6 +330,144 @@ export const useEditorStore = (<U, >(selector: ((state: EditorState) => U)): U =
   return useStore(store, selector);
 });
 
-export const useStorage = () => {
-  return useEditorStore((state) => state.storage);
+export const useObjectStorage = () => {
+  return useEditorStore((state) => state.storage?.object);
 };
+
+let _configStorage: ConfigStorageAdapter;
+export const useConfigStorage = (): ConfigStorageAdapter | undefined => {
+  const configStorage = useEditorStore((state) => state.storage?.config);
+  const objectStorage = useEditorStore((state) => state.storage?.object);
+  if (configStorage) {
+    return configStorage;
+  }
+  if (!objectStorage) {
+   return undefined;
+  }
+  if (!_configStorage) {
+    const prefix = '.config/mui-edit';
+    const getFilename = (id: string) => `${id}.json`;
+    _configStorage = {
+      async get<Data = any>(id: string) {
+        const url = await objectStorage.objectUrl({
+          key: `${prefix}/${getFilename(id)}`,
+        });
+        const response = await fetch(url);
+        if (response.status !== 200) {
+          throw new Error(`Fail to get config data for config "${id}"`);
+        }
+        const config = await response.json() as Config<Data>;
+        return config;
+      },
+      async list() {
+        const results = await objectStorage.ls({
+          prefix,
+        });
+        return results.objects.map((o) => o.name.slice(0, -5));
+      },
+      async save(config) {
+        const filename = getFilename(config.id);
+        const file = new File(
+          [JSON.stringify({
+            id: config.id,
+            revisionId: (config.revisionId || 0) + 1,
+            data: config.data,
+          })],
+          filename,
+        );
+        await objectStorage.upload({
+          file,
+          key: `${prefix}${filename}`,
+          acl: 'private',
+          overwrite: true,
+        });
+        return config;
+      },
+      async delete(id: string) {
+        await objectStorage.delete({
+          key: `${prefix}/${getFilename(id)}`,
+        });
+      }
+    };
+  }
+  return _configStorage;
+}
+
+const ErrorConfigStorageNotDefined = new Error('Config storage is not defined');
+export const useConfigStorageQueryClient = () => {
+  const storage = useConfigStorage();
+  const queryClient = useQueryClient();
+  const getStorage = () => {
+    if (!storage) {
+      throw ErrorConfigStorageNotDefined;
+    }
+    return storage;
+  }
+  return {
+    useGetQuery<ConfigData>(
+      id: string,
+      options: { enabled?: boolean } = {},
+    ) {
+      const query = useQuery({
+        queryKey: ['configStorage.get', id],
+        async queryFn() {
+          const config = await getStorage().get<ConfigData>(id);
+          return config;
+        },
+        ...options,
+      });
+      return query;
+    },
+    useListQuery(
+      options: { enabled?: boolean } = {},
+    ) {
+      return useQuery({
+        queryKey: ['configStorage.list'],
+        queryFn() {
+          return getStorage().list();
+        },
+        ...options,
+      });
+    },
+    useDeleteMutation(options?: {
+      onSuccess?(id: string): void,
+    }) {
+      return useMutation({
+        mutationFn(id: string) {
+          return getStorage().delete(id);
+        },
+        onSuccess(id) {
+          queryClient.invalidateQueries([
+            'configStorage.list',
+            'configStorage.get', id,
+          ]);
+          if (options?.onSuccess) options.onSuccess(id);
+        },
+      })
+    },
+    useSaveMutation(options?: {
+      onSuccess?(config: Config): void,
+    }) {
+      return useMutation({
+        mutationFn(config: Config) {
+          if (!storage) {
+            throw ErrorConfigStorageNotDefined;
+          }
+          return storage.save(config);
+        },
+        onSuccess(config) {
+          queryClient.invalidateQueries([
+            'configStorage.list',
+            'configStorage.get', config.id,
+          ]);
+          if (options?.onSuccess) options.onSuccess(config);
+        },
+      });
+    },
+  };
+}
+
+export type ConfigTemplate = Config<{
+  name: string,
+  blocks: Block[],
+}>;

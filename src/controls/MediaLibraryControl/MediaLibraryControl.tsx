@@ -20,8 +20,7 @@ import {
 import useSortable from '../../utils/useSortable';
 import FileBrowserDialog, { FileBrowserDialogProps } from './FileBrowserDialog';
 import { useQuery } from '@tanstack/react-query';
-import { useStorage } from '../../store';
-import { StorageAdapter } from '../../types/StorageAdapter';
+import { useObjectStorage } from '../../store';
 
 const PREFIX = 'MediaControl';
 
@@ -139,10 +138,16 @@ export type MediaItem = FileBrowserObject & {
   meta?: ObjectMeta,
 }
 
-type MediaControlProps = {
-  cardinality?: FileBrowserDialogProps['cardinality'],
-  onChange(arg: MediaItem[] | MediaItem | null): void,
-  initialData: MediaItem[] | MediaItem | null,
+type MediaControlProps<Cardinality extends number = number> = {
+  cardinality?: Cardinality,
+  onChange(
+    arg: Cardinality extends 1
+      ? MediaItem | null
+      : MediaItem[]
+  ): void,
+  initialData: Cardinality extends 1
+    ? MediaItem | null
+    : MediaItem[],
   type?: MediaType,
   label: React.ReactNode,
   required?: boolean,
@@ -169,10 +174,19 @@ const MediaControlItem: React.FC<{
   onRemove(mediaId: string): void,
 }> = (props) => {
   const { media, type, size, onRemove } = props;
-  const storage = useStorage() as StorageAdapter;
+  const storage = useObjectStorage();
   const mediaUrlQuery = useQuery({
     queryKey: ['mediaUrl', media.id],
     queryFn() {
+      if (!storage) {
+        throw new Error('ObjectStorage is not defined');
+      }
+      if (type === 'image') {
+        return storage.imagePreviewUrl({
+          key: media.key,
+          width: 144,
+        });
+      }
       return storage.objectUrl({ key: media.key });
     },
   });
@@ -216,7 +230,9 @@ const MediaControlItem: React.FC<{
   );
 }
 
-const MediaControl: React.FC<MediaControlProps> = (props) => {
+const MediaControl = <Cardinality extends number = 1>(
+  props: MediaControlProps<Cardinality>
+): JSX.Element => {
   const {
     type,
     cardinality = 1,

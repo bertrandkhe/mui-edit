@@ -1,5 +1,5 @@
 import {
-  Box, Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, ModalProps,
+  Box, Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, ModalProps, TextField,
 } from '@mui/material';
 import { useEditorStore } from '../store';
 import React from 'react';
@@ -55,19 +55,17 @@ const ImportDataDialog: React.FC<DialogProps> = (props) => {
             pt: 0,
           }}
         >
-          <Box
+          <TextField
             name="data"
             rows={10}
-            component="textarea"
             sx={{
-              padding: 1,
               minWidth: 320,
               minHeight: 200,
               width: 540,
               maxWidth: '100%',
               fontSize: (theme) => theme.typography.fontSize * 0.85,
             }}
-            contentEditable={false}
+            multiline
             required
           />
         </DialogContent>

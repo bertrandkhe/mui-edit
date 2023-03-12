@@ -34,15 +34,16 @@ export type LsResult = {
   count: number
 };
 
-export interface StorageAdapter {
+export interface ObjectStorageAdapter {
   ls(args: {
     prefix: string
   }): Promise<LsResult>
 
   upload(args: {
     key: string,
-    file: File,
-    acl?: 'private' | 'public' | 'public-read'
+    file: File | Blob,
+    acl?: 'private' | 'public' | 'public-read',
+    overwrite?: boolean,
     onProgress?: XMLHttpRequestUpload['onprogress'],
     onReady?(xhr: XMLHttpRequest): void,
   }): Promise<string>
@@ -75,3 +76,5 @@ export interface StorageAdapter {
     key: string,
   }): Promise<void>
 }
+
+export default ObjectStorageAdapter;

@@ -14,11 +14,10 @@ import defaultTheme from './theme';
 import { AddBlockButtonProps } from './AddBlockButton';
 import { PreviewInstance } from './Preview/PreviewIframe';
 import Header from './Header';
-import { Provider } from './store';
+import { Provider, EditorState } from './store';
 import EditorPreview from './EditorPreview';
 import MessageBus from './MessageBus';
 import Snackbar from './Snackbar';
-import { StorageAdapter } from './types/StorageAdapter';
 
 declare module '@mui/material/useMediaQuery' {
   interface Options {
@@ -104,7 +103,7 @@ type EditorBaseProps = {
   title?: string,
   cardinality?: number,
   addBlockDisplayFormat?: AddBlockButtonProps['displayFormat'],
-  storageAdapter?: StorageAdapter,
+  storage?: EditorState['storage'],
 }
 
 type FullEditorProps = EditorBaseProps & {
@@ -131,7 +130,7 @@ type InlineEditorProps = EditorBaseProps & {
   format: 'inline',
 };
 
-type EditorProps = FullEditorProps | EditorOnlyProps | InlineEditorProps;
+export type EditorProps = FullEditorProps | EditorOnlyProps | InlineEditorProps;
 
 const Editor: React.FC<EditorProps> = (props) => {
   const {
@@ -141,7 +140,7 @@ const Editor: React.FC<EditorProps> = (props) => {
     cardinality = -1,
     title,
     addBlockDisplayFormat = 'select',
-    storageAdapter,
+    storage,
   } = props;
   const mainRef = useRef<HTMLDivElement | null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -209,7 +208,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         blockTypes={blockTypes}
         isFullScreen={false}
         data={props.data}
-        storage={storageAdapter}
+        storage={storage}
         isNested
       >
         <Sidebar onBack={onBack} {...mergedSidebarProps} />
@@ -276,7 +275,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         isFullScreen={isFullScreen}
         previewSrc={previewSrc}
         previewWidth={previewWidth}
-        storage={storageAdapter}
+        storage={storage}
       >
         <MessageBus
           onAction={onAction}

@@ -13,7 +13,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { styled } from '@mui/material/styles';
 import { css } from '@emotion/react';
 import { grey } from '@mui/material/colors';
-import { useStorage } from 'mui-edit/store';
+import { useObjectStorage } from 'mui-edit/store';
 
 const PREFIX = 'FileBrowserDialog';
 
@@ -68,7 +68,7 @@ const FileBrowserDialog: React.FC<FileBrowserDialogProps> = (props) => {
   } = props;
   const [selectedFiles, setSelectedFiles] = useState([] as BrowserObject[]);
   const [loading, setLoading] = useState(false);
-  const storage = useStorage();
+  const storage = useObjectStorage();
 
 
   const handleChooseFiles = async (chosenObjects: BrowserObject[]) => {

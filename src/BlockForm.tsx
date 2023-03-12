@@ -72,7 +72,6 @@ const Root = styled('div')((
   [`& .${classes.label}`]: {
     justifyContent: 'flex-start',
     padding: 0,
-    maxWidth: 170,
     '& .MuiButton-label': {
       padding: 0,
       display: 'block',
@@ -82,6 +81,9 @@ const Root = styled('div')((
     marginLeft: 'auto',
     lineHeight: 1,
     fontSize: theme.typography.fontSize,
+    minWidth: 108,
+    display: 'flex',
+    justifyContent: 'end',
   },
   [`& .${classes.iconBtn}`]: {
     minWidth: 0,

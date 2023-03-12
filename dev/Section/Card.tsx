@@ -1,13 +1,11 @@
+import { MediaItem } from 'mui-edit/controls/MediaLibraryControl';
 import { Block, BlockType } from 'mui-edit/types';
 import CardEditForm from './CardEditForm';
 
 export type CardData = {
   title: string
   body: string,
-  cards: {
-    title: string,
-    body: string,
-  }[],
+  image: MediaItem | null,
 }
 
 export type CardSettings = null;
@@ -17,9 +15,9 @@ const Card: BlockType<CardData, CardSettings> = {
   id: 'card',
   label: 'Card',
   defaultData: {
+    image: null,
     title: '',
     body: '',
-    cards: [],
   },
   defaultSettings: null,
   blockLabel: (data) => {

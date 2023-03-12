@@ -1,11 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import "@fontsource/roboto";
 import App from './App';
-import createStorage from './Storage';
+import { createObjectStorage } from './Storage';
+
+import './index.css';
 
 const index = async () => {
   const root = document.createElement('div');
-  const storage = await createStorage();
+  const storage = await createObjectStorage();
   document.body.appendChild(root);
   const reactRoot = createRoot(root);
   if (window.location.pathname === '/preview') {

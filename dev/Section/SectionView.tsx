@@ -1,9 +1,7 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 import { ViewProps } from 'mui-edit/types';
 import { SectionData, SectionSettings } from './Section';
+import MediaImage from '../MediaImage';
 
 const SectionView: React.FunctionComponent<
   ViewProps<SectionData, SectionSettings>
@@ -13,46 +11,53 @@ const SectionView: React.FunctionComponent<
   } = props;
 
   return (
-    <Box>
-      <Container>
-        <Typography
-          component="h1"
-          variant="h2"
-          whiteSpace="pre"
+    <div className='px-4 py-4'>
+      {data.image && (
+        <div className='relative aspect-video'>
+          <MediaImage
+            className='object-cover'
+            data={data.image}
+            fill
+          />
+        </div>
+      )}
+      {data.title.length > 0 && (
+        <h2
+          className='text-2xl my-2 font-extrabold uppercase font-sans'
         >
           {data.title}
-        </Typography>
-        <Typography
-          sx={{
-            whiteSpace: 'pre-line',
-          }}
-          variant="body1"
-        >
-          {data.body}
-        </Typography>
-        {data.cards.length > 0 && (
-          <Box
-            mt={2}
-            display="inline-flex"
-            width="100%"
-            overflow="auto"
-          >
+        </h2>
+      )}
+      <div className='whitespace-pre-line'>
+        {data.body}
+      </div>
+      {data.cards.length > 0 && (
+        <div className='w-full overflow-auto my-4'>
+          <div className='inline-flex gap-4'>
             {data.cards.map((card) => {
               return (
-                <Box width={250} p={2}>
-                  <Typography variant="h3">
+                <div className='w-48'>
+                  {card.data.image && (
+                    <MediaImage
+                      className='object-cover h-32 w-full'
+                      width={192}
+                      height={128}
+                      data={card.data.image}
+                    />
+                  )}
+                  <h3 className='text-2xl font-bold my-2'>
                     {card.data.title}
-                  </Typography>
-                  <Typography mt={1}>
+                  </h3>
+                  <p>
                     {card.data.body}
-                  </Typography>
-                </Box>
+                  </p>
+                </div>
               );
             })}
-          </Box>
-        )}
-      </Container>
-    </Box>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
