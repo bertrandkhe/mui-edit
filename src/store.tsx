@@ -433,8 +433,9 @@ export const useConfigStorageQueryClient = () => {
       onSuccess?(id: string): void,
     }) {
       return useMutation({
-        mutationFn(id: string) {
-          return getStorage().delete(id);
+        async mutationFn(id: string) {
+          await getStorage().delete(id);
+          return id;
         },
         onSuccess(id) {
           queryClient.invalidateQueries([

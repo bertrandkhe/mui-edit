@@ -13,7 +13,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { styled } from '@mui/material/styles';
 import { css } from '@emotion/react';
 import { grey } from '@mui/material/colors';
-import { useObjectStorage } from 'mui-edit/store';
+import { useObjectStorage } from '../../store';
 
 const PREFIX = 'FileBrowserDialog';
 

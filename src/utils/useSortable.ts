@@ -45,15 +45,15 @@ const useSortable = (options: SortableOptions) => {
       });
       Object.keys(currOptions).forEach((key) => {
         const optionKey = key as keyof SortableOptions;
-        const optionVal = currOptions[key];
+        const optionVal = currOptions[optionKey];
         if (!key.startsWith('on') || key === 'onMove' || !newSortable) {
           return;
         }
         newSortable.option(optionKey, (ev: SortableEvent) => {
           if (!active || disabled) {
             return;
-          } 
-          optionVal(ev, newSortable);
+          }
+          (optionVal as NonNullable<SortableOptions['onUpdate']>)(ev, newSortable as TSortable);
         });
       });
       newSortable.option('disabled', false);
@@ -80,4 +80,4 @@ const useSortable = (options: SortableOptions) => {
   };
 }
 
-export default useSortable; 
+export default useSortable;

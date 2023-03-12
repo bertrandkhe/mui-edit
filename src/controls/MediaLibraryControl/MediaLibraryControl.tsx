@@ -138,16 +138,14 @@ export type MediaItem = FileBrowserObject & {
   meta?: ObjectMeta,
 }
 
+type MediaControlData<Cardinality extends number> = Cardinality extends 1
+  ? MediaItem | null
+  : MediaItem[]
+
 type MediaControlProps<Cardinality extends number = number> = {
   cardinality?: Cardinality,
-  onChange(
-    arg: Cardinality extends 1
-      ? MediaItem | null
-      : MediaItem[]
-  ): void,
-  initialData: Cardinality extends 1
-    ? MediaItem | null
-    : MediaItem[],
+  onChange(arg: MediaControlData<Cardinality>): void,
+  initialData: MediaControlData<Cardinality>,
   type?: MediaType,
   label: React.ReactNode,
   required?: boolean,
@@ -230,12 +228,15 @@ const MediaControlItem: React.FC<{
   );
 }
 
-const MediaControl = <Cardinality extends number = 1>(
+const MediaControl = <
+  Cardinality extends number = 1,
+  Data extends MediaControlData<Cardinality> = MediaControlData<Cardinality>,
+>(
   props: MediaControlProps<Cardinality>
 ): JSX.Element => {
   const {
     type,
-    cardinality = 1,
+    cardinality = 1 as Cardinality,
     onChange,
     initialData,
     label,
@@ -259,21 +260,21 @@ const MediaControl = <Cardinality extends number = 1>(
       canMkdir: true,
     };
   }, [propsPermissions]);
-  const initialDataArray: FileBrowserObject[] = useMemo(() => {
+  const initialDataArray: MediaItem[] = useMemo(() => {
     if (!initialData) {
       return [];
     }
     return Array.isArray(initialData) ? initialData : [initialData];
   }, [initialData]);
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState<FileBrowserObject[]>(initialDataArray);
+  const [data, setData] = useState<MediaItem[]>(initialDataArray);
   const dataRef = useRef(data);
   dataRef.current = data;
   const [loading, setLoading] = useState(false);
 
   const remaining = cardinality - data.length;
 
-  const addMedias = async (medias: FileBrowserObject[]) => {
+  const addMedias = async (medias: MediaItem[]) => {
     setData([
       ...data,
       ...medias.filter((newMedia) => !data.find((m) => m.id === newMedia.id)),
@@ -289,7 +290,7 @@ const MediaControl = <Cardinality extends number = 1>(
         return;
       }
       setData(ids.map((id) => {
-        return dataRef.current.find((datum) => datum.id === id) as FileBrowserObject;
+        return dataRef.current.find((datum) => datum.id === id) as MediaItem;
       }));
     },
   });
@@ -310,11 +311,11 @@ const MediaControl = <Cardinality extends number = 1>(
       return;
     }
     if (cardinality > 1 || cardinality < 0) {
-      onChange(data);
+      onChange(data as Data);
     } else if (data.length >= 1) {
-      onChange(data[0]);
+      onChange(data[0] as Data);
     } else {
-      onChange(null);
+      onChange(null as Data);
     }
   }, [cardinality, data, initialDataArray, onChange]);
 

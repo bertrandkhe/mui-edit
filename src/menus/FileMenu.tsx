@@ -3,11 +3,11 @@ import { LoadingButton } from '@mui/lab';
 import { Button, ButtonBase, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { ConfigTemplate, useConfigStorageQueryClient, useEditorStore } from 'mui-edit/store';
 import React, { useEffect, useRef, useState } from 'react';
 import ExportDataDialog from './ExportDataDialog';
 import ImportDataDialog from './ImportDataDialog';
 import SaveTemplateDialog from './SaveTemplateDialog';
+import { ConfigTemplate, useConfigStorageQueryClient, useEditorStore } from '../store';
 
 const TemplateMenuItem: React.FC<{
   id: string,
