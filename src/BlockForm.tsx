@@ -71,6 +71,7 @@ const Root = styled('div')((
   },
   [`& .${classes.label}`]: {
     justifyContent: 'flex-start',
+    width: '100%',
     padding: 0,
     '& .MuiButton-label': {
       padding: 0,
@@ -232,7 +233,7 @@ const BlockForm: React.FunctionComponent<BlockFormProps> = (props) => {
       <div>
         <div className={classes.headerActions}>
           <DragHandle className={clsx(['sortable-handle', classes.labelDragIcon])} />
-          <Typography className={classes.label} variant="button">
+          <Typography className={classes.label} variant="button" component="div">
             {blockType.blockLabel(data)}
           </Typography>
           {!blockType.disabled && (

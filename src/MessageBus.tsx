@@ -31,7 +31,6 @@ const MessageBus: React.FC<{
       type?: string,
       payload?: any,
     }>) => {
-      console.log(event);
       if (!safeAllowedOrigins.includes(origin)) {
         console.warn(
           `Received message from ${event.origin} but only messages from ${safeAllowedOrigins.join(', ')} are allowed.`,

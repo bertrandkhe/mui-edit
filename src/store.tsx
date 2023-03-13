@@ -345,12 +345,12 @@ export const useConfigStorage = (): ConfigStorageAdapter | undefined => {
    return undefined;
   }
   if (!_configStorage) {
-    const prefix = '.config/mui-edit';
+    const prefix = '.config/mui-edit/';
     const getFilename = (id: string) => `${id}.json`;
     _configStorage = {
       async get<Data = any>(id: string) {
         const url = await objectStorage.objectUrl({
-          key: `${prefix}/${getFilename(id)}`,
+          key: `${prefix}${getFilename(id)}`,
         });
         const response = await fetch(url);
         if (response.status !== 200) {
@@ -385,7 +385,7 @@ export const useConfigStorage = (): ConfigStorageAdapter | undefined => {
       },
       async delete(id: string) {
         await objectStorage.delete({
-          key: `${prefix}/${getFilename(id)}`,
+          key: `${prefix}${getFilename(id)}`,
         });
       }
     };
