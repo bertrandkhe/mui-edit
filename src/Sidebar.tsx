@@ -39,16 +39,13 @@ const Root = styled('div')((
     top: 0,
     left: 0,
     zIndex: 10,
+    minHeight: '100%',
+    maxHeight: '100%',
+    position: 'absolute',
+    borderLeft: `1px solid ${theme.palette.grey[100]}`,
 
     '&.open': {
       transform: 'translateX(0%)',
-    },
-
-    [theme.breakpoints.up('lg')]: {
-      minHeight: '100%',
-      maxHeight: '100%',
-      position: 'absolute',
-      borderLeft: `1px solid ${theme.palette.grey[100]}`,
     },
   },
 
@@ -71,12 +68,10 @@ const Root = styled('div')((
 
   [`& .${classes.body}`]: {
     border: 'none',
-    [theme.breakpoints.up('lg')]: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: 'calc(100% - 56px)',
-      overflowY: 'auto',
-    },
+    display: 'flex',
+    flexDirection: 'column',
+    height: 'calc(100% - 56px)',
+    overflowY: 'auto',
   },
 
   [`& .${classes.footer}`]: {

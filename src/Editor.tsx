@@ -1,8 +1,6 @@
 import React, {
-  useState,
   useRef,
   MouseEventHandler,
-  useEffect,
 } from 'react';
 import {
   Theme, ThemeProvider, styled,
@@ -51,10 +49,7 @@ const Root = styled('div')((
   overflow: 'none',
   position: 'relative',
   display: 'flex',
-  flexDirection: 'column',
-  [theme.breakpoints.up('lg')]: {
-    flexDirection: 'row',
-  },
+  flexDirection: 'row',
 
   [`& .${classes.main}`]: {
     height: '100vh',
@@ -66,20 +61,16 @@ const Root = styled('div')((
   },
 
   [`& .${classes.sidebarWrapper}`]: {
-    minHeight: '97px',
-    height: 'auto',
-    width: '100%',
-    top: 0,
-    zIndex: 2,
-    position: 'relative',
-    [theme.breakpoints.up('lg')]: {
+      top: 0,
+      zIndex: 2,
+      position: 'relative',
       maxWidth: 365,
       width: 365,
       height: '100%',
+      minHeight: '97px',
       maxHeight: '100vh',
       overflowY: 'auto',
       overflowX: 'hidden',
-    },
   },
 
   [`& .${classes.dragBar}`]: {
@@ -144,49 +135,6 @@ const Editor: React.FC<EditorProps> = (props) => {
   } = props;
   const mainRef = useRef<HTMLDivElement | null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1200px)');
-    const onMediaQueryChange = () => {
-      setIsMobile(!mediaQuery.matches);
-    };
-    onMediaQueryChange();
-    mediaQuery.addEventListener(
-      'change',
-      onMediaQueryChange,
-    );
-    return () => {
-      mediaQuery.removeEventListener(
-        'change',
-        onMediaQueryChange,
-      );
-    };
-  }, []);
-
-  // Handle switch between desktop and mobile editor
-  useEffect(() => {
-    if (!isMobile || !sidebarWrapperRef.current || !mainRef.current) {
-      return undefined;
-    }
-    const prevWidth = sidebarWrapperRef.current.style.width;
-    const prevMaxWidth = sidebarWrapperRef.current.style.maxWidth;
-    const prevMinHeight = mainRef.current.style.minHeight;
-    sidebarWrapperRef.current.style.width = '100%';
-    sidebarWrapperRef.current.style.maxWidth = '100%';
-    mainRef.current.style.minHeight = `${window.innerHeight - 150}px`;
-    return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      if (!sidebarWrapperRef.current || !mainRef.current) {
-        return;
-      }
-      sidebarWrapperRef.current.style.width = prevWidth;
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      sidebarWrapperRef.current.style.maxWidth = prevMaxWidth;
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      mainRef.current.style.minHeight = prevMinHeight;
-    };
-  }, [isMobile]);
 
   const mergedSidebarProps = {
     title: title || 'Blocks',
