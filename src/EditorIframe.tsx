@@ -1,5 +1,5 @@
 import React, {
-  useMemo, useState, useEffect, HTMLAttributes,
+  useMemo, useState, useEffect, AllHTMLAttributes,
 } from 'react';
 import { Block } from './types';
 
@@ -15,7 +15,7 @@ export type EditorInstance = {
   dispatch(action: { type: string, payload: any }): void,
 };
 
-type Props = Omit<HTMLAttributes<HTMLIFrameElement>, 'onLoad' | 'src' | 'className'> & {
+type Props = Omit<AllHTMLAttributes<HTMLIFrameElement>, 'onLoad' | 'src' | 'className'> & {
   src: string,
   className?: string,
   onLoad(editor: EditorInstance): void,
