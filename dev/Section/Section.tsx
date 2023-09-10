@@ -29,7 +29,7 @@ const Section: BlockType<SectionData, SectionSettings> = {
   view: SectionView,
   settingsForm: null,
   editForm: SectionEditForm,
-  cardinality: 20,
+  cardinality: 1,
 };
 
 export default Section;

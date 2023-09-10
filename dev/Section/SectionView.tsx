@@ -9,7 +9,6 @@ const SectionView: React.FunctionComponent<
   const {
     data,
   } = props;
-
   return (
     <div className='px-4 py-4'>
       {data.image && (

@@ -1,18 +1,15 @@
-import React, { memo } from 'react';
-import type { Block, BlockType } from './types';
+import React, { memo } from "react";
+import type { Block, BlockType } from "./types";
 
 type BlockViewProps = {
-  block: Block,
-  blockTypes: BlockType[],
-  onChange?(block: Block): void,
+  block: Block;
+  blockTypes: BlockType[];
+  onChange?(block: Block): void;
+  context?: Record<string, any>;
 };
 
 const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
-  const {
-    block,
-    blockTypes,
-    onChange,
-  } = props;
+  const { block, blockTypes, onChange, context } = props;
   const blockType = blockTypes.find((bt) => bt.id === block.type);
 
   if (!blockType || !blockType.view) {
@@ -50,6 +47,7 @@ const BlockView: React.FunctionComponent<BlockViewProps> = (props) => {
     onDataChange: handleDataChange,
     onSettingsChange: handleSettingsChange,
     key: block.id,
+    context,
   });
   if (blockType.suspense) {
     return (
