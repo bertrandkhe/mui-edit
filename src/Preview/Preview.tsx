@@ -16,10 +16,13 @@ export type PreviewProps<Wrapper extends React.ElementType, Data> = {
     ? HTMLAttributes<Wrapper>
     : undefined;
   allowedOrigins?: Data extends Block[] ? never : string[];
-  onAction?(action: { type: string; payload: any }, methods: {
-    setViewContext(ctx: Record<string, any>): void,
-  }): void;
-  context?: Record<string, any>,
+  onAction?(
+    action: { type: string; payload: any },
+    methods: {
+      setViewContext(context: React.SetStateAction<Record<string, any>>): void;
+    }
+  ): void;
+  context?: Record<string, any>;
 };
 
 const Preview = <Wrapper extends React.ElementType, Data>(
@@ -103,9 +106,12 @@ const Preview = <Wrapper extends React.ElementType, Data>(
             break;
         }
         if (onAction) {
-          onAction({ type, payload }, {
-            setViewContext,
-          });
+          onAction(
+            { type, payload },
+            {
+              setViewContext,
+            }
+          );
         }
       }
     };
