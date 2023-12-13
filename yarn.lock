@@ -1129,12 +1129,12 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@bertrandkhe/file-browser@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@bertrandkhe/file-browser/-/file-browser-0.0.11.tgz#e2825f79d30a3ca9cf3e069573c1affe7567e3be"
-  integrity sha512-Khbo41A6QRftlj1+HCRpk/sG4g28s5sTGqw6RiKbMiCvVVmnpCJKWA0v4IrS0nOOQJ9UB1M6bcYuuUeaeWtlBQ==
+"@bertrandkhe/file-browser@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry-npmjs.it-consultis.net/@bertrandkhe/file-browser/-/file-browser-0.0.12.tgz#1637132ea931200e05ddea233cdd57722d7b2222"
+  integrity sha512-FUzmjgFhh0ZHJ1FaNTwx0LjZqOqxABBObQh8/vemYpF2COZ134mv0y6JYf3rzAM4weRQ5ToqOaNFXaEdmaxg7w==
   dependencies:
-    "@tanstack/react-virtual" "^3.0.0-beta.18"
+    "@tanstack/react-virtual" "^3.0.1"
     filesize "^10.0.5"
     jotai "^1.11.1"
     uuid "^9.0.0"
@@ -1578,17 +1578,17 @@
     "@tanstack/query-core" "4.24.10"
     use-sync-external-store "^1.2.0"
 
-"@tanstack/react-virtual@^3.0.0-beta.18":
-  version "3.0.0-beta.49"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-virtual/-/react-virtual-3.0.0-beta.49.tgz#ea17058135fa71162948390e13c25246d091e39c"
-  integrity sha512-bd7WBHu1LUBbs3qYZnvWSo4AhcSysc/QyBoHpGK2XOMTXzP9D4FVISMfCvdIbi+JoTqdZqhtaV7c1WY5gzZRlQ==
+"@tanstack/react-virtual@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry-npmjs.it-consultis.net/@tanstack/react-virtual/-/react-virtual-3.0.1.tgz#b04c492e4dd5733b72b10a974870880f83ff4698"
+  integrity sha512-IFOFuRUTaiM/yibty9qQ9BfycQnYXIDHGP2+cU+0LrFFGNhVxCXSQnaY6wkX8uJVteFEBjUondX0Hmpp7TNcag==
   dependencies:
-    "@tanstack/virtual-core" "3.0.0-beta.49"
+    "@tanstack/virtual-core" "3.0.0"
 
-"@tanstack/virtual-core@3.0.0-beta.49":
-  version "3.0.0-beta.49"
-  resolved "https://registry.yarnpkg.com/@tanstack/virtual-core/-/virtual-core-3.0.0-beta.49.tgz#058d876a4ccdb1c980b24b39824a8eae2a438791"
-  integrity sha512-tPmuUiQwUW3PdQirBjlqeZD1JMn7bcyNE6stS50RUu5vyopzLFALnN0uTBftrZOcHpkRtYVa0ifz9fB9yKKJYw==
+"@tanstack/virtual-core@3.0.0":
+  version "3.0.0"
+  resolved "https://registry-npmjs.it-consultis.net/@tanstack/virtual-core/-/virtual-core-3.0.0.tgz#637bee36f0cabf96a1d436887c90f138a7e9378b"
+  integrity sha512-SYXOBTjJb05rXa2vl55TTwO40A6wKu0R5i1qQwhJYNDIqaIGF7D0HsLw+pJAyi2OvntlEIVusx3xtbbgSUi6zg==
 
 "@types/babel__core@^7.20.0":
   version "7.20.0"

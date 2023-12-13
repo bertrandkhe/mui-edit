@@ -90,7 +90,7 @@
     "@types/eslint": "^8.4.1"
   },
   "dependencies": {
-    "@bertrandkhe/file-browser": "^0.0.11",
+    "@bertrandkhe/file-browser": "^0.0.12",
     "@tanstack/react-query": "^4.19.1",
     "dayjs": "^1.11.7",
     "fast-deep-equal": "^3.1.3",
