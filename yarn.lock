@@ -1131,7 +1131,7 @@
 
 "@bertrandkhe/file-browser@^0.0.12":
   version "0.0.12"
-  resolved "https://registry-npmjs.it-consultis.net/@bertrandkhe/file-browser/-/file-browser-0.0.12.tgz#1637132ea931200e05ddea233cdd57722d7b2222"
+  resolved "https://registry.yarnpkg.com/@bertrandkhe/file-browser/-/file-browser-0.0.12.tgz#1637132ea931200e05ddea233cdd57722d7b2222"
   integrity sha512-FUzmjgFhh0ZHJ1FaNTwx0LjZqOqxABBObQh8/vemYpF2COZ134mv0y6JYf3rzAM4weRQ5ToqOaNFXaEdmaxg7w==
   dependencies:
     "@tanstack/react-virtual" "^3.0.1"
