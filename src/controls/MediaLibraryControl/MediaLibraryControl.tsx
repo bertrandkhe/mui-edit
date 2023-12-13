@@ -468,8 +468,12 @@ const MediaControl = <
   };
 
   useEffect(() => {
-    const initialIds = initialDataArray.map((m) => m.id).join(",");
-    const ids = data.map((m) => m.id).join(",");
+    const initialIds = initialDataArray
+      .map((m) => `${m.id}:${m.settings?.version || 0}`)
+      .join(",");
+    const ids = data
+      .map((m) => `${m.id}:${m.settings?.version || 0}`)
+      .join(",");
     if (initialIds === ids) {
       return;
     }

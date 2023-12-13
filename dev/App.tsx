@@ -23,6 +23,11 @@ const App = (props: {
           <Preview
             allowedOrigins={['http://localhost:9001']}
             blockTypes={blockTypes}
+            onAction={(action, methods) => {
+              methods.setViewContext({
+                asd: 'asd'
+              }); 
+            }}
           />
         </QueryClientProvider>
       </StorageProvider>
